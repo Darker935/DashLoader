@@ -8,6 +8,6 @@ import java.util.Map;
 
 @Mixin(FontFilterType.FilterMap.class)
 public interface FilterMapAccessor {
-    @Accessor
-    Map<FontFilterType, Boolean> getActiveFilters();
+	@Accessor
+	Map<FontFilterType, Boolean> getActiveFilters();
 }

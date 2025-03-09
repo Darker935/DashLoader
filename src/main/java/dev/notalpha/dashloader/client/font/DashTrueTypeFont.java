@@ -27,97 +27,99 @@ import java.util.List;
 import java.util.Optional;
 
 public final class DashTrueTypeFont implements DashObject<TrueTypeFont, TrueTypeFont> {
-    public final byte[] fontData;
-    public final float oversample;
-    public final List<Integer> excludedCharacters;
-    public final int size;
-    public final float shiftX;
-    public final float shiftY;
-    private transient TrueTypeFont _font;
+	public final byte[] fontData;
+	public final float oversample;
+	public final List<Integer> excludedCharacters;
+	public final int size;
+	public final float shiftX;
+	public final float shiftY;
+	private transient TrueTypeFont _font;
 
-    public DashTrueTypeFont(byte[] fontData, float oversample, List<Integer> excludedCharacters, int size, float shiftX, float shiftY) {
-        this.fontData = fontData;
-        this.oversample = oversample;
-        this.excludedCharacters = excludedCharacters;
-        this.size = size;
-        this.shiftX = shiftX;
-        this.shiftY = shiftY;
-    }
+	public DashTrueTypeFont(byte[] fontData, float oversample, List<Integer> excludedCharacters, int size, float shiftX, float shiftY) {
+		this.fontData = fontData;
+		this.oversample = oversample;
+		this.excludedCharacters = excludedCharacters;
+		this.size = size;
+		this.shiftX = shiftX;
+		this.shiftY = shiftY;
+	}
 
-    public DashTrueTypeFont(TrueTypeFont font) {
-        TrueTypeFontAccessor fontAccess = (TrueTypeFontAccessor) font;
-        FT_Face ft_face = fontAccess.getFace();
-        Pair<Identifier, Float> pair = FontModule.FONT_TO_DATA.get(CacheStatus.SAVE).get(ft_face);
-        final Identifier ttFont = pair.getLeft();
-        byte[] data = null;
-        try {
-            Optional<Resource> resource = MinecraftClient.getInstance().getResourceManager().getResource(ttFont.withPrefixedPath("font/"));
-            if (resource.isPresent()) {
-                data = IOHelper.streamToArray(resource.get().getInputStream());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+	public DashTrueTypeFont(TrueTypeFont font) {
+		TrueTypeFontAccessor fontAccess = (TrueTypeFontAccessor) font;
+		FT_Face ft_face = fontAccess.getFace();
+		Pair<Identifier, Float> pair = FontModule.FONT_TO_DATA.get(CacheStatus.SAVE).get(ft_face);
+		final Identifier ttFont = pair.getLeft();
+		byte[] data = null;
+		try {
+			Optional<Resource> resource = MinecraftClient.getInstance().getResourceManager().getResource(ttFont.withPrefixedPath("font/"));
+			if (resource.isPresent()) {
+				var stream = resource.get().getInputStream();
+				data = IOHelper.streamToArray(stream);
+				stream.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-        try (MemoryStack memoryStack = MemoryStack.stackPush()) {
-            FT_Vector vec = FT_Vector.malloc(memoryStack);
-            FreeType.FT_Get_Transform(ft_face, null, vec);
-            this.shiftX = vec.x();
-            this.shiftY = vec.y();
-        }
+		try (MemoryStack memoryStack = MemoryStack.stackPush()) {
+			FT_Vector vec = FT_Vector.malloc(memoryStack);
+			FreeType.FT_Get_Transform(ft_face, null, vec);
+			this.shiftX = vec.x();
+			this.shiftY = vec.y();
+		}
 
-        this.fontData = data;
-        this.oversample = fontAccess.getOversample();
-        this.excludedCharacters = new ArrayList<>(fontAccess.getExcludedCharacters());
-        this.size = Math.round(pair.getRight() * this.oversample);
-    }
+		this.fontData = data;
+		this.oversample = fontAccess.getOversample();
+		this.excludedCharacters = new ArrayList<>(fontAccess.getExcludedCharacters());
+		this.size = Math.round(pair.getRight() * this.oversample);
+	}
 
-    @Override
-    public TrueTypeFont export(RegistryReader handler) {
-        this._font = UnsafeHelper.allocateInstance(TrueTypeFont.class);
+	@Override
+	public TrueTypeFont export(RegistryReader handler) {
+		this._font = UnsafeHelper.allocateInstance(TrueTypeFont.class);
 
-        TrueTypeFontAccessor trueTypeFontAccess = (TrueTypeFontAccessor) this._font;
-        trueTypeFontAccess.setOversample(this.oversample);
-        trueTypeFontAccess.setExcludedCharacters(new IntArraySet(this.excludedCharacters));
-        return this._font;
-    }
+		TrueTypeFontAccessor trueTypeFontAccess = (TrueTypeFontAccessor) this._font;
+		trueTypeFontAccess.setOversample(this.oversample);
+		trueTypeFontAccess.setExcludedCharacters(new IntArraySet(this.excludedCharacters));
+		return this._font;
+	}
 
-    @Override
-    public void postExport(RegistryReader reader) {
-        ByteBuffer fontBuffer = MemoryUtil.memAlloc(this.fontData.length);
-        fontBuffer.put(this.fontData);
-        fontBuffer.flip();
+	@Override
+	public void postExport(RegistryReader reader) {
+		ByteBuffer fontBuffer = MemoryUtil.memAlloc(this.fontData.length);
+		fontBuffer.put(this.fontData);
+		fontBuffer.flip();
 
-        FT_Face ft_face = null;
+		FT_Face ft_face = null;
 
-        var trueTypeFontAccess = (TrueTypeFontAccessor) this._font;
+		var trueTypeFontAccess = (TrueTypeFontAccessor) this._font;
 
-        try {
-            synchronized (FreeTypeUtil.LOCK) {
-                try (MemoryStack memoryStack = MemoryStack.stackPush()) {
-                    PointerBuffer pointerBuffer = memoryStack.mallocPointer(1);
-                    FreeTypeUtil.checkFatalError(FreeType.FT_New_Memory_Face(FreeTypeUtil.initialize(), fontBuffer, 0L, pointerBuffer), "Initializing font face");
-                    ft_face = FT_Face.create(pointerBuffer.get());
-                }
+		try {
+			synchronized (FreeTypeUtil.LOCK) {
+				try (MemoryStack memoryStack = MemoryStack.stackPush()) {
+					PointerBuffer pointerBuffer = memoryStack.mallocPointer(1);
+					FreeTypeUtil.checkFatalError(FreeType.FT_New_Memory_Face(FreeTypeUtil.initialize(), fontBuffer, 0L, pointerBuffer), "Initializing font face");
+					ft_face = FT_Face.create(pointerBuffer.get());
+				}
 
-                FreeType.FT_Set_Pixel_Sizes(ft_face, this.size, this.size);
-                try (MemoryStack memoryStack = MemoryStack.stackPush()) {
-                    FT_Vector vec = FreeTypeUtil.set(FT_Vector.malloc(memoryStack), this.shiftX, this.shiftY);
-                    FreeType.FT_Set_Transform(ft_face, null, vec);
-                }
-            }
+				FreeType.FT_Set_Pixel_Sizes(ft_face, this.size, this.size);
+				try (MemoryStack memoryStack = MemoryStack.stackPush()) {
+					FT_Vector vec = FreeTypeUtil.set(FT_Vector.malloc(memoryStack), this.shiftX, this.shiftY);
+					FreeType.FT_Set_Transform(ft_face, null, vec);
+				}
+			}
 
-            trueTypeFontAccess.setFace(ft_face);
-            trueTypeFontAccess.setBuffer(fontBuffer);
-        } catch (Throwable e) {
-            synchronized (FreeTypeUtil.LOCK) {
-                if (ft_face != null) {
-                    FreeType.FT_Done_Face(ft_face);
-                }
-            }
-            MemoryUtil.memFree(fontBuffer);
+			trueTypeFontAccess.setFace(ft_face);
+			trueTypeFontAccess.setBuffer(fontBuffer);
+		} catch (Throwable e) {
+			synchronized (FreeTypeUtil.LOCK) {
+				if (ft_face != null) {
+					FreeType.FT_Done_Face(ft_face);
+				}
+			}
+			MemoryUtil.memFree(fontBuffer);
 
-            throw e;
-        }
-    }
+			throw e;
+		}
+	}
 }

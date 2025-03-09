@@ -39,6 +39,7 @@ repositories {
 
 loom {
     accessWidenerPath = file("src/main/resources/dashloader.accesswidener")
+    log4jConfigs.from(file("log4j-dev.xml"))
 }
 
 dependencies {
@@ -55,10 +56,17 @@ dependencies {
     implementation "dev.notalpha:Taski:2.1.0"
     include "dev.notalpha:Taski:2.1.0"
 
-    implementation 'com.github.luben:zstd-jni:1.5.2-2'
-    include 'com.github.luben:zstd-jni:1.5.2-2'
+    implementation 'com.github.luben:zstd-jni:1.5.7-1'
+    include 'com.github.luben:zstd-jni:1.5.7-1'
 
     modCompileOnly fabricApi.module("fabric-renderer-indigo", project.fabric_version)
+
+    // For Modmenu
+    modRuntimeOnly fabricApi.module("fabric-api-base", project.fabric_version)
+    modRuntimeOnly fabricApi.module("fabric-key-binding-api-v1", project.fabric_version)
+    modRuntimeOnly fabricApi.module("fabric-lifecycle-events-v1", project.fabric_version)
+    modRuntimeOnly fabricApi.module("fabric-resource-loader-v0", project.fabric_version)
+    modRuntimeOnly fabricApi.module("fabric-screen-api-v1", project.fabric_version)
 }
 
 test {

@@ -18,18 +18,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(TrueTypeFontLoader.class)
 public abstract class TrueTypeFontLoaderMixin {
-    @Final
-    @Shadow
-    private float size;
+	@Final
+	@Shadow
+	private float size;
 
-    @Shadow
-    public abstract Identifier location();
+	@Shadow
+	public abstract Identifier location();
 
-    @Inject(
-        method = "load",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TrueTypeFont;<init>(Ljava/nio/ByteBuffer;Lorg/lwjgl/util/freetype/FT_Face;FFFFLjava/lang/String;)V")
-    )
-    private void loadInject(ResourceManager resourceManager, CallbackInfoReturnable<Font> cir, @Local FT_Face ft_face) {
-        FontModule.FONT_TO_DATA.visit(CacheStatus.SAVE, map -> map.put(ft_face, new Pair<>(location(), size)));
-    }
+	@Inject(
+			method = "load",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TrueTypeFont;<init>(Ljava/nio/ByteBuffer;Lorg/lwjgl/util/freetype/FT_Face;FFFFLjava/lang/String;)V")
+	)
+	private void loadInject(ResourceManager resourceManager, CallbackInfoReturnable<Font> cir, @Local FT_Face ft_face) {
+		FontModule.FONT_TO_DATA.visit(CacheStatus.SAVE, map -> map.put(ft_face, new Pair<>(location(), size)));
+	}
 }

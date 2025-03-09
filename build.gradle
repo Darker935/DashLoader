@@ -39,6 +39,7 @@ repositories {
 
 loom {
     accessWidenerPath = file("src/main/resources/dashloader.accesswidener")
+    log4jConfigs.from(file("log4j-dev.xml"))
 }
 
 dependencies {

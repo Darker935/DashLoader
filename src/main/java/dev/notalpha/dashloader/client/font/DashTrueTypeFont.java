@@ -1,5 +1,6 @@
 package dev.notalpha.dashloader.client.font;
 
+import dev.notalpha.dashloader.DashLoader;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
@@ -64,8 +65,8 @@ public final class DashTrueTypeFont implements DashObject<TrueTypeFont, TrueType
 		try (MemoryStack memoryStack = MemoryStack.stackPush()) {
 			FT_Vector vec = FT_Vector.malloc(memoryStack);
 			FreeType.FT_Get_Transform(ft_face, null, vec);
-			this.shiftX = vec.x();
-			this.shiftY = vec.y();
+			this.shiftX = vec.x() / 64F;
+			this.shiftY = vec.y() / 64F;
 		}
 
 		this.fontData = data;

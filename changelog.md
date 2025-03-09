@@ -4,7 +4,7 @@
 
 # Fixes
 - Fixed config ignoring the value of the specified option
-- Imporved preformance of model loader by skiping computation of unused data
+- Improved performance of model loader by skipping computation of unused data
 
 # Internal changes
 - Updated Hyphen version to 0.4.0-rc.5

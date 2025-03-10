@@ -16,9 +16,8 @@ public final class DashWeightedModelEntry {
 	}
 
 	public DashWeightedModelEntry(Weighted.Present<BakedModel> entry, RegistryWriter writer) {
-		this(writer.add(entry.getData()), entry.getWeight().getValue());
+		this(writer.add(entry.data()), entry.getWeight().getValue());
 	}
-
 
 	public DashWeightedBakedModel.DazyImpl.Entry export(RegistryReader handler) {
 		return new DashWeightedBakedModel.DazyImpl.Entry(this.weight, handler.get(this.model));

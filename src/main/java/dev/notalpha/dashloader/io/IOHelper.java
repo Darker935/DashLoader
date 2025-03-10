@@ -1,14 +1,16 @@
 package dev.notalpha.dashloader.io;
 
 import com.github.luben.zstd.Zstd;
+import dev.notalpha.hyphen.io.ByteBufferIO;
 import dev.notalpha.taski.builtin.StepTask;
-import dev.quantumfusion.hyphen.io.ByteBufferIO;
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.system.MemoryUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -18,7 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 public final class IOHelper {
-
 	public static int[] toArray(IntBuffer buffer) {
 		if (buffer == null) {
 			return null;
@@ -36,6 +37,17 @@ public final class IOHelper {
 
 		buffer.rewind();
 		float[] foo = new float[buffer.remaining()];
+		buffer.get(foo);
+		return foo;
+	}
+
+	public static byte[] toArray(ByteBuffer buffer) {
+		if (buffer == null) {
+			return null;
+		}
+
+		buffer.rewind();
+		byte[] foo = new byte[buffer.remaining()];
 		buffer.get(foo);
 		return foo;
 	}
@@ -129,7 +141,7 @@ public final class IOHelper {
 	public static byte[] streamToArray(InputStream inputStream) throws IOException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream() {
 			@Override
-			public synchronized byte[] toByteArray() {
+			public synchronized byte @NotNull [] toByteArray() {
 				return this.buf;
 			}
 		};

@@ -21,7 +21,7 @@ public final class DashIdentifier implements DashObject<Identifier, Identifier> 
 
 	@Override
 	public Identifier export(RegistryReader exportHandler) {
-		return IdentifierAccessor.init(this.namespace, this.path, null);
+		return IdentifierAccessor.init(this.namespace, this.path);
 	}
 
 	@Override

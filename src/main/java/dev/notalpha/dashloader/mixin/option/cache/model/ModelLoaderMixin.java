@@ -1,32 +1,21 @@
 package dev.notalpha.dashloader.mixin.option.cache.model;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.notalpha.dashloader.DashLoader;
 import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.client.model.ModelModule;
 import dev.notalpha.dashloader.client.model.fallback.UnbakedBakedModel;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.render.model.*;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
+import java.util.*;
 
 @Mixin(value = ModelLoader.class, priority = 69420)
 public abstract class ModelLoaderMixin {
@@ -37,44 +26,25 @@ public abstract class ModelLoaderMixin {
 	@Mutable
 	@Shadow
 	@Final
-	private Map<Identifier, UnbakedModel> modelsToBake;
-
-	@Shadow
-	protected abstract void method_4716(BlockState blockState);
+	private Map<ModelIdentifier, UnbakedModel> modelsToBake;
 
 	@Inject(
 			method = "<init>",
-			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", args = "ldc=static_definitions", shift = At.Shift.AFTER)
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/BlockStatesLoader;<init>(Ljava/util/Map;Lnet/minecraft/util/profiler/Profiler;Lnet/minecraft/client/render/model/UnbakedModel;Lnet/minecraft/client/color/block/BlockColors;Ljava/util/function/BiConsumer;)V", shift = At.Shift.BEFORE)
 	)
-	private void injectLoadedModels(BlockColors blockColors, Profiler profiler, Map<Identifier, JsonUnbakedModel> jsonUnbakedModels, Map<Identifier, List<ModelLoader.SourceTrackedData>> blockStates, CallbackInfo ci) {
+	private void injectLoadedModels(BlockColors blockColors, Profiler profiler, Map<Identifier, JsonUnbakedModel> jsonUnbakedModels, Map<Identifier, List<ModelLoader>> blockStates, CallbackInfo ci) {
 		ModelModule.MODELS_LOAD.visit(CacheStatus.LOAD, dashModels -> {
 			int total = dashModels.size();
-			this.unbakedModels.keySet().forEach(dashModels::remove);
+			dashModels.keySet().removeIf(k -> unbakedModels.containsKey(k.id()));
 			this.modelsToBake.keySet().forEach(dashModels::remove);
 			DashLoader.LOG.info("Injecting {}/{} Cached Models", dashModels.size(), total);
-			this.unbakedModels.putAll(dashModels);
+
+			dashModels.forEach((k, v) -> {
+				var id = Objects.equals(k.getVariant(), ModelIdentifier.INVENTORY_VARIANT) ? k.id().withPrefixedPath("item/") : k.id();
+				this.unbakedModels.put(id, v);
+			});
 			this.modelsToBake.putAll(dashModels);
 		});
-	}
-
-	/**
-	 * We want to not load all of the blockstate models as we have a list of them available on which ones to load to save a lot of computation
-	 */
-	@WrapOperation(
-			method = "<init>",
-			at = @At(value = "INVOKE", target = "Ljava/util/Iterator;hasNext()Z", ordinal = 0)
-	)
-	private boolean loadMissingModels(Iterator instance, Operation<Boolean> original) {
-		var map = ModelModule.MISSING_READ.get(CacheStatus.LOAD);
-		if (map != null) {
-			for (BlockState blockState : map.keySet()) {
-				// load thing lambda
-				this.method_4716(blockState);
-			}
-			DashLoader.LOG.info("Loaded {} unsupported models.", map.size());
-			return false;
-		}
-		return original.call(instance);
 	}
 
 	@Inject(
@@ -83,7 +53,7 @@ public abstract class ModelLoaderMixin {
 					value = "HEAD"
 			)
 	)
-	private void countModels(BiFunction<Identifier, SpriteIdentifier, Sprite> spriteLoader, CallbackInfo ci) {
+	private void countModels(ModelLoader.SpriteGetter spliteGetter, CallbackInfo ci) {
 		if (ModelModule.MODELS_LOAD.active(CacheStatus.LOAD)) {
 			// Cache stats
 			int cachedModels = 0;

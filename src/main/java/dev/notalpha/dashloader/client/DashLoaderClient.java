@@ -57,16 +57,8 @@ public class DashLoaderClient implements DashEntrypoint {
 		factory.addModule(new SpriteStitcherModule());
 		factory.addModule(new SpriteContentModule());
 
-		factory.addMissingHandler(
-				Identifier.class,
-				(identifier, registryWriter) -> {
-					if (identifier instanceof ModelIdentifier m) {
-						return new DashModelIdentifier(m);
-					} else {
-						return new DashIdentifier(identifier);
-					}
-				}
-		);
+		factory.addMissingHandler(Identifier.class, (identifier, registryWriter) -> new DashIdentifier(identifier));
+		factory.addMissingHandler(ModelIdentifier.class, (moduleIdentifier, registryWriter) -> new DashModelIdentifier(moduleIdentifier));
 
 		factory.addMissingHandler(
 				Sprite.class,

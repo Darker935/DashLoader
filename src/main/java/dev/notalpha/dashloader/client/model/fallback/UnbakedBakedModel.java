@@ -33,7 +33,7 @@ public class UnbakedBakedModel implements UnbakedModel {
 	}
 
 	@Override
-	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer) {
 		return this.bakedModel.get(textureGetter);
 	}
 }

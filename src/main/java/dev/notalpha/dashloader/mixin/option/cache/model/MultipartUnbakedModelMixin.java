@@ -11,9 +11,7 @@ import net.minecraft.client.render.model.json.MultipartModelSelector;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.state.StateManager;
-import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -41,7 +39,7 @@ public class MultipartUnbakedModelMixin {
 			locals = LocalCapture.CAPTURE_FAILSOFT,
 			cancellable = true
 	)
-	private void addPredicateInfo(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId, CallbackInfoReturnable<@Nullable BakedModel> cir, MultipartBakedModel.Builder builder) {
+	private void addPredicateInfo(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, CallbackInfoReturnable<BakedModel> cir, MultipartBakedModel.Builder builder) {
 		ModelModule.MULTIPART_PREDICATES.visit(CacheStatus.SAVE, map -> {
 			var bakedModel = (MultipartBakedModel) builder.build();
 			var outSelectors = new ArrayList<MultipartModelSelector>();

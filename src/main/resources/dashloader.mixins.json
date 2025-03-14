@@ -58,10 +58,9 @@
     "defaultRequire": 1
   },
   "client": [
-    "accessor.ModelIdentifierAccessor",
     "accessor.ShaderStageAccessor$TypeAccessor",
     "accessor.SpriteContentsAccessor",
-    "accessor.VertexFormatAccessor",
+    "option.cache.model.BlockStatesLoaderMixin",
     "option.cache.sprite.content.SpriteOpenerMixin",
     "option.misc.MipmapHelperMixin",
     "option.misc.ModelLoaderBakedModelCacheKeyMixin"

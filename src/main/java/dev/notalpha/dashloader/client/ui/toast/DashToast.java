@@ -41,7 +41,7 @@ public class DashToast implements Toast {
 	}
 
 	private static void drawVertex(Matrix4f m4f, BufferBuilder bb, float z, float x, float y, Color color) {
-		bb.vertex(m4f, x, y, z).color(color.red(), color.green(), color.blue(), color.alpha()).next();
+		bb.vertex(m4f, x, y, z).color(color.red(), color.green(), color.blue(), color.alpha());
 	}
 
 	public int getWidth() {
@@ -146,11 +146,11 @@ public class DashToast implements Toast {
 	}
 
 	private void drawBatched(MatrixStack ms, BiConsumer<Matrix4f, BufferBuilder> consumer) {
-		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+
 		Matrix4f matrix = ms.peek().getPositionMatrix();
 		consumer.accept(matrix, bufferBuilder);
 		BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());

@@ -1,12 +1,9 @@
 package dev.notalpha.dashloader.client.shader;
 
-import com.google.common.collect.ImmutableMap;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
-import dev.notalpha.dashloader.mixin.accessor.VertexFormatAccessor;
 import dev.notalpha.hyphen.scan.annotations.DataNullable;
 import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormatElement;
 import net.minecraft.client.render.VertexFormats;
 
 import java.util.ArrayList;
@@ -27,7 +24,6 @@ public class DashVertexFormat implements DashObject<VertexFormat, VertexFormat> 
 		BUILT_IN.add(VertexFormats.LINES);
 		BUILT_IN.add(VertexFormats.POSITION_COLOR_LIGHT);
 		BUILT_IN.add(VertexFormats.POSITION_TEXTURE);
-		BUILT_IN.add(VertexFormats.POSITION_COLOR_TEXTURE);
 		BUILT_IN.add(VertexFormats.POSITION_TEXTURE_COLOR);
 		BUILT_IN.add(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
 		BUILT_IN.add(VertexFormats.POSITION_TEXTURE_LIGHT_COLOR);
@@ -55,7 +51,9 @@ public class DashVertexFormat implements DashObject<VertexFormat, VertexFormat> 
 		this.builtin = builtin;
 		if (builtin == -1) {
 			this.elementMap = new HashMap<>();
-			((VertexFormatAccessor) vertexFormat).getElementMap().forEach((s, element) -> this.elementMap.put(s, new DashVertexFormatElement(element)));
+			for (int i = 0; i < vertexFormat.getAttributeNames().size(); i++) {
+				elementMap.put(vertexFormat.getAttributeNames().get(i), new DashVertexFormatElement(vertexFormat.getElements().get(i)));
+			}
 		} else {
 			this.elementMap = null;
 		}
@@ -66,12 +64,10 @@ public class DashVertexFormat implements DashObject<VertexFormat, VertexFormat> 
 		if (this.builtin != -1) {
 			return BUILT_IN.get(this.builtin);
 		} else {
-			ImmutableMap.Builder<String, VertexFormatElement> out = ImmutableMap.builderWithExpectedSize(elementMap.size());
-			elementMap.forEach((s, dashVertexFormatElement) -> {
-				VertexFormatElement export = dashVertexFormatElement.export(reader);
-				out.put(s, export);
-			});
-			return new VertexFormat(out.build());
+			var builder = VertexFormat.builder();
+			elementMap.forEach((s, dashVertexFormatElement) -> builder.add(s, dashVertexFormatElement.export(reader)));
+
+			return builder.build();
 		}
 	}
 }

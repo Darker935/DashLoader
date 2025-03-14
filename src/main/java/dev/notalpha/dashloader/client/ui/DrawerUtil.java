@@ -33,7 +33,7 @@ public class DrawerUtil {
 	}
 
 	private static void drawVertex(Matrix4f m4f, BufferBuilder bb, float x, float y, Color color) {
-		bb.vertex(m4f, x, y, 0f).color(color.red(), color.green(), color.blue(), color.alpha()).next();
+		bb.vertex(m4f, x, y, 0f).color(color.red(), color.green(), color.blue(), color.alpha());
 	}
 
 	public static void drawGlow(Matrix4f b4, BufferBuilder bb, float x, float y, float width, float height, float strength, Color color, boolean topLeft, boolean topRight, boolean bottomLeft, boolean bottomRight) {

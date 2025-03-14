@@ -1,6 +1,5 @@
 package dev.notalpha.dashloader.mixin.accessor;
 
-import net.minecraft.client.gl.GlBlendState;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.gl.ShaderStage;
@@ -21,13 +20,6 @@ public interface ShaderProgramAccessor {
 	@Accessor
 	@Mutable
 	void setSamplers(Map<String, Object> samplers);
-
-	@Accessor
-	GlBlendState getBlendState();
-
-	@Accessor
-	@Mutable
-	void setBlendState(GlBlendState blendState);
 
 	@Accessor
 	Map<String, GlUniform> getLoadedUniforms();

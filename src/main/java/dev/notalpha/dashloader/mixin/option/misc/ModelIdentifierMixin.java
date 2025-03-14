@@ -1,6 +1,7 @@
 package dev.notalpha.dashloader.mixin.option.misc;
 
 import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -11,6 +12,9 @@ import java.util.Objects;
 public abstract class ModelIdentifierMixin {
 	@Shadow
 	@Final
+	private Identifier id;
+	@Shadow
+	@Final
 	private String variant;
 
 	@Override
@@ -18,18 +22,18 @@ public abstract class ModelIdentifierMixin {
 		if (this == o) {
 			return true;
 		}
-		if (o == null || this.getClass() != o.getClass()) {
+		if (!(o instanceof ModelIdentifier that)) {
 			return false;
 		}
-		if (!super.equals(o)) {
+		if (!this.id.equals(that.id())) {
 			return false;
 		}
-		ModelIdentifier that = (ModelIdentifier) o;
+
 		return Objects.equals(this.variant, that.getVariant());
 	}
 
 	@Override
 	public int hashCode() {
-		return 31 * super.hashCode() + variant.hashCode();
+		return 31 * id.hashCode() + variant.hashCode();
 	}
 }

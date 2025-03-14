@@ -7,8 +7,9 @@ import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.client.model.ModelModule;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedModelManager;
-import net.minecraft.client.render.model.ModelLoader;
+import net.minecraft.client.render.model.BlockStatesLoader;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
+import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
@@ -27,7 +28,7 @@ import java.util.concurrent.Executor;
 @Mixin(value = BakedModelManager.class, priority = 69420)
 public abstract class BakedModelManagerOverride {
 	@Shadow
-	private Map<Identifier, BakedModel> models;
+	private Map<ModelIdentifier, BakedModel> models;
 
 	@Inject(method = "upload",
 			at = @At(value = "TAIL")
@@ -49,7 +50,7 @@ public abstract class BakedModelManagerOverride {
 	}
 
 	@WrapOperation(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/BakedModelManager;reloadBlockStates(Lnet/minecraft/resource/ResourceManager;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
-	private CompletableFuture<Map<Identifier, List<ModelLoader.SourceTrackedData>>> maybeBypassReloadBlockStates(ResourceManager resourceManager, Executor executor, Operation<CompletableFuture<Map<Identifier, List<ModelLoader.SourceTrackedData>>>> original) {
+	private CompletableFuture<Map<Identifier, List<BlockStatesLoader.SourceTrackedData>>> maybeBypassReloadBlockStates(ResourceManager resourceManager, Executor executor, Operation<CompletableFuture<Map<Identifier, List<BlockStatesLoader.SourceTrackedData>>>> original) {
 		if (ModelModule.MODELS_LOAD.active(CacheStatus.LOAD)) {
 			return CompletableFuture.completedFuture(new HashMap<>());
 		}

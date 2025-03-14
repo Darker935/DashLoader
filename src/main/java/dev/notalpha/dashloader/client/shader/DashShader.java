@@ -1,6 +1,5 @@
 package dev.notalpha.dashloader.client.shader;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.GlStateManager;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
@@ -18,7 +17,6 @@ import java.util.*;
 public final class DashShader implements DashObject<ShaderProgram, ShaderProgram> {
 	public final Map<String, Sampler> samplers;
 	public final String name;
-	public final DashGlBlendState blendState;
 	public final DashShaderStage vertexShader;
 	public final DashShaderStage fragmentShader;
 	public final int format;
@@ -26,10 +24,10 @@ public final class DashShader implements DashObject<ShaderProgram, ShaderProgram
 	public final List<String> samplerNames;
 	public transient ShaderProgram toApply;
 
-	public DashShader(Map<String, Sampler> samplers, String name, DashGlBlendState blendState, DashShaderStage vertexShader, DashShaderStage fragmentShader, int format, List<DashGlUniform> uniforms, List<String> samplerNames) {
+	public DashShader(Map<String, Sampler> samplers, String name, DashShaderStage vertexShader, DashShaderStage fragmentShader, int format, List<DashGlUniform> uniforms, List<String> samplerNames) {
 		this.samplers = samplers;
 		this.name = name;
-		this.blendState = blendState;
+
 		this.vertexShader = vertexShader;
 		this.fragmentShader = fragmentShader;
 		this.format = format;
@@ -44,7 +42,7 @@ public final class DashShader implements DashObject<ShaderProgram, ShaderProgram
 		shaderAccess.getSamplers().forEach((s, o) -> this.samplers.put(s, new Sampler(o)));
 		this.name = shader.getName();
 
-		this.blendState = new DashGlBlendState(shaderAccess.getBlendState());
+
 		this.vertexShader = new DashShaderStage(shader.getVertexShader());
 		this.fragmentShader = new DashShaderStage(shader.getFragmentShader());
 		this.format = writer.add(shader.getFormat());
@@ -108,14 +106,14 @@ public final class DashShader implements DashObject<ShaderProgram, ShaderProgram
 	@Override
 	public void postExport(RegistryReader reader) {
 		ShaderProgramAccessor shaderAccess = (ShaderProgramAccessor) this.toApply;
-		shaderAccess.setBlendState(this.blendState.export());
+//		shaderAccess.setBlendState(this.blendState.export());
 		shaderAccess.setVertexShader(this.vertexShader.exportProgram());
 		shaderAccess.setFragmentShader(this.fragmentShader.exportProgram());
 
 		final int programId = GlStateManager.glCreateProgram();
 		shaderAccess.setGlRef(programId);
 
-		ImmutableList<String> names = this.toApply.getFormat().getAttributeNames();
+		List<String> names = this.toApply.getFormat().getAttributeNames();
 		for (int i = 0; i < names.size(); i++) {
 			String attributeName = names.get(i);
 			GlUniform.bindAttribLocation(programId, i, attributeName);

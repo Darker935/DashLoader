@@ -1,6 +1,5 @@
 package dev.notalpha.dashloader.client.font;
 
-import dev.notalpha.dashloader.DashLoader;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.api.registry.RegistryReader;

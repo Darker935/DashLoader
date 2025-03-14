@@ -5,7 +5,6 @@ import dev.notalpha.dashloader.client.model.ModelModule;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,9 +19,9 @@ public class BlockModelsMixin {
 	)
 	private static void cacheModelId(BlockState state, CallbackInfoReturnable<ModelIdentifier> cir) {
 		ModelModule.MISSING_READ.visit(CacheStatus.LOAD, map -> {
-			final Identifier identifier = map.get(state);
+			final ModelIdentifier identifier = map.get(state);
 			if (identifier != null) {
-				cir.setReturnValue((ModelIdentifier) identifier);
+				cir.setReturnValue(identifier);
 			}
 		});
 	}

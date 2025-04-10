@@ -23,7 +23,4 @@ public interface BasicBakedModelAccessor {
 
 	@Accessor
 	ModelTransformation getTransformation();
-
-	@Accessor
-	ModelOverrideList getItemPropertyOverrides();
 }

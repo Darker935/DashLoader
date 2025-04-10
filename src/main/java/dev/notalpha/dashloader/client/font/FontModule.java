@@ -12,7 +12,6 @@ import dev.notalpha.dashloader.config.Option;
 import dev.notalpha.taski.builtin.StepTask;
 import net.minecraft.client.font.Font;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
 import org.lwjgl.util.freetype.FT_Face;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import java.util.Map;
 
 public class FontModule implements DashModule<FontModule.Data> {
 	public static final CachingData<ProviderIndex> DATA = new CachingData<>();
-	public static final CachingData<Map<FT_Face, Pair<Identifier, Float>>> FONT_TO_DATA = new CachingData<>();
+	public static final CachingData<Map<FT_Face, DashTrueTypeFont.FontPrams>> FONT_TO_DATA = new CachingData<>();
 
 	@Override
 	public void reset(Cache cache) {

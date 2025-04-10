@@ -26,13 +26,11 @@ public final class DashModelOverrideListBakedOverride {
 	}
 
 	public DashModelOverrideListBakedOverride(ModelOverrideList.BakedOverride override, RegistryWriter writer) {
-		final ModelOverrideList.InlinedCondition[] conditionsIn = ((ModelOverrideListBakedOverrideAccessor) override).getConditions();
-		BakedModel bakedModel = ((ModelOverrideListBakedOverrideAccessor) override).getModel();
-		this.model = bakedModel == null ? null : writer.add(bakedModel);
+		this.model = override.model() == null ? null : writer.add(override.model());
 
-		this.conditions = new DashModelOverrideListInlinedCondition[conditionsIn.length];
-		for (int i = 0; i < conditionsIn.length; i++) {
-			this.conditions[i] = new DashModelOverrideListInlinedCondition(conditionsIn[i]);
+		this.conditions = new DashModelOverrideListInlinedCondition[override.conditions().length];
+		for (int i = 0; i < override.conditions().length; i++) {
+			this.conditions[i] = new DashModelOverrideListInlinedCondition(override.conditions()[i]);
 		}
 	}
 

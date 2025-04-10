@@ -10,7 +10,7 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.WeightedBakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.collection.Weighted;
+import net.minecraft.util.collection.DataPool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public final class DashWeightedBakedModel implements DashObject<WeightedBakedMod
 
 	public DashWeightedBakedModel(WeightedBakedModel model, RegistryWriter writer) {
 		this.models = new ArrayList<>();
-		for (var weightedModel : ((WeightedBakedModelAccessor) model).getBakedModels()) {
+		for (var weightedModel : ((WeightedBakedModelAccessor) model).getModels().getEntries()) {
 			this.models.add(new DashWeightedModelEntry(weightedModel, writer));
 		}
 	}
@@ -63,12 +63,12 @@ public final class DashWeightedBakedModel implements DashObject<WeightedBakedMod
 
 		@Override
 		protected WeightedBakedModel resolve(Function<SpriteIdentifier, Sprite> spriteLoader) {
-			List<Weighted.Present<BakedModel>> models = new ArrayList<>();
+			DataPool.Builder<BakedModel> models = DataPool.builder();
 			for (Entry entry : this.entries) {
 				BakedModel model = entry.model.get(spriteLoader);
-				models.add(Weighted.of(model, entry.weight));
+				models.add(model, entry.weight);
 			}
-			return new WeightedBakedModel(models);
+			return new WeightedBakedModel(models.build());
 		}
 
 		public static class Entry {

@@ -13,7 +13,7 @@ public final class DashModelOverrideListInlinedCondition {
 	}
 
 	public DashModelOverrideListInlinedCondition(ModelOverrideList.InlinedCondition inlinedCondition) {
-		this(inlinedCondition.index, inlinedCondition.threshold);
+		this(inlinedCondition.index(), inlinedCondition.threshold());
 	}
 
 	public ModelOverrideList.InlinedCondition export() {

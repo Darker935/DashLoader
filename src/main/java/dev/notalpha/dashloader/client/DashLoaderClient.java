@@ -89,6 +89,7 @@ public class DashLoaderClient implements DashEntrypoint {
 		for (Class<? extends DashObject<?, ?>> aClass : new Class[]{
 				DashIdentifier.class,
 				DashModelIdentifier.class,
+				DashBakedItemModel.class,
 				DashBasicBakedModel.class,
 				DashBuiltinBakedModel.class,
 				DashMultipartBakedModel.class,

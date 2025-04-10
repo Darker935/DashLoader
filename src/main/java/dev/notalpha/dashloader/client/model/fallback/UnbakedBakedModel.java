@@ -7,10 +7,7 @@ import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -24,12 +21,7 @@ public class UnbakedBakedModel implements UnbakedModel {
 	}
 
 	@Override
-	public Collection<Identifier> getModelDependencies() {
-		return List.of();
-	}
-
-	@Override
-	public void setParents(Function<Identifier, UnbakedModel> modelLoader) {
+	public void resolve(Resolver resolver) {
 	}
 
 	@Override

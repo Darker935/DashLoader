@@ -19,22 +19,24 @@ public final class DashBakedQuad implements DashObject<BakedQuad, DashBakedQuad.
 	public final Direction face;
 	public final boolean shade;
 	public final int sprite;
+	public final int lightEmission;
 
 	public DashBakedQuad(int[] vertexData, int colorIndex, Direction face, boolean shade,
-						 int sprite) {
+						 int sprite, int lightEmission) {
 		this.vertexData = vertexData;
 		this.colorIndex = colorIndex;
 		this.face = face;
 		this.shade = shade;
 		this.sprite = sprite;
+		this.lightEmission = lightEmission;
 	}
 
 	public DashBakedQuad(BakedQuad bakedQuad, RegistryWriter writer) {
-		this(bakedQuad.getVertexData(), bakedQuad.getColorIndex(), bakedQuad.getFace(), bakedQuad.hasShade(), writer.add(bakedQuad.getSprite()));
+		this(bakedQuad.getVertexData(), bakedQuad.getColorIndex(), bakedQuad.getFace(), bakedQuad.hasShade(), writer.add(bakedQuad.getSprite()), bakedQuad.getLightEmission());
 	}
 
 	public DazyImpl export(RegistryReader handler) {
-		return new DazyImpl(this.vertexData, this.colorIndex, this.face, this.shade, handler.get(this.sprite));
+		return new DazyImpl(this.vertexData, this.colorIndex, this.face, this.shade, handler.get(this.sprite), this.lightEmission);
 	}
 
 	@Override
@@ -67,19 +69,21 @@ public final class DashBakedQuad implements DashObject<BakedQuad, DashBakedQuad.
 		public final Direction face;
 		public final boolean shade;
 		public final DashSprite.DazyImpl sprite;
+		public final int lightEmission;
 
-		public DazyImpl(int[] vertexData, int colorIndex, Direction face, boolean shade, DashSprite.DazyImpl sprite) {
+		public DazyImpl(int[] vertexData, int colorIndex, Direction face, boolean shade, DashSprite.DazyImpl sprite, int lightEmission) {
 			this.vertexData = vertexData;
 			this.colorIndex = colorIndex;
 			this.face = face;
 			this.shade = shade;
 			this.sprite = sprite;
+			this.lightEmission = lightEmission;
 		}
 
 		@Override
 		protected BakedQuad resolve(Function<SpriteIdentifier, Sprite> spriteLoader) {
 			Sprite sprite = this.sprite.get(spriteLoader);
-			return new BakedQuad(vertexData, colorIndex, face, sprite, shade);
+			return new BakedQuad(vertexData, colorIndex, face, sprite, shade, lightEmission);
 		}
 	}
 }

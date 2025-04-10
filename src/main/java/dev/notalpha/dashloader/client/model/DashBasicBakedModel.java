@@ -7,14 +7,12 @@ import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.client.Dazy;
 import dev.notalpha.dashloader.client.model.components.BakedQuadCollection;
 import dev.notalpha.dashloader.client.model.components.DashBakedQuadCollection;
-import dev.notalpha.dashloader.client.model.components.DashModelOverrideList;
 import dev.notalpha.dashloader.client.model.components.DashModelTransformation;
 import dev.notalpha.dashloader.client.sprite.content.DashSprite;
 import dev.notalpha.dashloader.mixin.accessor.BasicBakedModelAccessor;
 import dev.notalpha.hyphen.scan.annotations.DataNullable;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.BasicBakedModel;
-import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
@@ -35,14 +33,12 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 	public final boolean isSideLit;
 	@DataNullable
 	public final DashModelTransformation transformation;
-	public final DashModelOverrideList itemPropertyOverrides;
 	public final int spritePointer;
 
 	public DashBasicBakedModel(int quads,
 							   ObjectObjectList<Direction, Integer> faceQuads,
 							   boolean usesAo, boolean hasDepth, boolean isSideLit,
 							   DashModelTransformation transformation,
-							   DashModelOverrideList itemPropertyOverrides,
 							   int spritePointer) {
 		this.quads = quads;
 		this.faceQuads = faceQuads;
@@ -50,7 +46,6 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 		this.hasDepth = hasDepth;
 		this.isSideLit = isSideLit;
 		this.transformation = transformation;
-		this.itemPropertyOverrides = itemPropertyOverrides;
 		this.spritePointer = spritePointer;
 	}
 
@@ -64,7 +59,6 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 			this.faceQuads.put(value, writer.add(new BakedQuadCollection(basicBakedModel.getQuads(null, value, random))));
 		}
 
-		this.itemPropertyOverrides = new DashModelOverrideList(access.getItemPropertyOverrides(), writer);
 		this.usesAo = access.getUsesAo();
 		this.hasDepth = access.getHasDepth();
 		this.isSideLit = access.getIsSideLit();
@@ -90,7 +84,6 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 				isSideLit,
 				hasDepth,
 				DashModelTransformation.exportOrDefault(this.transformation),
-				this.itemPropertyOverrides.export(reader),
 				sprite
 		);
 	}
@@ -108,9 +101,7 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 		if (isSideLit != that.isSideLit) return false;
 		if (spritePointer != that.spritePointer) return false;
 		if (!faceQuads.equals(that.faceQuads)) return false;
-		if (!Objects.equals(transformation, that.transformation))
-			return false;
-		return itemPropertyOverrides.equals(that.itemPropertyOverrides);
+		return Objects.equals(transformation, that.transformation);
 	}
 
 	@Override
@@ -121,7 +112,6 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 		result = 31 * result + (hasDepth ? 1 : 0);
 		result = 31 * result + (isSideLit ? 1 : 0);
 		result = 31 * result + (transformation != null ? transformation.hashCode() : 0);
-		result = 31 * result + itemPropertyOverrides.hashCode();
 		result = 31 * result + spritePointer;
 		return result;
 	}
@@ -133,7 +123,6 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 		public final boolean isSideLit;
 		public final boolean hasDepth;
 		public final ModelTransformation transformation;
-		public final DashModelOverrideList.DazyImpl itemPropertyOverrides;
 		public final DashSprite.DazyImpl sprite;
 
 		public DazyImpl(DashBakedQuadCollection.DazyImpl quads,
@@ -142,7 +131,6 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 						boolean isSideLit,
 						boolean hasDepth,
 						ModelTransformation transformation,
-						DashModelOverrideList.DazyImpl itemPropertyOverrides,
 						DashSprite.DazyImpl sprite) {
 			this.quads = quads;
 			this.faceQuads = faceQuads;
@@ -150,7 +138,6 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 			this.isSideLit = isSideLit;
 			this.hasDepth = hasDepth;
 			this.transformation = transformation;
-			this.itemPropertyOverrides = itemPropertyOverrides;
 			this.sprite = sprite;
 		}
 
@@ -161,8 +148,7 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 			this.faceQuads.forEach((direction, dazy) -> faceQuadsOut.put(direction, dazy.get(spriteLoader)));
 
 			Sprite sprite = this.sprite.get(spriteLoader);
-			ModelOverrideList list = itemPropertyOverrides.get(spriteLoader);
-			return new BasicBakedModel(quads, faceQuadsOut, usesAo, isSideLit, hasDepth, sprite, transformation, list);
+			return new BasicBakedModel(quads, faceQuadsOut, usesAo, isSideLit, hasDepth, sprite, transformation);
 		}
 	}
 }

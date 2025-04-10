@@ -16,8 +16,8 @@ public class GlStateManagerMixin {
 			method = "glShaderSource",
 			at = @At(value = "HEAD")
 	)
-	private static void glShaderSourceInject(int shader, List<String> strings, CallbackInfo ci) {
-		ShaderModule.WRITE_PROGRAM_SOURCES.visit(CacheStatus.SAVE, map -> map.put(shader, strings));
+	private static void glShaderSourceInject(int shader, String string, CallbackInfo ci) {
+		ShaderModule.WRITE_PROGRAM_SOURCES.visit(CacheStatus.SAVE, map -> map.put(shader, string));
 	}
 }
 

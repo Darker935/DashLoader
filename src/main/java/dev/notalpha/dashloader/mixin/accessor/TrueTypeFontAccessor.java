@@ -1,6 +1,6 @@
 package dev.notalpha.dashloader.mixin.accessor;
 
-import it.unimi.dsi.fastutil.ints.IntSet;
+import net.minecraft.client.font.GlyphContainer;
 import net.minecraft.client.font.TrueTypeFont;
 import org.lwjgl.util.freetype.FT_Face;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,9 +30,6 @@ public interface TrueTypeFontAccessor {
 	void setOversample(float thing);
 
 	@Accessor
-	IntSet getExcludedCharacters();
-
-	@Accessor
 	@Mutable
-	void setExcludedCharacters(IntSet thing);
+	void setContainer(GlyphContainer<TrueTypeFont.LazyGlyph> container);
 }

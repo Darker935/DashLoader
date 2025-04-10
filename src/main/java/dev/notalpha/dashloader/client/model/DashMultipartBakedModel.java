@@ -6,6 +6,7 @@ import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.client.Dazy;
 import dev.notalpha.dashloader.mixin.accessor.MultipartBakedModelAccessor;
+import dev.notalpha.dashloader.mixin.accessor.MultipartModelComponentAccessor;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.MultipartBakedModel;
@@ -13,7 +14,6 @@ import net.minecraft.client.render.model.json.MultipartModelSelector;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,16 +34,19 @@ public class DashMultipartBakedModel implements DashObject<MultipartBakedModel, 
 		int size = accessComponents.size();
 		this.components = new ArrayList<>();
 
-		var selectors = ModelModule.MULTIPART_PREDICATES.get(CacheStatus.SAVE).get(model);
+		var a = ModelModule.UNBAKED_TO_BAKED_MULTIPART_MODELS.get(CacheStatus.SAVE);
+		var asdf = ModelModule.MULTIPART_PREDICATES.get(CacheStatus.SAVE);
+		var theThing = asdf.get(a.get(model));
 
+		var stateManagerIdentifier = ModelModule.getStateManagerIdentifier(theThing.getRight());
 		for (int i = 0; i < size; i++) {
-			BakedModel componentModel = accessComponents.get(i).getRight();
-			MultipartModelSelector selector = selectors.getKey().get(i);
-			Identifier componentIdentifier = ModelModule.getStateManagerIdentifier(selectors.getRight());
+			var componentModel = accessComponents.get(i).model();
+			var selector = ((MultipartModelComponentAccessor) theThing.getLeft().get(i)).getSelector();
+
 			this.components.add(new Component(
 					writer.add(componentModel),
 					writer.add(selector),
-					writer.add(componentIdentifier)
+					writer.add(stateManagerIdentifier)
 			));
 		}
 	}
@@ -117,12 +120,12 @@ public class DashMultipartBakedModel implements DashObject<MultipartBakedModel, 
 
 		@Override
 		protected MultipartBakedModel resolve(Function<SpriteIdentifier, Sprite> spriteLoader) {
-			List<Pair<Predicate<BlockState>, BakedModel>> componentsOut = new ArrayList<>(this.components.size());
+			List<MultipartBakedModel.class_10204> componentsOut = new ArrayList<>(this.components.size());
 
 			for (Component component : components) {
 				var model = component.model.get(spriteLoader);
 				var selector = component.selector;
-				componentsOut.add(Pair.of(selector, model));
+				componentsOut.add(new MultipartBakedModel.class_10204(selector, model));
 			}
 
 			MultipartBakedModel multipartBakedModel = new MultipartBakedModel(componentsOut);
@@ -143,4 +146,3 @@ public class DashMultipartBakedModel implements DashObject<MultipartBakedModel, 
 		}
 	}
 }
-

@@ -8,6 +8,7 @@ accessible class net/minecraft/client/render/model/json/ModelOverrideList$BakedO
 accessible class net/minecraft/client/render/model/json/ModelOverrideList$InlinedCondition
 accessible class net/minecraft/client/render/model/BakedModelManager$BakingResult
 accessible class net/minecraft/client/render/model/ItemModel$BakedItemModel
+accessible class net/minecraft/client/render/model/ModelBaker$BakedModelCacheKey
 accessible class net/minecraft/client/render/model/ModelBaker$BakerImpl
 accessible class net/minecraft/client/render/model/MultipartUnbakedModel$Selector
 accessible class net/minecraft/client/font/TrueTypeFont$LazyGlyph
@@ -21,6 +22,7 @@ accessible class net/minecraft/client/gl/ShaderLoader$Cache
 accessible class net/minecraft/resource/ZipResourcePack$ZipFileWrapper
 accessible class net/minecraft/client/MinecraftClient$LoadingContext
 accessible field net/minecraft/client/gl/ShaderLoader$Cache shaderPrograms Ljava/util/Map;
+accessible field net/minecraft/client/render/model/ModelBaker bakedModelCache Ljava/util/Map;
 accessible field net/minecraft/client/render/model/WrapperBakedModel wrapped Lnet/minecraft/client/render/model/BakedModel;
 accessible method net/minecraft/client/font/TrueTypeFont$LazyGlyph <init> (I)V
 accessible method net/minecraft/client/font/UnihexFont$FontImage8x16 <init> ([B)V

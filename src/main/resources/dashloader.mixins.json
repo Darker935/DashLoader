@@ -54,8 +54,8 @@
   "client": [
     "accessor.BakedItemModelAccessor",
     "accessor.SpriteContentsAccessor",
-    "option.cache.model.BakerImplMixin",
     "option.cache.model.MultipartUnbakedModelSerializedMixin",
+    "option.cache.model.ReferencedModelsCollectorMixin",
     "option.cache.shader.ShaderLoaderMixin",
     "option.cache.sprite.content.SpriteOpenerMixin",
     "option.misc.MipmapHelperMixin"

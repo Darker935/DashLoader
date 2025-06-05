@@ -31,6 +31,24 @@ public class DashBakedItemModel implements DashObject<ItemModel.BakedItemModel, 
 		return new DazyImpl(reader.get(this.wrapped), this.overrides.export(reader));
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		DashBakedItemModel that = (DashBakedItemModel) o;
+
+		if (wrapped != that.wrapped) return false;
+		return overrides == that.overrides;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = wrapped;
+		result = 31 * result + overrides.hashCode();
+		return result;
+	}
+
 	public static class DazyImpl extends Dazy<ItemModel.BakedItemModel> {
 		private final Dazy<? extends BakedModel> wrapped;
 		private final DashModelOverrideList.DazyImpl overrides;

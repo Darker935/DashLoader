@@ -1,2 +1,2 @@
-# Features
-- 1.21.1
+# Fixes
+- item frames missing texture

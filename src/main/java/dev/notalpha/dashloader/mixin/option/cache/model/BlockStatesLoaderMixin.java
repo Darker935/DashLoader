@@ -1,5 +1,6 @@
 package dev.notalpha.dashloader.mixin.option.cache.model;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.notalpha.dashloader.DashLoader;
@@ -14,7 +15,6 @@ import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -29,12 +29,12 @@ public abstract class BlockStatesLoaderMixin {
 	 * We want to not load all of the blockstate models as we have a list of them available on which ones to load to save a lot of computation
 	 */
 
-	@Redirect(
+	@WrapWithCondition(
 			method = "load",
 			at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V")
 	)
-	private void loadMissingModels(Map instance, BiConsumer v) {
-		// No mods should be adding to static definitions
+	private boolean loadMissingModels(Map instance, BiConsumer v) {
+		return ModelModule.MODELS_SAVE.get(CacheStatus.SAVE) != null;
 	}
 
 	@WrapOperation(

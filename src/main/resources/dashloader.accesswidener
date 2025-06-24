@@ -19,6 +19,7 @@ accessible class net/minecraft/client/font/UnihexFont$FontImage32x16
 accessible class net/minecraft/client/font/FontStorage$GlyphPair
 accessible class net/minecraft/client/font/FontManager$ProviderIndex
 accessible class net/minecraft/client/gl/ShaderLoader$Cache
+accessible class net/minecraft/client/gl/ShaderLoader$ShaderSourceKey
 accessible class net/minecraft/resource/ZipResourcePack$ZipFileWrapper
 accessible class net/minecraft/client/MinecraftClient$LoadingContext
 accessible field net/minecraft/client/gl/ShaderLoader$Cache shaderPrograms Ljava/util/Map;
@@ -29,6 +30,7 @@ accessible method net/minecraft/client/font/UnihexFont$FontImage8x16 <init> ([B)
 accessible method net/minecraft/client/font/UnihexFont$FontImage16x16 <init> ([S)V
 accessible method net/minecraft/client/font/UnihexFont$FontImage32x16 <init> ([II)V
 accessible method net/minecraft/client/font/UnihexFont$UnicodeTextureGlyph <init> (Lnet/minecraft/client/font/UnihexFont$BitmapGlyph;II)V
+accessible method net/minecraft/client/gl/ShaderLoader$ShaderSourceKey <init> (Lnet/minecraft/util/Identifier;Lnet/minecraft/client/gl/CompiledShader$Type;)V
 mutable field net/minecraft/client/gl/ShaderProgram modelViewMat Lnet/minecraft/client/gl/GlUniform;
 mutable field net/minecraft/client/gl/ShaderProgram projectionMat Lnet/minecraft/client/gl/GlUniform;
 mutable field net/minecraft/client/gl/ShaderProgram textureMat Lnet/minecraft/client/gl/GlUniform;

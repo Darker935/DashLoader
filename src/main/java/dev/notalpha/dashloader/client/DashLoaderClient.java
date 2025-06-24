@@ -13,9 +13,7 @@ import dev.notalpha.dashloader.client.model.*;
 import dev.notalpha.dashloader.client.model.components.DashBakedQuad;
 import dev.notalpha.dashloader.client.model.components.DashBakedQuadCollection;
 import dev.notalpha.dashloader.client.model.predicates.*;
-import dev.notalpha.dashloader.client.shader.DashShader;
-import dev.notalpha.dashloader.client.shader.DashVertexFormat;
-import dev.notalpha.dashloader.client.shader.ShaderModule;
+import dev.notalpha.dashloader.client.shader.*;
 import dev.notalpha.dashloader.client.splash.SplashModule;
 import dev.notalpha.dashloader.client.sprite.content.DashImage;
 import dev.notalpha.dashloader.client.sprite.content.DashSprite;
@@ -112,7 +110,12 @@ public class DashLoaderClient implements DashEntrypoint {
 				DashFontFilterPair.class,
 				DashBlockState.class,
 				DashVertexFormat.class,
-				DashShader.class
+//				DashShader.class,
+				DashShaderProgramDefinition.class,
+				DashShaderProgramDefinitionUniform.class,
+				DashDefines.class,
+				DashShaderProgramKey.class,
+				DashShaderSourceKey.class
 		}) {
 			factory.addDashObject(aClass);
 		}

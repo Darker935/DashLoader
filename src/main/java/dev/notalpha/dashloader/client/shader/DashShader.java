@@ -6,6 +6,8 @@ import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.misc.UnsafeHelper;
 import dev.notalpha.dashloader.mixin.accessor.ShaderProgramAccessor;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderLoader;
 import net.minecraft.client.gl.ShaderProgram;
@@ -38,11 +40,13 @@ public final class DashShader implements DashObject<ShaderProgram, ShaderProgram
 		this.toApply = UnsafeHelper.allocateInstance(ShaderProgram.class);
 		ShaderProgramAccessor shaderAccess = (ShaderProgramAccessor) this.toApply;
 		//object init
-		shaderAccess.getSamplerTextures().defaultReturnValue(-1);
-//		shaderAccess.setLoadedSamplerIds(new ArrayList<>());
-//		shaderAccess.setLoadedUniformIds(new ArrayList<>());
+		shaderAccess.setSamplerTextures(new Object2IntArrayMap<>());
+		shaderAccess.setSamplerLocations(new IntArrayList());
 
-//		shaderAccess.setSamplerNames(new ArrayList<>(this.samplerNames));
+		shaderAccess.getSamplerTextures().defaultReturnValue(-1);
+
+		shaderAccess.setUniformsByName(new HashMap<>());
+//		shaderAccess.setUniformDefinitionsByName(new HashMap());
 
 		//<init> top
 //		shaderAccess.setName(this.name);
@@ -59,8 +63,12 @@ public final class DashShader implements DashObject<ShaderProgram, ShaderProgram
 		this.glUniforms.forEach((dashGlUniform) -> {
 			GlUniform glUniform = dashGlUniform.export();
 			uniforms.add(glUniform);
+//			glUniform.getName();
+//			glUniform.getDataType();
+//			glUniform.getCount();
+//			glUniform.getFloatData();
 			uniformsOut.put(dashGlUniform.name, glUniform);
-//			shaderAccess.getUniformDefinitionsByName().put(dashGlUniform.name, glUniform.get);
+//			shaderAccess.getUniformDefinitionsByName().put(dashGlUniform.name, glUniform);
 		});
 
 
@@ -84,7 +92,7 @@ public final class DashShader implements DashObject<ShaderProgram, ShaderProgram
 	@Override
 	public void postExport(RegistryReader reader) {
 		ShaderProgramAccessor shaderAccess = (ShaderProgramAccessor) this.toApply;
-//		shaderAccess.setBlendState(this.blendState.export());
+//		shaderAccess.setBlendState(this.blendState.export()); // TODO: link shader parts and stuff
 //		shaderAccess.setVertexShader(this.vertexShader.exportProgram());
 //		shaderAccess.setFragmentShader(this.fragmentShader.exportProgram());
 

@@ -53,7 +53,7 @@
   "client": [
     "accessor.BakedItemModelAccessor",
     "accessor.SpriteContentsAccessor",
-    "option.SpriteAtlasTextureMixin",
+    "option.cache.SpriteAtlasTextureMixin",
     "option.cache.model.MultipartUnbakedModelSerializedMixin",
     "option.cache.model.ReferencedModelsCollectorMixin",
     "option.cache.shader.ShaderLoaderMixin",

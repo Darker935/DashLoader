@@ -10,6 +10,9 @@ public enum Option {
 	CACHE_SPRITE_CONTENT(
 			"cache.sprite.content",
 			"Caches sprite loading"),
+	CACHE_ATLASES(
+			"cache.SpriteAtlasTextureMixin",
+			"Caches stitched texture atlases, significantly reducing GPU upload time"),
 	CACHE_FONT(
 			"cache.font",
 			"Caches all of the fonts and their images."),

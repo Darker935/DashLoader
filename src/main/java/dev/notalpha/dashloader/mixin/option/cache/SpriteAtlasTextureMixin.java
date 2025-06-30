@@ -10,6 +10,7 @@ import dev.notalpha.dashloader.client.atlas.AtlasModule;
 import net.minecraft.client.texture.*;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,8 +18,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 @Mixin(SpriteAtlasTexture.class)
 public abstract class SpriteAtlasTextureMixin extends AbstractTexture {
@@ -42,20 +45,19 @@ public abstract class SpriteAtlasTextureMixin extends AbstractTexture {
 	private void uploadAtlas(SpriteLoader.StitchResult stitchResult, CallbackInfo ci, @Share("cached") LocalRef<Boolean> cached) {
 		cached.set(false);
 		AtlasModule.ATLASES.visit(CacheStatus.LOAD, map -> {
-			// TODO: save unloaded atlases... while in LOAD mode
-			if (!map.containsKey(this.id)) {
-				return;
-			}
-
-			var images = map.get(this.id);
-			if (images.size() -1 < mipLevel) {
+			var tasks = map.get(this.id.toUnderscoreSeparatedString());
+			if (tasks == null || mipLevel >= tasks.size()) {
 				return;
 			}
 
 			cached.set(true);
 			bindTexture();
-			for (int i = 0; i < images.size(); i++) {
-				images.get(i).upload(i, 0, 0, true);
+			try {
+				for (int i = 0; i < tasks.size(); i++) {
+						tasks.get(i).get().upload(i, 0, 0, true);
+				}
+			} catch (InterruptedException | ExecutionException e) {
+				throw new RuntimeException(e);
 			}
 		});
 	}
@@ -66,27 +68,33 @@ public abstract class SpriteAtlasTextureMixin extends AbstractTexture {
 	}
 
     @Inject(method = "upload", at = @At("TAIL"))
-    private void saveAtlas(SpriteLoader.StitchResult stitchResult, CallbackInfo ci) {
+    private void saveAtlas(SpriteLoader.StitchResult stitchResult, CallbackInfo ci, @Share("cached") LocalRef<Boolean> cached) throws IOException {
+		if (cached.get()) {
+			return;
+		}
+
+		var stringId = this.id.toUnderscoreSeparatedString();
+
 		AtlasModule.ATLASES.visit(CacheStatus.SAVE, map -> {
-			RenderSystem.assertOnRenderThread();
-			GlStateManager._bindTexture(this.getGlId());
-
-			var atlases = new ArrayList<NativeImage>(this.mipLevel);
-			for (int i = 0; i <= this.mipLevel; i++) {
-				NativeImage nativeImage = new NativeImage(width >> i, height >> i, false);
-				try {
-					nativeImage.loadFromTextureImage(i, false);
-					atlases.add(nativeImage);
-				} catch (Exception e) {
-					atlases.forEach(NativeImage::close);
-					map.values().forEach(images -> images.forEach(NativeImage::close));
-					map.clear();
-
-					throw e;
-                }
-			}
-
-			map.put(this.id, atlases);
+			map.put(stringId, null); // just for the string
 		});
+
+		var atlasFolder = AtlasModule.getAtlasFolder();
+		try {
+			Files.createDirectories(atlasFolder);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
+		RenderSystem.assertOnRenderThread();
+		GlStateManager._bindTexture(this.getGlId());
+
+		for (int i = 0; i <= this.mipLevel; i++) {
+			try (NativeImage nativeImage = new NativeImage(width >> i, height >> i, false)) {
+				nativeImage.loadFromTextureImage(i, false);
+				var path = atlasFolder.resolve(DigestUtils.md5Hex(stringId + i));
+				nativeImage.writeTo(path);
+			}
+		}
     }
 }

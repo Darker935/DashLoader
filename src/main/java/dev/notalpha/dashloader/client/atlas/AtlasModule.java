@@ -4,20 +4,24 @@ import dev.notalpha.dashloader.api.CachingData;
 import dev.notalpha.dashloader.api.DashModule;
 import dev.notalpha.dashloader.api.cache.Cache;
 import dev.notalpha.dashloader.api.cache.CacheStatus;
-import dev.notalpha.dashloader.api.collection.IntObjectList;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
+import dev.notalpha.dashloader.client.DashLoaderClient;
 import dev.notalpha.dashloader.config.ConfigHandler;
 import dev.notalpha.dashloader.config.Option;
 import dev.notalpha.taski.builtin.StepTask;
 import net.minecraft.client.texture.NativeImage;
-import net.minecraft.util.Identifier;
+import org.apache.commons.codec.digest.DigestUtils;
 
+import java.io.FileInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.FutureTask;
 
 public class AtlasModule implements DashModule<AtlasModule.Data> {
-    public static final CachingData<HashMap<Identifier, ArrayList<NativeImage>>> ATLASES = new CachingData<>();
+    public static final CachingData<HashMap<String, ArrayList<FutureTask<NativeImage>>>> ATLASES = new CachingData<>();
 
     @Override
     public void reset(Cache cache) {
@@ -27,36 +31,33 @@ public class AtlasModule implements DashModule<AtlasModule.Data> {
     @Override
     public Data save(RegistryWriter writer, StepTask task) {
         var cachedAtlases = ATLASES.get(CacheStatus.SAVE);
+        // Not saving the atlases in the main cache, check `SpriteAtlasTextureMixin`
 
         if (cachedAtlases == null) {
             return null;
         }
 
-        var out = new IntObjectList<int[]>(new ArrayList<>(cachedAtlases.size()));
-
-        cachedAtlases.forEach((identifier, atlases) -> {
-            var atlasIds = new int[atlases.size()];
-            for (int i = 0; i < atlases.size(); i++) {
-                atlasIds[i] = writer.add(atlases.get(i));
-                atlases.get(i).close();
-            }
-
-            out.put(writer.add(identifier), atlasIds);
-        });
-
-        return new Data(out);
+        return new Data(cachedAtlases.keySet().toArray(new String[0]));
     }
 
     @Override
-    public void load(Data data, RegistryReader reader, StepTask task) {
-        var out = new HashMap<Identifier, ArrayList<NativeImage>>(data.atlases.list().size());
-        data.atlases.forEach((id, atlasesIds) -> {
-            var atlases = new ArrayList<NativeImage>(atlasesIds.length);
-            for (int atlasesId : atlasesIds) {
-                atlases.add(reader.get(atlasesId));
+    public void load(Data data, RegistryReader reader, StepTask t) {
+        var path = getAtlasFolder();
+
+        HashMap<String, ArrayList<FutureTask<NativeImage>>> out = new HashMap<>();
+
+        for (String atlasId : data.atlasIds) {
+            var tasks = new ArrayList<FutureTask<NativeImage>>();
+
+            for (int i = 0; i <= 4; i++) {
+                Path imgPath = path.resolve(DigestUtils.md5Hex(atlasId + i).toUpperCase());
+                if (!Files.exists(imgPath)) break;
+
+                tasks.add(new FutureTask<>(() -> NativeImage.read(new FileInputStream(imgPath.toFile()))));
+                Thread.startVirtualThread(tasks.getLast());
             }
-            out.put(reader.get(id), atlases);
-        });
+            out.put(atlasId, tasks);
+        }
 
         ATLASES.set(CacheStatus.LOAD, out);
     }
@@ -66,16 +67,20 @@ public class AtlasModule implements DashModule<AtlasModule.Data> {
         return ConfigHandler.optionActive(Option.CACHE_ATLASES);
     }
 
+    public static Path getAtlasFolder() {
+        return DashLoaderClient.CACHE.getDir().resolve("atlases");
+    }
+
     @Override
     public Class<Data> getDataClass() {
         return Data.class;
     }
 
     public static class Data {
-        public final IntObjectList<int[]> atlases;
+        public final String[] atlasIds;
 
-        public Data(IntObjectList<int[]> atlases) {
-            this.atlases = atlases;
+        public Data(String[] atlasIds) {
+            this.atlasIds = atlasIds;
         }
     }
 }

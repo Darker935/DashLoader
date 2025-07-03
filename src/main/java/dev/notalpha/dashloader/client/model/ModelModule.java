@@ -158,7 +158,7 @@ public class ModelModule implements DashModule<ModelModule.Data> {
 		var models = new HashMap<Identifier, UnbakedModel>(data.models.list().size());
 		var missingModels = new ArrayList<Identifier>(data.missingModels.length);
 		var blockStateModels = new HashMap<ModelIdentifier, BlockStatesLoader.BlockModel>(data.blockStateModels.list().size());
-		var missingBlockStates = new ArrayList<Identifier>(data.missingModels.length);
+		var missingBlockStates = new ArrayList<Identifier>(data.missingBlockStates.length);
 
 		data.models.forEach((id, model) -> {
 			Dazy<? extends BakedModel> dazyItemModel = reader.get(model);
@@ -176,10 +176,11 @@ public class ModelModule implements DashModule<ModelModule.Data> {
 		});
 
 		for (int i = 0; i < data.missingBlockStates.length; i++) {
-			missingBlockStates.add(reader.get(data.missingModels[i]));
+			missingBlockStates.add(reader.get(data.missingBlockStates[i]));
 		}
 
 		DashLoader.LOG.info("Found {} unloaded models", data.missingModels.length);
+		DashLoader.LOG.info("Found {} unloaded block states", data.missingBlockStates.length);
 
 		MODELS.set(CacheStatus.LOAD, models);
 		MISSING_MODELS.set(CacheStatus.LOAD, missingModels);

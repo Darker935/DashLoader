@@ -10,7 +10,6 @@ import dev.notalpha.dashloader.client.shader.ShaderModule;
 import net.minecraft.client.gl.ShaderLoader;
 import net.minecraft.client.gl.ShaderProgramDefinition;
 import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceFinder;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
@@ -38,7 +37,7 @@ public abstract class ShaderLoaderMixin {
 			return Map.of();
 		}
 
-        return original.call(instance, s, identifierPredicate);
+		return original.call(instance, s, identifierPredicate);
 	}
 
 //	@WrapOperation(

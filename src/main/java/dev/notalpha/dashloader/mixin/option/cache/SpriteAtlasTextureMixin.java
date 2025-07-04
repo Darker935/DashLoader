@@ -37,12 +37,14 @@ public abstract class SpriteAtlasTextureMixin extends AbstractTexture {
 	@Shadow
 	private int height;
 
-	@Shadow public abstract void load(ResourceManager manager);
+	@Shadow
+	public abstract void load(ResourceManager manager);
 
 	@Shadow
 	public abstract void save(Identifier id, Path path);
 
-	@Shadow private List<Sprite.TickableAnimation> animatedSprites;
+	@Shadow
+	private List<Sprite.TickableAnimation> animatedSprites;
 
 	@Inject(method = "upload", at = @At(value = "INVOKE", target = "Ljava/util/ArrayList;<init>()V", ordinal = 1))
 	private void uploadAtlas(SpriteLoader.StitchResult stitchResult, CallbackInfo ci, @Share("cached") LocalRef<Boolean> cached) {
@@ -57,7 +59,7 @@ public abstract class SpriteAtlasTextureMixin extends AbstractTexture {
 			bindTexture();
 			try {
 				for (int i = 0; i < tasks.size(); i++) {
-						tasks.get(i).get().upload(i, 0, 0, true);
+					tasks.get(i).get().upload(i, 0, 0, true);
 				}
 			} catch (InterruptedException | ExecutionException e) {
 				throw new RuntimeException(e);
@@ -70,8 +72,8 @@ public abstract class SpriteAtlasTextureMixin extends AbstractTexture {
 		return !cached.get();
 	}
 
-    @Inject(method = "upload", at = @At("TAIL"))
-    private void saveAtlas(SpriteLoader.StitchResult stitchResult, CallbackInfo ci, @Share("cached") LocalRef<Boolean> cached) throws IOException {
+	@Inject(method = "upload", at = @At("TAIL"))
+	private void saveAtlas(SpriteLoader.StitchResult stitchResult, CallbackInfo ci, @Share("cached") LocalRef<Boolean> cached) throws IOException {
 		if (cached.get()) {
 			return;
 		}
@@ -99,5 +101,5 @@ public abstract class SpriteAtlasTextureMixin extends AbstractTexture {
 				nativeImage.writeTo(path);
 			}
 		}
-    }
+	}
 }

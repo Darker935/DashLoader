@@ -11,34 +11,34 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DashPostEffectPipeline implements DashObject<PostEffectPipeline, PostEffectPipeline> {
-    public final IntIntList targets;
-    public final int[] passes;
+	public final IntIntList targets;
+	public final int[] passes;
 
-    public DashPostEffectPipeline(PostEffectPipeline pipeline, RegistryWriter writer) {
-        this.targets = new IntIntList(new ArrayList<>(pipeline.internalTargets().size()));
-        pipeline.internalTargets().forEach((identifier, targets) -> {
-            this.targets.put(writer.add(identifier), writer.add(targets));
-        });
+	public DashPostEffectPipeline(PostEffectPipeline pipeline, RegistryWriter writer) {
+		this.targets = new IntIntList(new ArrayList<>(pipeline.internalTargets().size()));
+		pipeline.internalTargets().forEach((identifier, targets) -> {
+			this.targets.put(writer.add(identifier), writer.add(targets));
+		});
 
-        this.passes = new int[pipeline.passes().size()];
-        for (int i = 0; i < this.passes.length; i++) {
-            this.passes[i] = writer.add(pipeline.passes().get(i));
-        }
-    }
+		this.passes = new int[pipeline.passes().size()];
+		for (int i = 0; i < this.passes.length; i++) {
+			this.passes[i] = writer.add(pipeline.passes().get(i));
+		}
+	}
 
-    public DashPostEffectPipeline(IntIntList targets, int[] passes) {
-        this.targets = targets;
-        this.passes = passes;
-    }
+	public DashPostEffectPipeline(IntIntList targets, int[] passes) {
+		this.targets = targets;
+		this.passes = passes;
+	}
 
-    @Override
-    public PostEffectPipeline export(RegistryReader reader) {
-        var targets = new HashMap<Identifier, PostEffectPipeline.Targets>(this.targets.list().size());
-        var passes = new ArrayList<PostEffectPipeline.Pass>(this.passes.length);
-        this.targets.forEach((key, value) -> {targets.put(reader.get(key), reader.get(value));});
-        for (int pass : this.passes) {
-            passes.add(reader.get(pass));
-        }
-        return new PostEffectPipeline(targets, passes);
-    }
+	@Override
+	public PostEffectPipeline export(RegistryReader reader) {
+		var targets = new HashMap<Identifier, PostEffectPipeline.Targets>(this.targets.list().size());
+		var passes = new ArrayList<PostEffectPipeline.Pass>(this.passes.length);
+		this.targets.forEach((key, value) -> targets.put(reader.get(key), reader.get(value)));
+		for (int pass : this.passes) {
+			passes.add(reader.get(pass));
+		}
+		return new PostEffectPipeline(targets, passes);
+	}
 }

@@ -11,7 +11,8 @@ import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.config.ConfigHandler;
 import dev.notalpha.dashloader.config.Option;
 import dev.notalpha.taski.builtin.StepTask;
-import net.minecraft.client.gl.*;
+import net.minecraft.client.gl.ShaderLoader;
+import net.minecraft.client.gl.ShaderProgramDefinition;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
@@ -64,9 +65,9 @@ public class ShaderModule implements DashModule<ShaderModule.Data> {
 		var out1 = new HashMap<ShaderLoader.ShaderSourceKey, String>(data.data1.list().size());
 		var out2 = new HashMap<Identifier, ShaderProgramDefinition>(data.data2.list().size());
 //		var out3 = new HashMap<Identifier, PostEffectPipeline>(data.data3.list().size());
-		data.data1.forEach((key, value) -> {out1.put(reader.get(key), value);});
-		data.data2.forEach((key, value) -> {out2.put(reader.get(key), reader.get(value));});
-//		data.data3.forEach((key, value) -> {out3.put(reader.get(key), reader.get(value));});
+		data.data1.forEach((key, value) -> out1.put(reader.get(key), value));
+		data.data2.forEach((key, value) -> out2.put(reader.get(key), reader.get(value)));
+//		data.data3.forEach((key, value) -> out3.put(reader.get(key), reader.get(value)));
 
 		SHADER_SOURCES.set(CacheStatus.LOAD, out1);
 		SHADER_DEFINITIONS.set(CacheStatus.LOAD, out2);

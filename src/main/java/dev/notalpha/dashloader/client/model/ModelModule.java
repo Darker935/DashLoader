@@ -28,7 +28,10 @@ import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ModelModule implements DashModule<ModelModule.Data> {
 	public static final CachingData<HashMap<ModelBaker.BakedModelCacheKey, BakedModel>> BAKED_MODEL_PARTS = new CachingData<>(CacheStatus.SAVE);
@@ -118,8 +121,7 @@ public class ModelModule implements DashModule<ModelModule.Data> {
 				} catch (RegistryAddException ignored) {
 					missingModels.add(factory.add(idMap.get(modelIdentifier)));
 				}
-			}
-			else { // `blockState` models
+			} else { // `blockState` models
 				final var blockModel = rawBlockStateModels.get(modelIdentifier);
 				if (blockModel == null) {
 					return;

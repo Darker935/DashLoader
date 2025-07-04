@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Mixin(SpriteAtlasTexture.class)
@@ -40,6 +41,8 @@ public abstract class SpriteAtlasTextureMixin extends AbstractTexture {
 
 	@Shadow
 	public abstract void save(Identifier id, Path path);
+
+	@Shadow private List<Sprite.TickableAnimation> animatedSprites;
 
 	@Inject(method = "upload", at = @At(value = "INVOKE", target = "Ljava/util/ArrayList;<init>()V", ordinal = 1))
 	private void uploadAtlas(SpriteLoader.StitchResult stitchResult, CallbackInfo ci, @Share("cached") LocalRef<Boolean> cached) {
@@ -92,7 +95,7 @@ public abstract class SpriteAtlasTextureMixin extends AbstractTexture {
 		for (int i = 0; i <= this.mipLevel; i++) {
 			try (NativeImage nativeImage = new NativeImage(width >> i, height >> i, false)) {
 				nativeImage.loadFromTextureImage(i, false);
-				var path = atlasFolder.resolve(DigestUtils.md5Hex(stringId + i));
+				var path = atlasFolder.resolve(DigestUtils.md5Hex(stringId + i).toUpperCase());
 				nativeImage.writeTo(path);
 			}
 		}

@@ -16,69 +16,61 @@ import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class ShaderModule implements DashModule<ShaderModule.Data> {
-//	public static final CachingData<HashMap<ShaderProgramKey, ShaderProgram>> SHADERS = new CachingData<>();
-//	public static final CachingData<Int2ObjectMap<Pair<CompiledShader.Type, String>>> WRITE_PROGRAM_SOURCES = new CachingData<>(CacheStatus.SAVE);
-
-	public static final CachingData<HashMap<Identifier, Map.Entry<ShaderLoader.ShaderSourceKey, String>>> SHADER_SOURCES = new CachingData<>();
-	public static final CachingData<HashMap<Identifier, Map.Entry<Identifier, ShaderProgramDefinition>>> SHADER_DEFINITIONS = new CachingData<>();
-	public static final CachingData<HashMap<Identifier, Map.Entry<Identifier, PostEffectPipeline>>> POST_EFFECTS = new CachingData<>(); // TODO
+	public static final CachingData<HashMap<ShaderLoader.ShaderSourceKey, String>> SHADER_SOURCES = new CachingData<>();
+	public static final CachingData<HashMap<Identifier, ShaderProgramDefinition>> SHADER_DEFINITIONS = new CachingData<>();
+//	public static final CachingData<HashMap<Identifier, PostEffectPipeline>> POST_EFFECTS = new CachingData<>(); // TODO
 
 
 	@Override
 	public void reset(Cache cache) {
-//		SHADERS.reset(cache, new HashMap<>());
-//		WRITE_PROGRAM_SOURCES.reset(cache, new Int2ObjectOpenHashMap<>());
 		SHADER_SOURCES.reset(cache, new HashMap<>());
 		SHADER_DEFINITIONS.reset(cache, new HashMap<>());
+//		POST_EFFECTS.reset(cache, new HashMap<>());
 	}
 
 	@Override
 	public Data save(RegistryWriter factory, StepTask task) {
-//		final Map<ShaderProgramKey, ShaderProgram> minecraftData = SHADERS.get(CacheStatus.SAVE);
-//		if (minecraftData == null) {
-//			return null;
-//		}
-//
-//		var shaders = new IntIntList();
-//		task.doForEach(minecraftData, (s, shader) -> shaders.put(factory.add(s), factory.add(shader)));
-//
-//		return new Data(shaders);
-
 		var data1 = SHADER_SOURCES.get(CacheStatus.SAVE);
 		var data2 = SHADER_DEFINITIONS.get(CacheStatus.SAVE);
+//		var data3 = POST_EFFECTS.get(CacheStatus.SAVE);
 
 		if (data1 == null || data2 == null) {
 			return null;
 		}
 
-		var out = new IntObjectList<IntObjectList.IntObjectEntry<String>>(new ArrayList<>(data1.size()));
-		var out2 = new IntObjectList<IntIntList.IntInt>(new ArrayList<>(data2.size()));
+		var out = new IntObjectList<String>(new ArrayList<>(data1.size()));
+		var out2 = new IntIntList(new ArrayList<>(data2.size()));
+//		var out3 = new IntIntList(new ArrayList<>(data3.size()));
 
 		data1.forEach((identifier, entry) -> {
-			out.put(factory.add(identifier), new IntObjectList.IntObjectEntry<>(factory.add(entry.getKey()), entry.getValue()));
+			out.put(factory.add(identifier), entry);
 		});
 
 		data2.forEach(((identifier, entry) -> {
-			out2.put(factory.add(identifier), new IntIntList.IntInt(factory.add(entry.getKey()), factory.add(entry.getValue())));
+			out2.put(factory.add(identifier), factory.add(entry));
 		}));
+
+//		data3.forEach((identifier, entry) -> {
+//			out3.put(factory.add(identifier), factory.add(entry));
+//		});
 
 		return new Data(out, out2);
 	}
 
 	@Override
 	public void load(Data data, RegistryReader reader, StepTask task) {
-//		HashMap<ShaderProgramKey, ShaderProgram> out = new HashMap<>();
-//		data.shaders.forEach((key, value) -> out.put(reader.get(key), reader.get(value)));
-//		SHADERS.set(CacheStatus.LOAD, out);
-		var out1 = new HashMap<Identifier, Map.Entry<ShaderLoader.ShaderSourceKey, String>>(data.data1.list().size());
-		var out2 = new HashMap<Identifier, Map.Entry<Identifier, ShaderProgramDefinition>>(data.data2.list().size());
-		data.data1.forEach((key, value) -> {out1.put(reader.get(key), Map.entry(reader.get(value.key()), value.value()));});
-		data.data2.forEach((key, value) -> {out2.put(reader.get(key), Map.entry(reader.get(value.key()), reader.get(value.value())));});
+		var out1 = new HashMap<ShaderLoader.ShaderSourceKey, String>(data.data1.list().size());
+		var out2 = new HashMap<Identifier, ShaderProgramDefinition>(data.data2.list().size());
+//		var out3 = new HashMap<Identifier, PostEffectPipeline>(data.data3.list().size());
+		data.data1.forEach((key, value) -> {out1.put(reader.get(key), value);});
+		data.data2.forEach((key, value) -> {out2.put(reader.get(key), reader.get(value));});
+//		data.data3.forEach((key, value) -> {out3.put(reader.get(key), reader.get(value));});
+
 		SHADER_SOURCES.set(CacheStatus.LOAD, out1);
 		SHADER_DEFINITIONS.set(CacheStatus.LOAD, out2);
+//		POST_EFFECTS.set(CacheStatus.LOAD, out3);
 	}
 
 	@Override
@@ -92,12 +84,14 @@ public class ShaderModule implements DashModule<ShaderModule.Data> {
 	}
 
 	public static final class Data {
-		public final IntObjectList<IntObjectList.IntObjectEntry<String>> data1;
-		public final IntObjectList<IntIntList.IntInt> data2;
+		public final IntObjectList<String> data1;
+		public final IntIntList data2;
+//		public final IntIntList data3;
 
-		public Data(IntObjectList<IntObjectList.IntObjectEntry<String>> data1, IntObjectList<IntIntList.IntInt> data2) {
+		public Data(IntObjectList<String> data1, IntIntList data2) {
 			this.data1 = data1;
 			this.data2 = data2;
+//			this.data3 = data3;
 		}
 	}
 }

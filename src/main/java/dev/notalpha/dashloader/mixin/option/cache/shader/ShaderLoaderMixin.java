@@ -1,6 +1,7 @@
 package dev.notalpha.dashloader.mixin.option.cache.shader;
 
 import com.google.common.collect.ImmutableMap;
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -9,74 +10,60 @@ import dev.notalpha.dashloader.client.shader.ShaderModule;
 import net.minecraft.client.gl.ShaderLoader;
 import net.minecraft.client.gl.ShaderProgramDefinition;
 import net.minecraft.resource.Resource;
+import net.minecraft.resource.ResourceFinder;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.profiler.Profiler;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.Map;
-import java.util.Set;
+import java.util.function.Predicate;
 
 @Mixin(ShaderLoader.class)
 public abstract class ShaderLoaderMixin {
-	@Shadow
-	private ShaderLoader.Cache cache;
+	@WrapOperation(
+			method = "prepare(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)Lnet/minecraft/client/gl/ShaderLoader$Definitions;",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/resource/ResourceManager;findResources(Ljava/lang/String;Ljava/util/function/Predicate;)Ljava/util/Map;"
+			)
+	)
+	private Map<Identifier, Resource> skipCached(ResourceManager instance, String s, Predicate<Identifier> identifierPredicate, Operation<Map<Identifier, Resource>> original, @Local(ordinal = 0) ImmutableMap.Builder<Identifier, ShaderProgramDefinition> builder, @Local(ordinal = 1) ImmutableMap.Builder<ShaderLoader.ShaderSourceKey, String> builder2) {
+		var sources = ShaderModule.SHADER_SOURCES.get(CacheStatus.LOAD);
+		var definitions = ShaderModule.SHADER_DEFINITIONS.get(CacheStatus.LOAD);
+		if (sources != null && definitions != null) {
+			builder2.putAll(sources);
+			builder.putAll(definitions);
+			return Map.of();
+		}
 
-	@WrapOperation(method = "prepare(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)Lnet/minecraft/client/gl/ShaderLoader$Definitions;", at = @At(value = "INVOKE", target = "Ljava/util/Map;entrySet()Ljava/util/Set;", ordinal = 0))
-	private Set skipCached(Map instance, Operation<Set<Map.Entry<Identifier, Resource>>> original, @Local(name = "builder") ImmutableMap.Builder<Identifier, ShaderProgramDefinition> builder, @Local(name = "builder2") ImmutableMap.Builder<ShaderLoader.ShaderSourceKey, String> builder2) {
-		var og = original.call(instance);
-		ShaderModule.SHADER_SOURCES.visit(CacheStatus.LOAD, map -> {
-			og.removeIf(entry -> map.containsKey(entry.getKey()));
-			builder2.putAll(map.values());
-		});
-		ShaderModule.SHADER_DEFINITIONS.visit(CacheStatus.LOAD, map -> {
-			og.removeIf(entry -> map.containsKey(entry.getKey()));
-			builder.putAll(map.values());
-		});
+        return original.call(instance, s, identifierPredicate);
+	}
+
+//	@WrapOperation(
+//			method = "prepare(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)Lnet/minecraft/client/gl/ShaderLoader$Definitions;",
+//			at = @At(
+//					value = "INVOKE",
+//					target = "Lnet/minecraft/resource/ResourceFinder;findResources(Lnet/minecraft/resource/ResourceManager;)Ljava/util/Map;"
+//			)
+//	)
+//	private Map<Identifier, Resource> thing(ResourceFinder instance, ResourceManager resourceManager, Operation<Map<Identifier, Resource>> original, @Local(ordinal = 2) ImmutableMap.Builder<Identifier, PostEffectPipeline> builder3) {
+//		var post = ShaderModule.POST_EFFECTS.get(CacheStatus.LOAD);
+//		if (post != null) {
+//			builder3.putAll(post);
+//			return Map.of();
+//		}
+//		return original.call(instance, resourceManager);
+//	}
+
+	@WrapMethod(method = "prepare(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)Lnet/minecraft/client/gl/ShaderLoader$Definitions;")
+	private ShaderLoader.Definitions thing(ResourceManager resourceManager, Profiler profiler, Operation<ShaderLoader.Definitions> original) {
+		var og = original.call(resourceManager, profiler);
+		ShaderModule.SHADER_SOURCES.visit(CacheStatus.SAVE, map -> map.putAll(og.shaderSources()));
+		ShaderModule.SHADER_DEFINITIONS.visit(CacheStatus.SAVE, map -> map.putAll(og.programs()));
+//		ShaderModule.POST_EFFECTS.visit(CacheStatus.SAVE, map -> map.putAll(og.postChains()));
 
 		return og;
 	}
-
-//	@WrapOperation(method = "prepare(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)Lnet/minecraft/client/gl/ShaderLoader$Definitions;", at = @At(value = "INVOKE", target = "Ljava/util/Map;entrySet()Ljava/util/Set;", ordinal = 1))
-//	private Set a(Map instance, Operation<Set> original) {
-//		var og = original.call(instance); //TODO
-//
-//		return og;
-//	}
-
-	@ModifyArgs(method = "loadShaderSource", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;put(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap$Builder;", remap = false))
-	private static void thing(Args args, @Local(name = "id") Identifier id){
-		ShaderModule.SHADER_SOURCES.visit(CacheStatus.SAVE, map -> map.put(id, Map.entry(args.get(0), args.get(1))));
-	}
-
-	@ModifyArgs(method = "loadDefinition", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;put(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap$Builder;", remap = false))
-	private static void thing2(Args args, @Local(name = "id") Identifier id) {
-		ShaderModule.SHADER_DEFINITIONS.visit(CacheStatus.SAVE, map -> map.put(id, Map.entry(args.get(0), args.get(1))));
-	}
-
-	@ModifyArgs(method = "loadPostEffect(Lnet/minecraft/util/Identifier;Lnet/minecraft/resource/Resource;Lcom/google/common/collect/ImmutableMap$Builder;)V", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;put(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap$Builder;"), remap = false)
-	private static void thing3(Args args, @Local(name = "id") Identifier id) {
-		ShaderModule.POST_EFFECTS.visit(CacheStatus.SAVE, map -> map.put(id, Map.entry(args.get(0), args.get(1))));
-	}
-
-//	@Inject(method = "apply(Lnet/minecraft/client/gl/ShaderLoader$Definitions;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("TAIL"))
-//	private void yankShaders(ShaderLoader.Definitions definitions, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
-//		ShaderModule.SHADERS.visit(CacheStatus.SAVE, map -> {
-//			cache.shaderPrograms.forEach((k, v) -> {
-//				v.ifPresent(shaderProgram -> map.put(k, shaderProgram));
-//			});
-//		});
-//	}
-//
-//	@WrapOperation(method = "prepare(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)Lnet/minecraft/client/gl/ShaderLoader$Definitions;", at = @At(value = "INVOKE", target = "Ljava/util/Map;entrySet()Ljava/util/Set;", ordinal = 0))
-//	private Set skipCached(Map instance, Operation<Set<Map.Entry<Identifier, Resource>>> original) {
-//		var og = original.call(instance);
-//		ShaderModule.SHADERS.visit(CacheStatus.LOAD, map -> {
-//			map.keySet().forEach(key -> og.removeIf(entry -> key.configId() == entry.getKey()));
-//		});
-//
-//		return og;
-//	}
 }

@@ -56,8 +56,7 @@ public abstract class BakedModelManagerOverride {
 		if (modelIds != null) {
 			var out = new HashMap<Identifier, Resource>(modelIds.size());
 			for (Identifier id : modelIds) {
-				Optional<Resource> resource = resourceManager.getResource(id);
-				out.put(id, resource.get()); // the id is from the resource manager, should be present
+				resourceManager.getResource(id).ifPresent(resource -> out.put(id, resource));
 			}
 			return out;
 		}

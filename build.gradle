@@ -115,7 +115,7 @@ modrinth {
     versionName = "$project.version".split("\\+")[0] + " for $project.minecraft_version"
     uploadFile = remapJar
     versionType = "beta"
-    gameVersions = ['1.21.2', '1.21.3']
+    gameVersions = ['1.21.3']
     loaders = ['fabric', 'quilt']
 }
 

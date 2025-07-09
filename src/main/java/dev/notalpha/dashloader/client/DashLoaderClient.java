@@ -4,6 +4,7 @@ import dev.notalpha.dashloader.api.DashEntrypoint;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.cache.Cache;
 import dev.notalpha.dashloader.api.cache.CacheFactory;
+import dev.notalpha.dashloader.client.atlas.AtlasModule;
 import dev.notalpha.dashloader.client.blockstate.DashBlockState;
 import dev.notalpha.dashloader.client.font.*;
 import dev.notalpha.dashloader.client.identifier.DashIdentifier;
@@ -13,9 +14,7 @@ import dev.notalpha.dashloader.client.model.*;
 import dev.notalpha.dashloader.client.model.components.DashBakedQuad;
 import dev.notalpha.dashloader.client.model.components.DashBakedQuadCollection;
 import dev.notalpha.dashloader.client.model.predicates.*;
-import dev.notalpha.dashloader.client.shader.DashShader;
-import dev.notalpha.dashloader.client.shader.DashVertexFormat;
-import dev.notalpha.dashloader.client.shader.ShaderModule;
+import dev.notalpha.dashloader.client.shader.*;
 import dev.notalpha.dashloader.client.splash.SplashModule;
 import dev.notalpha.dashloader.client.sprite.content.DashImage;
 import dev.notalpha.dashloader.client.sprite.content.DashSprite;
@@ -50,6 +49,7 @@ public class DashLoaderClient implements DashEntrypoint {
 
 	@Override
 	public void onDashLoaderInit(CacheFactory factory) {
+		factory.addModule(new AtlasModule());
 		factory.addModule(new FontModule());
 		factory.addModule(new ModelModule());
 		factory.addModule(new ShaderModule());
@@ -89,6 +89,7 @@ public class DashLoaderClient implements DashEntrypoint {
 		for (Class<? extends DashObject<?, ?>> aClass : new Class[]{
 				DashIdentifier.class,
 				DashModelIdentifier.class,
+				DashBakedItemModel.class,
 				DashBasicBakedModel.class,
 				DashBuiltinBakedModel.class,
 				DashMultipartBakedModel.class,
@@ -110,8 +111,12 @@ public class DashLoaderClient implements DashEntrypoint {
 				DashUnihexFont.class,
 				DashFontFilterPair.class,
 				DashBlockState.class,
-				DashVertexFormat.class,
-				DashShader.class
+//				DashPostEffectPipeline.class,
+				DashShaderProgramDefinition.class,
+				DashShaderProgramDefinitionUniform.class,
+				DashDefines.class,
+				DashShaderProgramKey.class,
+				DashShaderSourceKey.class
 		}) {
 			factory.addDashObject(aClass);
 		}

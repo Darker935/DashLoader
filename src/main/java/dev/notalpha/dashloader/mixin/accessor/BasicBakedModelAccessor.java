@@ -1,7 +1,6 @@
 package dev.notalpha.dashloader.mixin.accessor;
 
 import net.minecraft.client.render.model.BasicBakedModel;
-import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,7 +22,4 @@ public interface BasicBakedModelAccessor {
 
 	@Accessor
 	ModelTransformation getTransformation();
-
-	@Accessor
-	ModelOverrideList getItemPropertyOverrides();
 }

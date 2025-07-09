@@ -2,50 +2,28 @@ package dev.notalpha.dashloader.mixin.option.cache.model;
 
 import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.client.model.ModelModule;
-import dev.notalpha.dashloader.mixin.accessor.MultipartModelComponentAccessor;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.*;
-import net.minecraft.client.render.model.json.MultipartModelComponent;
-import net.minecraft.client.render.model.json.MultipartModelSelector;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.Baker;
+import net.minecraft.client.render.model.ModelBakeSettings;
+import net.minecraft.client.render.model.MultipartUnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.state.StateManager;
-import org.apache.commons.lang3.tuple.Pair;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
 @Mixin(MultipartUnbakedModel.class)
-public class MultipartUnbakedModelMixin {
-	@Shadow
-	@Final
-	private List<MultipartModelComponent> components;
-	@Shadow
-	@Final
-	private StateManager<Block, BlockState> stateFactory;
-
+public abstract class MultipartUnbakedModelMixin {
 	@Inject(
 			method = "bake",
-			at = @At(value = "RETURN"),
-			locals = LocalCapture.CAPTURE_FAILSOFT,
-			cancellable = true
+			at = @At(value = "RETURN")
 	)
-	private void addPredicateInfo(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, CallbackInfoReturnable<BakedModel> cir, MultipartBakedModel.Builder builder) {
-		ModelModule.MULTIPART_PREDICATES.visit(CacheStatus.SAVE, map -> {
-			var bakedModel = (MultipartBakedModel) builder.build();
-			var outSelectors = new ArrayList<MultipartModelSelector>();
-			this.components.forEach(multipartModelComponent -> outSelectors.add(((MultipartModelComponentAccessor) multipartModelComponent).getSelector()));
-			map.put(bakedModel, Pair.of(outSelectors, this.stateFactory));
-			cir.setReturnValue(bakedModel);
+	private void addPredicateInfo(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, CallbackInfoReturnable<BakedModel> cir) {
+		ModelModule.UNBAKED_TO_BAKED_MULTIPART_MODELS.visit(CacheStatus.SAVE, map -> {
+			map.put(cir.getReturnValue(), (MultipartUnbakedModel) (Object) this);
 		});
 	}
 }

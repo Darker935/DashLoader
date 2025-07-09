@@ -4,7 +4,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.notalpha.dashloader.client.ui.Color;
 import dev.notalpha.dashloader.client.ui.DrawerUtil;
 import dev.notalpha.dashloader.misc.HahaManager;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
 import net.minecraft.client.toast.Toast;
@@ -31,6 +33,9 @@ public class DashToast implements Toast {
 	private final String fact = HahaManager.getFact();
 	private List<Line> lines = new ArrayList<>();
 	private long oldTime = System.currentTimeMillis();
+	private float progress = 0;
+	private Color progressColor = DrawerUtil.getProgressColor(progress);
+	private Visibility visibility;
 
 	public DashToast() {
 		this.state = new DashToastState();
@@ -53,14 +58,16 @@ public class DashToast implements Toast {
 	}
 
 	@Override
-	public Visibility draw(DrawContext context, ToastManager manager, long startTime) {
+	public Visibility getVisibility() {
+		return visibility;
+	}
+
+	@Override
+	public void update(ToastManager manager, long time) {
 		final int width = this.getWidth();
 		final int height = this.getHeight();
-		final int barY = height - PROGRESS_BAR_HEIGHT;
 
 		// Get progress
-		final float progress;
-		final Color progressColor;
 		if (state.getStatus() == DashToastStatus.CRASHED) {
 			progress = (float) this.state.getProgress();
 			progressColor = DrawerUtil.FAILED_COLOR;
@@ -68,6 +75,21 @@ public class DashToast implements Toast {
 			progress = (float) this.state.getProgress();
 			progressColor = DrawerUtil.getProgressColor(progress);
 		}
+
+		if (state.getStatus() == DashToastStatus.CRASHED && System.currentTimeMillis() - state.getTimeDone() > 10000) {
+			visibility = Visibility.HIDE;
+		} else if (state.getStatus() == DashToastStatus.DONE && System.currentTimeMillis() - state.getTimeDone() > 2000) {
+			visibility = Visibility.HIDE;
+		} else {
+			visibility = Visibility.SHOW;
+		}
+	}
+
+	@Override
+	public void draw(DrawContext context, TextRenderer textRenderer, long startTime) {
+		final int width = this.getWidth();
+		final int height = this.getHeight();
+		final int barY = height - PROGRESS_BAR_HEIGHT;
 
 		// Tick progress
 		List<Line> newList = new ArrayList<>();
@@ -89,7 +111,7 @@ public class DashToast implements Toast {
 		{
 			Vector4f vec = new Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
 			vec.mul(matrices.peek().getPositionMatrix());
-			Window window = manager.getClient().getWindow();
+			Window window = MinecraftClient.getInstance().getWindow();
 			double scale = window.getScaleFactor();
 			RenderSystem.enableScissor(
 					(int) (vec.x * scale),
@@ -108,7 +130,6 @@ public class DashToast implements Toast {
 			}
 		});
 
-		TextRenderer textRenderer = manager.getClient().textRenderer;
 		// Draw progress text
 		String progressText = this.state.getProgressText();
 		int progressTextY = this.fact != null ? barY - PADDING : (barY / 2) + (textRenderer.fontHeight / 2);
@@ -134,22 +155,13 @@ public class DashToast implements Toast {
 			DrawerUtil.drawGlow(matrix4f, bb, 0, barY, (int) (width * progress), PROGRESS_BAR_HEIGHT, 0.75f, progressColor, true, true, true, true);
 		});
 		RenderSystem.disableScissor();
-
-		if (state.getStatus() == DashToastStatus.CRASHED && System.currentTimeMillis() - state.getTimeDone() > 10000) {
-			return Visibility.HIDE;
-		}
-
-		if (state.getStatus() == DashToastStatus.DONE && System.currentTimeMillis() - state.getTimeDone() > 2000) {
-			return Visibility.HIDE;
-		}
-		return Visibility.SHOW;
 	}
 
 	private void drawBatched(MatrixStack ms, BiConsumer<Matrix4f, BufferBuilder> consumer) {
 		BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+		RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
 
 		Matrix4f matrix = ms.peek().getPositionMatrix();
 		consumer.accept(matrix, bufferBuilder);

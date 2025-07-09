@@ -4,48 +4,74 @@ import dev.notalpha.dashloader.api.CachingData;
 import dev.notalpha.dashloader.api.DashModule;
 import dev.notalpha.dashloader.api.cache.Cache;
 import dev.notalpha.dashloader.api.cache.CacheStatus;
-import dev.notalpha.dashloader.api.collection.ObjectIntList;
+import dev.notalpha.dashloader.api.collection.IntIntList;
+import dev.notalpha.dashloader.api.collection.IntObjectList;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.config.ConfigHandler;
 import dev.notalpha.dashloader.config.Option;
 import dev.notalpha.taski.builtin.StepTask;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderLoader;
+import net.minecraft.client.gl.ShaderProgramDefinition;
+import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ShaderModule implements DashModule<ShaderModule.Data> {
-	public static final CachingData<HashMap<String, ShaderProgram>> SHADERS = new CachingData<>();
-	public static final CachingData<Int2ObjectMap<List<String>>> WRITE_PROGRAM_SOURCES = new CachingData<>(CacheStatus.SAVE);
+	public static final CachingData<HashMap<ShaderLoader.ShaderSourceKey, String>> SHADER_SOURCES = new CachingData<>();
+	public static final CachingData<HashMap<Identifier, ShaderProgramDefinition>> SHADER_DEFINITIONS = new CachingData<>();
+//	public static final CachingData<HashMap<Identifier, PostEffectPipeline>> POST_EFFECTS = new CachingData<>(); // TODO
+
 
 	@Override
 	public void reset(Cache cache) {
-		SHADERS.reset(cache, new HashMap<>());
-		WRITE_PROGRAM_SOURCES.reset(cache, new Int2ObjectOpenHashMap<>());
+		SHADER_SOURCES.reset(cache, new HashMap<>());
+		SHADER_DEFINITIONS.reset(cache, new HashMap<>());
+//		POST_EFFECTS.reset(cache, new HashMap<>());
 	}
 
 	@Override
 	public Data save(RegistryWriter factory, StepTask task) {
-		final Map<String, ShaderProgram> minecraftData = SHADERS.get(CacheStatus.SAVE);
-		if (minecraftData == null) {
+		var data1 = SHADER_SOURCES.get(CacheStatus.SAVE);
+		var data2 = SHADER_DEFINITIONS.get(CacheStatus.SAVE);
+//		var data3 = POST_EFFECTS.get(CacheStatus.SAVE);
+
+		if (data1 == null || data2 == null) {
 			return null;
 		}
 
-		var shaders = new ObjectIntList<String>();
-		task.doForEach(minecraftData, (s, shader) -> shaders.put(s, factory.add(shader)));
+		var out = new IntObjectList<String>(new ArrayList<>(data1.size()));
+		var out2 = new IntIntList(new ArrayList<>(data2.size()));
+//		var out3 = new IntIntList(new ArrayList<>(data3.size()));
 
-		return new Data(shaders);
+		data1.forEach((identifier, entry) -> {
+			out.put(factory.add(identifier), entry);
+		});
+
+		data2.forEach(((identifier, entry) -> {
+			out2.put(factory.add(identifier), factory.add(entry));
+		}));
+
+//		data3.forEach((identifier, entry) -> {
+//			out3.put(factory.add(identifier), factory.add(entry));
+//		});
+
+		return new Data(out, out2);
 	}
 
 	@Override
 	public void load(Data data, RegistryReader reader, StepTask task) {
-		HashMap<String, ShaderProgram> out = new HashMap<>();
-		data.shaders.forEach((key, value) -> out.put(key, reader.get(value)));
-		SHADERS.set(CacheStatus.LOAD, out);
+		var out1 = new HashMap<ShaderLoader.ShaderSourceKey, String>(data.data1.list().size());
+		var out2 = new HashMap<Identifier, ShaderProgramDefinition>(data.data2.list().size());
+//		var out3 = new HashMap<Identifier, PostEffectPipeline>(data.data3.list().size());
+		data.data1.forEach((key, value) -> out1.put(reader.get(key), value));
+		data.data2.forEach((key, value) -> out2.put(reader.get(key), reader.get(value)));
+//		data.data3.forEach((key, value) -> out3.put(reader.get(key), reader.get(value)));
+
+		SHADER_SOURCES.set(CacheStatus.LOAD, out1);
+		SHADER_DEFINITIONS.set(CacheStatus.LOAD, out2);
+//		POST_EFFECTS.set(CacheStatus.LOAD, out3);
 	}
 
 	@Override
@@ -59,10 +85,14 @@ public class ShaderModule implements DashModule<ShaderModule.Data> {
 	}
 
 	public static final class Data {
-		public final ObjectIntList<String> shaders;
+		public final IntObjectList<String> data1;
+		public final IntIntList data2;
+//		public final IntIntList data3;
 
-		public Data(ObjectIntList<String> shaders) {
-			this.shaders = shaders;
+		public Data(IntObjectList<String> data1, IntIntList data2) {
+			this.data1 = data1;
+			this.data2 = data2;
+//			this.data3 = data3;
 		}
 	}
 }

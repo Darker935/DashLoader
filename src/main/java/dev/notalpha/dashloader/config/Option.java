@@ -24,7 +24,11 @@ public enum Option {
 			"Use a much faster .equals() on the ModelIdentifiers"),
 	FAST_WALL_BLOCK(
 			"WallBlockMixin",
-			"Caches the 2 most common blockstates for wall blocks.");
+			"Caches the 2 most common blockstates for wall blocks."),
+	UNSAFE_MIPMAP_GENERATION(
+			"misc.MipmapHelper",
+			"Speeds up get/set pixel operations when generating mipmaps by skipping redundant safety checks"
+	);
 	public final String mixinContains;
 	public final String description;
 

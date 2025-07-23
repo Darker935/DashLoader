@@ -98,10 +98,7 @@ public class MappingSerializer {
 		try {
 			ByteBufferIO io = IOHelper.load(dir.resolve("mapping.bin"));
 			for (DashModule handler : handlers) {
-				if (io.getByte() == 0 && handler.isActive()) {
-					DashLoader.LOG.info("Recaching as {} is now active.", handler.getClass().getSimpleName());
-					return false;
-				} else {
+				if (io.getByte() == 1) {
 					Class<?> dataClass = handler.getDataClass();
 					Serializer<?> serializer = this.serializers.get(dataClass);
 					Object object = serializer.get(io);
@@ -109,6 +106,9 @@ public class MappingSerializer {
 					if (handler.isActive()) {
 						handler.load(object, reader, new StepTask(""));
 					}
+				} else if (handler.isActive()) {
+					DashLoader.LOG.info("Recaching as {} is now active.", handler.getClass().getSimpleName());
+					return false;
 				}
 			}
 

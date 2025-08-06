@@ -7,6 +7,8 @@ import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.api.collection.IntIntList;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
+import dev.notalpha.dashloader.config.ConfigHandler;
+import dev.notalpha.dashloader.config.Option;
 import dev.notalpha.taski.builtin.StepTask;
 import net.minecraft.client.texture.SpriteContents;
 import net.minecraft.util.Identifier;
@@ -43,6 +45,11 @@ public class SpriteContentModule implements DashModule<SpriteContentModule.Data>
 			SpriteContents contents = reader.get(value);
 			spriteData.put(identifier, contents);
 		});
+	}
+
+	@Override
+	public boolean isActive() {
+		return ConfigHandler.optionActive(Option.CACHE_SPRITE_CONTENT);
 	}
 
 	@Override

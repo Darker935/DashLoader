@@ -20,6 +20,7 @@ accessible class net/minecraft/client/font/FontStorage$GlyphPair
 accessible class net/minecraft/client/font/FontManager$ProviderIndex
 accessible class net/minecraft/client/gl/ShaderLoader$Cache
 accessible class net/minecraft/client/gl/ShaderLoader$ShaderSourceKey
+accessible field net/minecraft/client/gui/DrawContext vertexConsumers Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;
 accessible class net/minecraft/resource/ZipResourcePack$ZipFileWrapper
 accessible class net/minecraft/client/MinecraftClient$LoadingContext
 accessible field net/minecraft/client/gl/ShaderLoader$Cache shaderPrograms Ljava/util/Map;

@@ -4,10 +4,7 @@ accessible class net/minecraft/client/texture/SpriteContents$Animation
 accessible class net/minecraft/client/texture/SpriteContents$AnimationFrame
 accessible class net/minecraft/client/particle/ParticleManager$SimpleSpriteProvider
 accessible class net/minecraft/client/font/BitmapFont$BitmapFontGlyph
-accessible class net/minecraft/client/render/model/json/ModelOverrideList$BakedOverride
-accessible class net/minecraft/client/render/model/json/ModelOverrideList$InlinedCondition
 accessible class net/minecraft/client/render/model/BakedModelManager$BakingResult
-accessible class net/minecraft/client/render/model/ItemModel$BakedItemModel
 accessible class net/minecraft/client/render/model/ModelBaker$BakedModelCacheKey
 accessible class net/minecraft/client/render/model/ModelBaker$BakerImpl
 accessible class net/minecraft/client/render/model/MultipartUnbakedModel$Selector
@@ -23,6 +20,14 @@ accessible class net/minecraft/client/gl/ShaderLoader$ShaderSourceKey
 accessible class net/minecraft/resource/ZipResourcePack$ZipFileWrapper
 accessible class net/minecraft/client/MinecraftClient$LoadingContext
 accessible field net/minecraft/client/gl/ShaderLoader$Cache shaderPrograms Ljava/util/Map;
+accessible field net/minecraft/client/render/model/json/ModelTransformation thirdPersonLeftHand Lnet/minecraft/client/render/model/json/Transformation;
+accessible field net/minecraft/client/render/model/json/ModelTransformation thirdPersonRightHand Lnet/minecraft/client/render/model/json/Transformation;
+accessible field net/minecraft/client/render/model/json/ModelTransformation firstPersonLeftHand Lnet/minecraft/client/render/model/json/Transformation;
+accessible field net/minecraft/client/render/model/json/ModelTransformation firstPersonRightHand Lnet/minecraft/client/render/model/json/Transformation;
+accessible field net/minecraft/client/render/model/json/ModelTransformation head Lnet/minecraft/client/render/model/json/Transformation;
+accessible field net/minecraft/client/render/model/json/ModelTransformation gui Lnet/minecraft/client/render/model/json/Transformation;
+accessible field net/minecraft/client/render/model/json/ModelTransformation ground Lnet/minecraft/client/render/model/json/Transformation;
+accessible field net/minecraft/client/render/model/json/ModelTransformation fixed Lnet/minecraft/client/render/model/json/Transformation;
 accessible field net/minecraft/client/render/model/ModelBaker bakedModelCache Ljava/util/Map;
 accessible field net/minecraft/client/render/model/WrapperBakedModel wrapped Lnet/minecraft/client/render/model/BakedModel;
 accessible method net/minecraft/client/font/TrueTypeFont$LazyGlyph <init> (I)V

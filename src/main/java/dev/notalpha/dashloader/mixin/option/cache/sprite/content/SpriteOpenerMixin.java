@@ -7,7 +7,8 @@ import net.minecraft.client.texture.SpriteContents;
 import net.minecraft.client.texture.SpriteOpener;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.metadata.ResourceMetadata;
-import net.minecraft.resource.metadata.ResourceMetadataReader;
+
+import net.minecraft.resource.metadata.ResourceMetadataSerializer;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,7 +26,7 @@ public interface SpriteOpenerMixin {
 			locals = LocalCapture.CAPTURE_FAILEXCEPTION,
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/Resource;getInputStream()Ljava/io/InputStream;", shift = At.Shift.BEFORE)
 	)
-	private static void dashloaderLoad(Collection<ResourceMetadataReader<?>> metadatas, Identifier id, Resource resource, CallbackInfoReturnable<SpriteContents> cir, ResourceMetadata resourceMetadata) {
+	private static void dashloaderLoad(Collection<ResourceMetadataSerializer<?>> metadatas, Identifier id, Resource resource, CallbackInfoReturnable<SpriteContents> cir, ResourceMetadata resourceMetadata) {
 		var dashSpriteData = SpriteContentModule.SOURCE.get(CacheStatus.LOAD);
 		if (dashSpriteData != null) {
 			SpriteContents spriteContents = dashSpriteData.get(id);

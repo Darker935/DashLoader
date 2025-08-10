@@ -1,14 +1,8 @@
 package dev.notalpha.dashloader.client.model.fallback;
 
 import dev.notalpha.dashloader.client.Dazy;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
-
-import java.util.function.Function;
+import net.minecraft.client.render.model.*;
+import net.minecraft.client.render.model.json.ModelTransformation;
 
 /**
  * An unbaked model which holds a baked model, used for fallback to reuse cached models.
@@ -25,7 +19,7 @@ public class UnbakedBakedModel implements UnbakedModel {
 	}
 
 	@Override
-	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer) {
-		return this.bakedModel.get(textureGetter);
+	public BakedModel bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, boolean ambientOcclusion, boolean isSideLit, ModelTransformation transformation) {
+		return this.bakedModel.get(baker.getSpriteGetter());
 	}
 }

@@ -25,7 +25,7 @@ public class ConfigHandler {
 
 	public static final ConfigHandler INSTANCE = new ConfigHandler(FabricLoader.getInstance().getConfigDir().normalize().resolve("dashloader.json"));
 
-	private final Gson gson = new GsonBuilder().setLenient().setPrettyPrinting().create();
+	private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	private final Path configPath;
 	public Config config = new Config();
 

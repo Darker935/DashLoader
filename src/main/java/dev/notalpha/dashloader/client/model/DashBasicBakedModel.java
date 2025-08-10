@@ -11,11 +11,11 @@ import dev.notalpha.dashloader.client.model.components.DashModelTransformation;
 import dev.notalpha.dashloader.client.sprite.content.DashSprite;
 import dev.notalpha.dashloader.mixin.accessor.BasicBakedModelAccessor;
 import dev.notalpha.hyphen.scan.annotations.DataNullable;
+import net.minecraft.client.model.SpriteGetter;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.BasicBakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 
@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
 public final class DashBasicBakedModel implements DashObject<BasicBakedModel, DashBasicBakedModel.DazyImpl> {
 	public final int quads;
@@ -142,7 +141,7 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 		}
 
 		@Override
-		protected BasicBakedModel resolve(Function<SpriteIdentifier, Sprite> spriteLoader) {
+		protected BasicBakedModel resolve(SpriteGetter spriteLoader) {
 			List<BakedQuad> quads = this.quads.get(spriteLoader);
 			var faceQuadsOut = new HashMap<Direction, List<BakedQuad>>();
 			this.faceQuads.forEach((direction, dazy) -> faceQuadsOut.put(direction, dazy.get(spriteLoader)));

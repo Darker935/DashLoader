@@ -8,7 +8,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.client.atlas.AtlasModule;
 import net.minecraft.client.texture.*;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.spongepowered.asm.mixin.Final;
@@ -36,9 +35,6 @@ public abstract class SpriteAtlasTextureMixin extends AbstractTexture {
 	private int width;
 	@Shadow
 	private int height;
-
-	@Shadow
-	public abstract void load(ResourceManager manager);
 
 	@Shadow
 	public abstract void save(Identifier id, Path path);

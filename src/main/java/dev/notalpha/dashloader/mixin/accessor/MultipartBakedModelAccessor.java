@@ -13,11 +13,7 @@ import java.util.Map;
 @Mixin(MultipartBakedModel.class)
 public interface MultipartBakedModelAccessor {
 	@Accessor
-	List<MultipartBakedModel.class_10204> getComponents();
-
-	@Accessor
-	@Mutable
-	void setComponents(List<MultipartBakedModel.class_10204> components);
+	List<MultipartBakedModel.Selector> getSelectors();
 
 	@Accessor
 	Map<BlockState, BitSet> getStateCache();

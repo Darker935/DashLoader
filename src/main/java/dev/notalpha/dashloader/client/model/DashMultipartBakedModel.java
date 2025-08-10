@@ -8,17 +8,15 @@ import dev.notalpha.dashloader.client.Dazy;
 import dev.notalpha.dashloader.mixin.accessor.MultipartBakedModelAccessor;
 import dev.notalpha.dashloader.mixin.accessor.MultipartModelComponentAccessor;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.model.SpriteGetter;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.MultipartBakedModel;
 import net.minecraft.client.render.model.json.MultipartModelSelector;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class DashMultipartBakedModel implements DashObject<MultipartBakedModel, DashMultipartBakedModel.DazyImpl> {
@@ -30,18 +28,18 @@ public class DashMultipartBakedModel implements DashObject<MultipartBakedModel, 
 
 	public DashMultipartBakedModel(MultipartBakedModel model, RegistryWriter writer) {
 		var access = ((MultipartBakedModelAccessor) model);
-		var accessComponents = access.getComponents();
+		var accessComponents = access.getSelectors();
 		int size = accessComponents.size();
 		this.components = new ArrayList<>();
 
-		var a = ModelModule.UNBAKED_TO_BAKED_MULTIPART_MODELS.get(CacheStatus.SAVE);
-		var asdf = ModelModule.MULTIPART_PREDICATES.get(CacheStatus.SAVE);
-		var theThing = asdf.get(a.get(model));
+		var modelMap = ModelModule.UNBAKED_TO_BAKED_MULTIPART_MODELS.get(CacheStatus.SAVE);
+		var predicates = ModelModule.MULTIPART_PREDICATES.get(CacheStatus.SAVE);
+		var pair = predicates.get(modelMap.get(model));
 
-		var stateManagerIdentifier = ModelModule.getStateManagerIdentifier(theThing.getRight());
+		var stateManagerIdentifier = ModelModule.getStateManagerIdentifier(pair.getRight());
 		for (int i = 0; i < size; i++) {
 			var componentModel = accessComponents.get(i).model();
-			var selector = ((MultipartModelComponentAccessor) theThing.getLeft().get(i)).getSelector();
+			var selector = ((MultipartModelComponentAccessor) pair.getLeft().get(i)).getSelector();
 
 			this.components.add(new Component(
 					writer.add(componentModel),
@@ -119,13 +117,13 @@ public class DashMultipartBakedModel implements DashObject<MultipartBakedModel, 
 		}
 
 		@Override
-		protected MultipartBakedModel resolve(Function<SpriteIdentifier, Sprite> spriteLoader) {
-			List<MultipartBakedModel.class_10204> componentsOut = new ArrayList<>(this.components.size());
+		protected MultipartBakedModel resolve(SpriteGetter spriteLoader) {
+			List<MultipartBakedModel.Selector> componentsOut = new ArrayList<>(this.components.size());
 
 			for (Component component : components) {
 				var model = component.model.get(spriteLoader);
 				var selector = component.selector;
-				componentsOut.add(new MultipartBakedModel.class_10204(selector, model));
+				componentsOut.add(new MultipartBakedModel.Selector(selector, model));
 			}
 
 			MultipartBakedModel multipartBakedModel = new MultipartBakedModel(componentsOut);

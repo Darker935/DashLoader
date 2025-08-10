@@ -9,15 +9,11 @@
     "accessor.BasicBakedModelAccessor",
     "accessor.BitmapFontAccessor",
     "accessor.BitmapFontGlyphAccessor",
-    "accessor.BuiltinBakedModelAccessor",
     "accessor.FilterMapAccessor",
     "accessor.FontManagerProviderIndexAccessor",
     "accessor.GlUniformAccessor",
     "accessor.IdentifierAccessor",
     "accessor.ModelLoaderAccessor",
-    "accessor.ModelOverrideListAccessor",
-    "accessor.ModelOverrideListBakedOverrideAccessor",
-    "accessor.ModelOverrideListInlinedCondition",
     "accessor.MultipartBakedModelAccessor",
     "accessor.MultipartModelComponentAccessor",
     "accessor.NativeImageAccessor",
@@ -51,11 +47,10 @@
     "defaultRequire": 1
   },
   "client": [
-    "accessor.BakedItemModelAccessor",
     "accessor.SpriteContentsAccessor",
     "option.cache.SpriteAtlasTextureMixin",
+    "option.cache.model.BlockStatesLoaderMixin",
     "option.cache.model.MultipartUnbakedModelSerializedMixin",
-    "option.cache.model.ReferencedModelsCollectorMixin",
     "option.cache.shader.ShaderLoaderMixin",
     "option.cache.sprite.content.SpriteOpenerMixin",
     "option.misc.MipmapHelperMixin"

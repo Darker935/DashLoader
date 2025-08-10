@@ -7,15 +7,20 @@ import dev.notalpha.dashloader.api.cache.Cache;
 import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.api.collection.IntIntList;
 import dev.notalpha.dashloader.api.collection.IntObjectList;
+import dev.notalpha.dashloader.api.collection.ObjectIntList;
 import dev.notalpha.dashloader.api.registry.RegistryAddException;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.client.Dazy;
+import dev.notalpha.dashloader.client.model.components.DashModelBakeSettings;
+import dev.notalpha.dashloader.client.model.fallback.MultiUnbakedBakedModel;
+import dev.notalpha.dashloader.client.model.fallback.UnbakedBakedGroupableModel;
 import dev.notalpha.dashloader.client.model.fallback.UnbakedBakedModel;
 import dev.notalpha.dashloader.config.ConfigHandler;
 import dev.notalpha.dashloader.config.Option;
 import dev.notalpha.dashloader.mixin.accessor.ModelLoaderAccessor;
 import dev.notalpha.taski.builtin.StepTask;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -28,24 +33,26 @@ import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ModelModule implements DashModule<ModelModule.Data> {
 	public static final CachingData<HashMap<ModelBaker.BakedModelCacheKey, BakedModel>> BAKED_MODEL_PARTS = new CachingData<>(CacheStatus.SAVE);
-	public static final CachingData<HashMap<ModelIdentifier, BakedModel>> MODELS_SAVE = new CachingData<>(CacheStatus.SAVE);
 
-	// caches to get info to link baked version to unbaked version
-	public static final CachingData<HashMap<ModelIdentifier, BlockStatesLoader.BlockModel>> RAW_BLOCK_STATE_MODELS = new CachingData<>(CacheStatus.SAVE);
-	public static final CachingData<HashMap<ModelIdentifier, Identifier>> ITEM_MODELID_TO_ID = new CachingData<>(CacheStatus.SAVE);
+	public static final CachingData<HashMap<ModelIdentifier, BakedModel>> BLOCK_MODELS_SAVE = new CachingData<>(CacheStatus.SAVE);
+	public static final CachingData<Map<ModelIdentifier, BlockStatesLoader.BlockModel>> RAW_BLOCK_MODELS = new CachingData<>(CacheStatus.SAVE);
 
-	public static final CachingData<HashMap<Identifier, UnbakedModel>> MODELS = new CachingData<>(CacheStatus.LOAD);
-	public static final CachingData<ArrayList<Identifier>> MISSING_MODELS = new CachingData<>(CacheStatus.LOAD);
+//	public static final CachingData<HashMap<Identifier, ItemModel>> ITEM_MODELS_SAVE = new CachingData<>(CacheStatus.SAVE);
+//	public static final CachingData<HashMap<Identifier, ItemAsset.Properties>> ITEM_PROPERTIES = new CachingData<>(CacheStatus.SAVE);
 
-	public static final CachingData<Map<ModelIdentifier, BlockStatesLoader.BlockModel>> BLOCK_STATE_MODELS = new CachingData<>(CacheStatus.LOAD);
-	public static final CachingData<ArrayList<Identifier>> MISSING_BLOCK_STATE_MODELS = new CachingData<>(CacheStatus.LOAD);
+	public static final CachingData<HashMap<Identifier, UnbakedModel>> MODEL_PARTS = new CachingData<>(CacheStatus.LOAD);
+	public static final CachingData<ArrayList<Identifier>> MISSING_MODEL_PARTS = new CachingData<>(CacheStatus.LOAD);
+
+	public static final CachingData<Map<ModelIdentifier, BlockStatesLoader.BlockModel>> BLOCK_MODELS = new CachingData<>(CacheStatus.LOAD);
+	public static final CachingData<ArrayList<Identifier>> MISSING_BLOCK_MODELS = new CachingData<>(CacheStatus.LOAD);
+
+//	public static final CachingData<HashMap<Identifier, ItemAsset>> ITEM_MODELS = new CachingData<>(CacheStatus.LOAD);
+//	public static final CachingData<ArrayList<Identifier>> MISSING_ITEM_MODELS = new CachingData<>(CacheStatus.LOAD);
+
 
 	public static final CachingData<HashMap<MultipartUnbakedModel, Pair<List<MultipartModelComponent>, StateManager<Block, BlockState>>>> MULTIPART_PREDICATES = new CachingData<>(CacheStatus.SAVE);
 	public static final CachingData<HashMap<BakedModel, MultipartUnbakedModel>> UNBAKED_TO_BAKED_MULTIPART_MODELS = new CachingData<>(CacheStatus.SAVE);
@@ -73,121 +80,181 @@ public class ModelModule implements DashModule<ModelModule.Data> {
 
 	@Override
 	public void reset(Cache cache) {
-		MODELS_SAVE.reset(cache, new HashMap<>());
 		BAKED_MODEL_PARTS.reset(cache, new HashMap<>());
 
-		RAW_BLOCK_STATE_MODELS.reset(cache, new HashMap<>());
-		ITEM_MODELID_TO_ID.reset(cache, new HashMap<>());
+		BLOCK_MODELS_SAVE.reset(cache, new HashMap<>());
+		RAW_BLOCK_MODELS.reset(cache, new HashMap<>());
 
-		MODELS.reset(cache, new HashMap<>());
-		MISSING_MODELS.reset(cache, new ArrayList<>());
-		BLOCK_STATE_MODELS.reset(cache, new HashMap<>());
-		MISSING_BLOCK_STATE_MODELS.reset(cache, new ArrayList<>());
+//		ITEM_MODELS_SAVE.reset(cache, new HashMap<>());
+//		ITEM_PROPERTIES.reset(cache, new HashMap<>());
+
+		MODEL_PARTS.reset(cache, new HashMap<>());
+		MISSING_MODEL_PARTS.reset(cache, new ArrayList<>());
+
+		BLOCK_MODELS.reset(cache, new HashMap<>());
+		MISSING_BLOCK_MODELS.reset(cache, new ArrayList<>());
+
+//		ITEM_MODELS.reset(cache, new HashMap<>());
+//		MISSING_ITEM_MODELS.reset(cache, new ArrayList<>());
+
 
 		MULTIPART_PREDICATES.reset(cache, new HashMap<>());
 		UNBAKED_TO_BAKED_MULTIPART_MODELS.reset(cache, new HashMap<>());
-
-//		BLOCK_STATES.reset(cache, new HashMap<>());
 	}
 
 	@Override
 	public Data save(RegistryWriter factory, StepTask task) {
-		var models = MODELS_SAVE.get(CacheStatus.SAVE);
-		var idMap = ITEM_MODELID_TO_ID.get(CacheStatus.SAVE);
-
 		var bakedModelCache = BAKED_MODEL_PARTS.get(CacheStatus.SAVE);
-		var rawBlockStateModels = RAW_BLOCK_STATE_MODELS.get(CacheStatus.SAVE);
+		var blockModels = BLOCK_MODELS_SAVE.get(CacheStatus.SAVE);
+		var rawBlockModels = RAW_BLOCK_MODELS.get(CacheStatus.SAVE);
+//		var itemModels = ITEM_MODELS_SAVE.get(CacheStatus.SAVE);
+//		var itemProperties = ITEM_PROPERTIES.get(CacheStatus.SAVE);
 
-		if (models == null || idMap == null || bakedModelCache == null || rawBlockStateModels == null) {
+
+		if (bakedModelCache == null || blockModels == null || rawBlockModels == null) {
 			return null;
 		}
 
-		var outModels = new IntIntList(new ArrayList<>(bakedModelCache.size()));
-		var missingModels = new IntArrayList();
+		// split models that have been baked with multiple vs one setting
+		var modelPartsRemap = new Int2ObjectOpenHashMap<ObjectIntList<DashModelBakeSettings.BakeSettings>>(bakedModelCache.size());
+		var outModelPartsVariants = new IntObjectList<IntIntList>(new ArrayList<>(bakedModelCache.size()));
+		var outModelParts = new IntIntList(new ArrayList<>(bakedModelCache.size()));
 
-		var outBlockStates = new IntObjectList<IntIntList.IntInt>(new ArrayList<>(models.size() - idMap.size()));
-		var missingBlockStates = new IntArrayList();
+		var missingModelParts = new IntArrayList();
 
+		var outBlockModels = new IntObjectList<IntIntList.IntInt>(new ArrayList<>(blockModels.size()));
+		var missingBlockModels = new IntArrayList();
 
-		task.doForEach(models, (modelIdentifier, bakedModel) -> {
-			if (bakedModel == null) {
-				return;
-			}
+//		var outItemModels = new IntObjectList<IntIntList.IntInt>(new ArrayList<>(itemModels.size()));
+//		var missingItemModels = new IntArrayList();
 
-			if (idMap.containsKey(modelIdentifier)) {
-				try {
-					final int add = factory.add(bakedModel);
-					outModels.put(factory.add(idMap.get(modelIdentifier)), add);
-				} catch (RegistryAddException ignored) {
-					missingModels.add(factory.add(idMap.get(modelIdentifier)));
-				}
-			} else { // `blockState` models
-				final var blockModel = rawBlockStateModels.get(modelIdentifier);
-				if (blockModel == null) {
-					return;
-				}
-				try {
-					final int add = factory.add(bakedModel);
-					final IntIntList.IntInt intPair = new IntIntList.IntInt(factory.add(blockModel.state()), add);
-					outBlockStates.put(factory.add(modelIdentifier), intPair);
-				} catch (RegistryAddException ignored) {
-					missingBlockStates.add(factory.add(modelIdentifier.id()));
-				}
-			}
-		});
+		task.doForEach(bakedModelCache, (key, model) -> {
+			if (model == null) return;
 
-		task.doForEach(bakedModelCache, (cacheKey, bakedModel) -> {
 			try {
-				if (!(idMap.containsValue(cacheKey.id()))) {
-					outModels.put(factory.add(cacheKey.id()), factory.add(bakedModel));
-				}
+				var regId = factory.add(model);
+
+				modelPartsRemap.compute(factory.add(key.id()), (id, models) -> {
+					if (models == null) models = new ObjectIntList<>();
+					// dont add bake settings to the registry yet, might not need
+					models.put(new DashModelBakeSettings.BakeSettings(key.transformation(), key.isUvLocked()), regId);
+
+					return models;
+				});
 			} catch (RegistryAddException ignored) {
-				missingModels.add(factory.add(cacheKey.id()));
+				missingModelParts.add(factory.add(key.id()));
 			}
 		});
 
-		DashLoader.LOG.info("saved {}/{} total models", outModels.list().size(), bakedModelCache.size());
-		DashLoader.LOG.info("saved {}/{} block state models", outBlockStates.list().size(), models.size() - idMap.size());
-		DashLoader.LOG.info("found {} un-cached models", missingModels.size());
-		DashLoader.LOG.info("found {} un-cached block states", missingBlockStates.size());
+		final int[] num = {0};
 
-		return new Data(outModels, missingModels.toIntArray(), outBlockStates, missingBlockStates.toIntArray());
+		modelPartsRemap.forEach((id, models) -> {
+			var list = models.list();
+			num[0] += list.size();
+
+			if (list.size() == 1) { // can ignore bake settings
+				outModelParts.put(id, list.getFirst().value());
+			} else {
+				var data = new IntIntList(new ArrayList<>(list.size()));
+				list.forEach(entry -> {
+					data.put(factory.add(entry.key()), entry.value());
+				});
+				outModelPartsVariants.put(id, data);
+			}
+		});
+
+		DashLoader.LOG.info("saved {}/{} model parts", num, bakedModelCache.size());
+		DashLoader.LOG.info("missing {} model parts", missingModelParts.size());
+
+		task.doForEach(blockModels, (modelId, model) -> {
+			if (model == null) return;
+
+			try {
+				var regId = factory.add(model);
+				var blockModel = new IntIntList.IntInt(factory.add(rawBlockModels.get(modelId).state()), regId);
+				outBlockModels.put(factory.add(modelId), blockModel);
+			} catch (RegistryAddException ignored) {
+				missingBlockModels.add(factory.add(modelId.id()));
+			}
+		});
+
+		DashLoader.LOG.info("saved {}/{} block models", outBlockModels.list().size(), blockModels.size());
+		DashLoader.LOG.info("missing {} block models", missingBlockModels.size());
+
+//		task.doForEach(itemModels, (id, model) -> {
+//			if (model == null) return;
+//
+//			try {
+//				var regId = factory.add(model); // TODO: ItemModel caching. fyi there's 6 variants and more to add
+//				var itemAsset = new IntIntList.IntInt(factory.add(itemProperties.getOrDefault(id, ItemAsset.Properties.DEFAULT)), regId);
+//				outItemModels.put(factory.add(id), itemAsset);
+//			} catch (RegistryAddException ignored) {
+//				missingItemModels.add(factory.add(id));
+//			}
+//		});
+//
+//		DashLoader.LOG.info("saved {}/{} item models", outItemModels.list().size(), itemModels.size());
+//		DashLoader.LOG.info("missing {} item models", missingItemModels.size());
+
+		return new Data(
+				outModelPartsVariants,
+				outModelParts,
+				missingModelParts.toIntArray(),
+				outBlockModels,
+				missingBlockModels.toIntArray()
+//				outItemModels,
+//				missingItemModels.toIntArray()
+		);
 	}
 
 	@Override
 	public void load(Data data, RegistryReader reader, StepTask task) {
+		var modelParts = new HashMap<Identifier, UnbakedModel>(data.modelParts.list().size() + data.modelPartsVariants.list().size());
+		var missingModelParts = new ArrayList<Identifier>(data.missingModelParts.length);
 
-		var models = new HashMap<Identifier, UnbakedModel>(data.models.list().size());
-		var missingModels = new ArrayList<Identifier>(data.missingModels.length);
-		var blockStateModels = new HashMap<ModelIdentifier, BlockStatesLoader.BlockModel>(data.blockStateModels.list().size());
-		var missingBlockStates = new ArrayList<Identifier>(data.missingBlockStates.length);
+		var blockModels = new HashMap<ModelIdentifier, BlockStatesLoader.BlockModel>(data.blockModels.list().size());
+		var missingBlockModels = new ArrayList<Identifier>(data.missingBlockModels.length);
+//		var itemModels = new HashMap<Identifier, ItemAsset>(data.itemModels.list().size());
+//		var missingItemModels = new ArrayList<Identifier>(data.missingItemModels.length);
 
-		data.models.forEach((id, model) -> {
-			Dazy<? extends BakedModel> dazyItemModel = reader.get(model);
-			models.put(reader.get(id), new UnbakedBakedModel(dazyItemModel));
+		data.modelPartsVariants.forEach((id, entry) -> {
+			var thing = new HashMap<DashModelBakeSettings.BakeSettings, Dazy<? extends BakedModel>>();
+			entry.forEach((settings, model) -> {
+				thing.put(reader.get(settings), reader.get(model));
+			});
+			modelParts.put(reader.get(id), new MultiUnbakedBakedModel(thing));
 		});
 
-		for (int i = 0; i < data.missingModels.length; i++) {
-			missingModels.add(reader.get(data.missingModels[i]));
-		}
-
-		data.blockStateModels.forEach((id, model) -> {
-			BlockState blockState = reader.get(model.key());
-			Dazy<? extends BakedModel> dazyModel = reader.get(model.value());
-			blockStateModels.put(reader.get(id), new BlockStatesLoader.BlockModel(blockState, new UnbakedBakedModel(dazyModel)));
+		data.modelParts.forEach((id, model) -> {
+			modelParts.put(reader.get(id), new UnbakedBakedModel(reader.get(model)));
 		});
 
-		for (int i = 0; i < data.missingBlockStates.length; i++) {
-			missingBlockStates.add(reader.get(data.missingBlockStates[i]));
+		for (int id : data.missingModelParts) {
+			missingModelParts.add(reader.get(id));
 		}
 
-		DashLoader.LOG.info("Found {} unloaded models", data.missingModels.length);
-		DashLoader.LOG.info("Found {} unloaded block states", data.missingBlockStates.length);
+		data.blockModels.forEach((id, blockModel) -> {
+			BlockState blockState = reader.get(blockModel.key());
+			var dazyModel = new UnbakedBakedGroupableModel(reader.get(blockModel.value()));
+			blockModels.put(reader.get(id), new BlockStatesLoader.BlockModel(blockState, dazyModel));
+		});
 
-		MODELS.set(CacheStatus.LOAD, models);
-		MISSING_MODELS.set(CacheStatus.LOAD, missingModels);
-		BLOCK_STATE_MODELS.set(CacheStatus.LOAD, blockStateModels);
-		MISSING_BLOCK_STATE_MODELS.set(CacheStatus.LOAD, missingBlockStates);
+		for (int id : data.missingBlockModels) {
+			missingBlockModels.add(reader.get(id));
+		}
+
+//		data.itemModels.forEach((id, itemAsset) -> {
+//			ItemAsset.Properties properties = reader.get(itemAsset.value());
+//			var model = reader.get(itemAsset.key());
+//			itemModels.put(reader.get(id), new ItemAsset(model, properties));
+//		});
+
+		MODEL_PARTS.set(CacheStatus.LOAD, modelParts);
+		MISSING_MODEL_PARTS.set(CacheStatus.LOAD, missingModelParts);
+		BLOCK_MODELS.set(CacheStatus.LOAD, blockModels);
+		MISSING_BLOCK_MODELS.set(CacheStatus.LOAD, missingBlockModels);
+//		ITEM_MODELS.set(CacheStatus.IDLE, itemModels);
+//		MISSING_ITEM_MODELS.set(CacheStatus.IDLE, missingItemModels);
 	}
 
 	@Override
@@ -206,16 +273,30 @@ public class ModelModule implements DashModule<ModelModule.Data> {
 	}
 
 	public static final class Data {
-		public final IntIntList models; // identifier to model list
-		public final int[] missingModels;
-		public final IntObjectList<IntIntList.IntInt> blockStateModels;
-		public final int[] missingBlockStates;
+		public final IntObjectList<IntIntList> modelPartsVariants;
+		public final IntIntList modelParts;
+		public final int[] missingModelParts;
+		public final IntObjectList<IntIntList.IntInt> blockModels;
+		public final int[] missingBlockModels;
+//		public final IntObjectList<IntIntList.IntInt> itemModels;
+//		public final int[] missingItemModels;
 
-		public Data(IntIntList models, int[] missingModels, IntObjectList<IntIntList.IntInt> blockStateModels, int[] missingBlockStates) {
-			this.models = models;
-			this.missingModels = missingModels;
-			this.blockStateModels = blockStateModels;
-			this.missingBlockStates = missingBlockStates;
+		public Data(
+				IntObjectList<IntIntList> modelPartsVariants,
+				IntIntList modelParts,
+				int[] missingModelParts,
+				IntObjectList<IntIntList.IntInt> blockModels,
+				int[] missingBlockModels
+//				IntObjectList<IntIntList.IntInt> itemModels,
+//				int[] missingItemModels
+		) {
+			this.modelPartsVariants = modelPartsVariants;
+			this.modelParts = modelParts;
+			this.missingModelParts = missingModelParts;
+			this.blockModels = blockModels;
+			this.missingBlockModels = missingBlockModels;
+//			this.itemModels = itemModels;
+//			this.missingItemModels = missingItemModels;
 		}
 	}
 }

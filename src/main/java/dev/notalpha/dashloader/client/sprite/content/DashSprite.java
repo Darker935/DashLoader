@@ -4,10 +4,9 @@ import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.client.Dazy;
+import net.minecraft.client.model.SpriteGetter;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
-
-import java.util.function.Function;
 
 public class DashSprite implements DashObject<Sprite, DashSprite.DazyImpl> {
 	public final int id;
@@ -48,8 +47,8 @@ public class DashSprite implements DashObject<Sprite, DashSprite.DazyImpl> {
 		}
 
 		@Override
-		protected Sprite resolve(Function<SpriteIdentifier, Sprite> spriteLoader) {
-			return spriteLoader.apply(location);
+		protected Sprite resolve(SpriteGetter spriteLoader) {
+			return spriteLoader.get(location);
 		}
 	}
 }

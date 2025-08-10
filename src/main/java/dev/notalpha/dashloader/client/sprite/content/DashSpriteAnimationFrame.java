@@ -14,10 +14,9 @@ public final class DashSpriteAnimationFrame implements DashObject<SpriteContents
 		this.time = time;
 	}
 
-	public DashSpriteAnimationFrame(SpriteContents.AnimationFrame animationFrame) {
-		SpriteAnimationFrameAccessor access = ((SpriteAnimationFrameAccessor) animationFrame);
-		this.index = access.getIndex();
-		this.time = access.getTime();
+	public DashSpriteAnimationFrame(SpriteContents.AnimationFrame frame) {
+		this.index = frame.index();
+		this.time = frame.time();
 	}
 
 	@Override

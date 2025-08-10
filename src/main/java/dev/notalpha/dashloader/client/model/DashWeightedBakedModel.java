@@ -6,15 +6,13 @@ import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.client.Dazy;
 import dev.notalpha.dashloader.client.model.components.DashWeightedModelEntry;
 import dev.notalpha.dashloader.mixin.accessor.WeightedBakedModelAccessor;
+import net.minecraft.client.model.SpriteGetter;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.WeightedBakedModel;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.collection.DataPool;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 public final class DashWeightedBakedModel implements DashObject<WeightedBakedModel, DashWeightedBakedModel.DazyImpl> {
 	public final List<DashWeightedModelEntry> models;
@@ -62,7 +60,7 @@ public final class DashWeightedBakedModel implements DashObject<WeightedBakedMod
 		}
 
 		@Override
-		protected WeightedBakedModel resolve(Function<SpriteIdentifier, Sprite> spriteLoader) {
+		protected WeightedBakedModel resolve(SpriteGetter spriteLoader) {
 			DataPool.Builder<BakedModel> models = DataPool.builder();
 			for (Entry entry : this.entries) {
 				BakedModel model = entry.model.get(spriteLoader);

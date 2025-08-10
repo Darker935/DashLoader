@@ -13,6 +13,7 @@ import dev.notalpha.dashloader.client.identifier.DashSpriteIdentifier;
 import dev.notalpha.dashloader.client.model.*;
 import dev.notalpha.dashloader.client.model.components.DashBakedQuad;
 import dev.notalpha.dashloader.client.model.components.DashBakedQuadCollection;
+import dev.notalpha.dashloader.client.model.components.DashModelBakeSettings;
 import dev.notalpha.dashloader.client.model.predicates.*;
 import dev.notalpha.dashloader.client.shader.*;
 import dev.notalpha.dashloader.client.splash.SplashModule;
@@ -89,9 +90,8 @@ public class DashLoaderClient implements DashEntrypoint {
 		for (Class<? extends DashObject<?, ?>> aClass : new Class[]{
 				DashIdentifier.class,
 				DashModelIdentifier.class,
-				DashBakedItemModel.class,
 				DashBasicBakedModel.class,
-				DashBuiltinBakedModel.class,
+				DashModelBakeSettings.class,
 				DashMultipartBakedModel.class,
 				DashWeightedBakedModel.class,
 				DashBakedQuad.class,

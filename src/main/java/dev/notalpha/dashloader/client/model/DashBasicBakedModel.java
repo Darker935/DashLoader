@@ -35,10 +35,10 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 	public final int spritePointer;
 
 	public DashBasicBakedModel(int quads,
-							   ObjectObjectList<Direction, Integer> faceQuads,
-							   boolean usesAo, boolean hasDepth, boolean isSideLit,
-							   DashModelTransformation transformation,
-							   int spritePointer) {
+	                           ObjectObjectList<Direction, Integer> faceQuads,
+	                           boolean usesAo, boolean hasDepth, boolean isSideLit,
+	                           DashModelTransformation transformation,
+	                           int spritePointer) {
 		this.quads = quads;
 		this.faceQuads = faceQuads;
 		this.usesAo = usesAo;
@@ -125,12 +125,12 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 		public final DashSprite.DazyImpl sprite;
 
 		public DazyImpl(DashBakedQuadCollection.DazyImpl quads,
-						Map<Direction, DashBakedQuadCollection.DazyImpl> faceQuads,
-						boolean usesAo,
-						boolean isSideLit,
-						boolean hasDepth,
-						ModelTransformation transformation,
-						DashSprite.DazyImpl sprite) {
+		                Map<Direction, DashBakedQuadCollection.DazyImpl> faceQuads,
+		                boolean usesAo,
+		                boolean isSideLit,
+		                boolean hasDepth,
+		                ModelTransformation transformation,
+		                DashSprite.DazyImpl sprite) {
 			this.quads = quads;
 			this.faceQuads = faceQuads;
 			this.usesAo = usesAo;

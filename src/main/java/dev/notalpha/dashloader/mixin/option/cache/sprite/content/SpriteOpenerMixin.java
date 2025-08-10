@@ -7,7 +7,6 @@ import net.minecraft.client.texture.SpriteContents;
 import net.minecraft.client.texture.SpriteOpener;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.metadata.ResourceMetadata;
-
 import net.minecraft.resource.metadata.ResourceMetadataSerializer;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;

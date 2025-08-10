@@ -8,11 +8,9 @@ import dev.notalpha.dashloader.client.sprite.content.DashSprite;
 import net.minecraft.client.model.SpriteGetter;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.math.Direction;
 
 import java.util.Arrays;
-import java.util.function.Function;
 
 public final class DashBakedQuad implements DashObject<BakedQuad, DashBakedQuad.DazyImpl> {
 	public final int[] vertexData;
@@ -23,7 +21,7 @@ public final class DashBakedQuad implements DashObject<BakedQuad, DashBakedQuad.
 	public final int lightEmission;
 
 	public DashBakedQuad(int[] vertexData, int colorIndex, Direction face, boolean shade,
-						 int sprite, int lightEmission) {
+	                     int sprite, int lightEmission) {
 		this.vertexData = vertexData;
 		this.colorIndex = colorIndex;
 		this.face = face;

@@ -145,7 +145,7 @@ public class DashToast implements Toast {
 		DrawerUtil.drawRect(context, 0, barY, width, PROGRESS_BAR_HEIGHT, DrawerUtil.PROGRESS_TRACK);
 		DrawerUtil.drawRect(context, 0, barY, (int) (width * progress), PROGRESS_BAR_HEIGHT, progressColor);
 
-		// Epic rtx graphics. aka i slapped some glow on the things.
+		// Epic rtx graphics. aka I slapped some glow on the things.
 		this.drawBatched(matrices, (matrix4f, bb) -> {
 			// Line glow
 			for (Line line : lines) {

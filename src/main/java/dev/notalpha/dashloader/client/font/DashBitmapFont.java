@@ -15,7 +15,7 @@ public final class DashBitmapFont implements DashObject<BitmapFont, BitmapFont> 
 	public final IntObjectList<DashBitmapFontGlyph> glyphs;
 
 	public DashBitmapFont(int image,
-						  IntObjectList<DashBitmapFontGlyph> glyphs) {
+	                      IntObjectList<DashBitmapFontGlyph> glyphs) {
 		this.image = image;
 		this.glyphs = glyphs;
 	}

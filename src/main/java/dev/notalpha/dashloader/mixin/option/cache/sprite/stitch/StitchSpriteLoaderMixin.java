@@ -31,12 +31,12 @@ public final class StitchSpriteLoaderMixin {
 			method = "stitch",
 			at = @At(value = "NEW", target = "(III)Lnet/minecraft/client/texture/TextureStitcher;")
 	)
-	private TextureStitcher dashloaderStitcherLoad(int maxWidth, int maxHeight, int mipLevel, Operation<TextureStitcher> original) {
-		if (SpriteStitcherModule.STITCHERS_LOAD.active(CacheStatus.LOAD)) {
-			var map = SpriteStitcherModule.STITCHERS_LOAD.get(CacheStatus.LOAD);
+	private TextureStitcher<?> dashloaderStitcherLoad(int maxWidth, int maxHeight, int mipLevel, Operation<TextureStitcher<?>> original) {
+		var map = SpriteStitcherModule.STITCHERS_LOAD.get(CacheStatus.LOAD);
+		if (map != null) {
 			var data = map.get(id);
 			if (data != null) {
-				return new DashTextureStitcher(maxWidth, maxHeight, mipLevel, data);
+				return new DashTextureStitcher<>(maxWidth, maxHeight, mipLevel, data);
 			}
 		}
 

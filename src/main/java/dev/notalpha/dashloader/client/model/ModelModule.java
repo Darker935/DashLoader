@@ -33,7 +33,10 @@ import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ModelModule implements DashModule<ModelModule.Data> {
 	public static final CachingData<HashMap<ModelBaker.BakedModelCacheKey, BakedModel>> BAKED_MODEL_PARTS = new CachingData<>(CacheStatus.SAVE);
@@ -136,7 +139,7 @@ public class ModelModule implements DashModule<ModelModule.Data> {
 
 				modelPartsRemap.compute(factory.add(key.id()), (id, models) -> {
 					if (models == null) models = new ObjectIntList<>();
-					// dont add bake settings to the registry yet, might not need
+					// don't add bake settings to the registry yet, might not need
 					models.put(new DashModelBakeSettings.BakeSettings(key.transformation(), key.isUvLocked()), regId);
 
 					return models;

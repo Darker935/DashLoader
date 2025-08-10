@@ -2,7 +2,9 @@ package dev.notalpha.dashloader.client.model.fallback;
 
 import dev.notalpha.dashloader.client.Dazy;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.*;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.Baker;
+import net.minecraft.client.render.model.GroupableModel;
 
 /**
  * Same as {@linkplain UnbakedBakedModel}, but for {@linkplain GroupableModel}

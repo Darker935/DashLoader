@@ -2,7 +2,6 @@ package dev.notalpha.dashloader.mixin.option.cache.model;
 
 import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.client.model.ModelModule;
-import dev.notalpha.dashloader.mixin.accessor.MultipartModelComponentAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.MultipartUnbakedModel;

@@ -37,9 +37,9 @@ public class ObjectDumper {
 				}
 
 				switch (value) {
-					case ThreadLocal local -> appendDetail(buffer, fieldName, local.get());
-					case HashMap map -> appendDetail(buffer, fieldName, (Map<?, ?>) map);
-					case ArrayList list -> appendDetail(buffer, fieldName, (List<?>) list);
+					case ThreadLocal<?> local -> appendDetail(buffer, fieldName, local.get());
+					case HashMap<?, ?> map -> appendDetail(buffer, fieldName, map);
+					case ArrayList<?> list -> appendDetail(buffer, fieldName, list);
 					case NativeImage image ->
 							buffer.append("Image{ format: ").append(image.getFormat()).append(", size: ").append(image.getWidth()).append("x").append(image.getHeight()).append(" }");
 					case IntBuffer buffer1 -> appendBuff(buffer, buffer1, buffer1::get);
@@ -76,7 +76,7 @@ public class ObjectDumper {
 			}
 		}
 
-		private void appendBuff(StringBuffer buffer, Buffer buff, Supplier supplier) {
+		private void appendBuff(StringBuffer buffer, Buffer buff, Supplier<?> supplier) {
 			buffer.append(buff.getClass().getSimpleName());
 			buffer.append("[ ");
 			int limit = buff.limit();
@@ -97,7 +97,7 @@ public class ObjectDumper {
 		protected void appendDetail(StringBuffer buffer, String fieldName, Map<?, ?> map) {
 			buffer.append(this.getArrayStart());
 
-			// Sort maps to be comparible
+			// Sort maps to be comparable
 			List<Map.Entry<?, ?>> entries = new ArrayList<>(map.entrySet());
 			entries.sort((o1, o2) -> o1.getKey().toString().compareTo(o2.toString()));
 			entries.forEach((entry) -> {

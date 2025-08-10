@@ -25,17 +25,13 @@ public class DashFontFilterPair implements DashObject<Font.FontFilterPair, Font.
 
 		filter = new IntIntList();
 		((FilterMapAccessor) fontFilterPair.filter()).getActiveFilters().forEach(
-				(key, value) -> {
-					filter.put(key.ordinal(), value ? 1 : 0);
-				});
+				(key, value) -> filter.put(key.ordinal(), value ? 1 : 0));
 	}
 
 	@Override
 	public Font.FontFilterPair export(RegistryReader reader) {
 		Map<FontFilterType, Boolean> activeFilters = new HashMap<>();
-		filter.forEach((key, value) -> {
-			activeFilters.put(FontFilterType.values()[key], value == 1);
-		});
+		filter.forEach((key, value) -> activeFilters.put(FontFilterType.values()[key], value == 1));
 		return new Font.FontFilterPair(reader.get(provider), new FontFilterType.FilterMap(activeFilters));
 	}
 }

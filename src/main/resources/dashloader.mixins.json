@@ -60,6 +60,7 @@
   "client": [
     "accessor.ShaderStageAccessor$TypeAccessor",
     "accessor.SpriteContentsAccessor",
+    "option.cache.SpriteAtlasTextureMixin",
     "option.cache.model.BlockStatesLoaderMixin",
     "option.cache.sprite.content.SpriteOpenerMixin",
     "option.misc.MipmapHelperMixin",

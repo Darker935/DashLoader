@@ -4,6 +4,7 @@ import dev.notalpha.dashloader.api.DashEntrypoint;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.cache.Cache;
 import dev.notalpha.dashloader.api.cache.CacheFactory;
+import dev.notalpha.dashloader.client.atlas.AtlasModule;
 import dev.notalpha.dashloader.client.blockstate.DashBlockState;
 import dev.notalpha.dashloader.client.font.*;
 import dev.notalpha.dashloader.client.identifier.DashIdentifier;
@@ -50,6 +51,7 @@ public class DashLoaderClient implements DashEntrypoint {
 
 	@Override
 	public void onDashLoaderInit(CacheFactory factory) {
+		factory.addModule(new AtlasModule());
 		factory.addModule(new FontModule());
 		factory.addModule(new ModelModule());
 		factory.addModule(new ShaderModule());

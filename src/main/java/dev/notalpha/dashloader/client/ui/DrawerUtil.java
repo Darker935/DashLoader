@@ -2,7 +2,7 @@ package dev.notalpha.dashloader.client.ui;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.text.Text;
 import org.joml.Matrix4f;
 
@@ -32,11 +32,11 @@ public class DrawerUtil {
 		context.drawTextWithShadow(textRenderer, Text.of(text), x, y - (textRenderer.fontHeight), color.argb());
 	}
 
-	private static void drawVertex(Matrix4f m4f, BufferBuilder bb, float x, float y, Color color) {
-		bb.vertex(m4f, x, y, 0f).color(color.red(), color.green(), color.blue(), color.alpha());
+	private static void drawVertex(Matrix4f m4f, VertexConsumer c, float x, float y, Color color) {
+		c.vertex(m4f, x, y, 0f).color(color.red(), color.green(), color.blue(), color.alpha());
 	}
 
-	public static void drawGlow(Matrix4f b4, BufferBuilder bb, float x, float y, float width, float height, float strength, Color color, boolean topLeft, boolean topRight, boolean bottomLeft, boolean bottomRight) {
+	public static void drawGlow(Matrix4f b4, VertexConsumer c, float x, float y, float width, float height, float strength, Color color, boolean topLeft, boolean topRight, boolean bottomLeft, boolean bottomRight) {
 		Color end = withOpacity(color, 0);
 		Color glow = withOpacity(color, GLOW_STRENGTH * strength);
 
@@ -54,58 +54,58 @@ public class DrawerUtil {
 		float y2 = y + height;
 
 		// Inside
-		drawVertex(b4, bb, x, y2, bl); // left bottom
-		drawVertex(b4, bb, x2, y2, br); // right bottom
-		drawVertex(b4, bb, x2, y, tr); // right top
-		drawVertex(b4, bb, x, y, tl); // left top
+		drawVertex(b4, c, x, y2, bl); // left bottom
+		drawVertex(b4, c, x2, y2, br); // right bottom
+		drawVertex(b4, c, x2, y, tr); // right top
+		drawVertex(b4, c, x, y, tl); // left top
 
 		// Top
-		drawVertex(b4, bb, x, y, tl); // left bottom
-		drawVertex(b4, bb, x2, y, tr); // right bottom
-		drawVertex(b4, bb, x2, y - GLOW_SIZE, trEnd); // right top
-		drawVertex(b4, bb, x, y - GLOW_SIZE, tlEnd); // left top
+		drawVertex(b4, c, x, y, tl); // left bottom
+		drawVertex(b4, c, x2, y, tr); // right bottom
+		drawVertex(b4, c, x2, y - GLOW_SIZE, trEnd); // right top
+		drawVertex(b4, c, x, y - GLOW_SIZE, tlEnd); // left top
 
 		// Top Right
-		drawVertex(b4, bb, x2, y - GLOW_SIZE, trEnd); // left top
-		drawVertex(b4, bb, x2, y, tr); // left bottom
-		drawVertex(b4, bb, x2 + GLOW_SIZE, y, trEnd); // right bottom
-		drawVertex(b4, bb, x2 + GLOW_SIZE, y - GLOW_SIZE, trEnd); // right top
+		drawVertex(b4, c, x2, y - GLOW_SIZE, trEnd); // left top
+		drawVertex(b4, c, x2, y, tr); // left bottom
+		drawVertex(b4, c, x2 + GLOW_SIZE, y, trEnd); // right bottom
+		drawVertex(b4, c, x2 + GLOW_SIZE, y - GLOW_SIZE, trEnd); // right top
 
 		// Top Left
-		drawVertex(b4, bb, x, y - GLOW_SIZE, tlEnd); // right top
-		drawVertex(b4, bb, x - GLOW_SIZE, y - GLOW_SIZE, tlEnd); // left top
-		drawVertex(b4, bb, x - GLOW_SIZE, y, tlEnd); // left bottom
-		drawVertex(b4, bb, x, y, tl); // right bottom
+		drawVertex(b4, c, x, y - GLOW_SIZE, tlEnd); // right top
+		drawVertex(b4, c, x - GLOW_SIZE, y - GLOW_SIZE, tlEnd); // left top
+		drawVertex(b4, c, x - GLOW_SIZE, y, tlEnd); // left bottom
+		drawVertex(b4, c, x, y, tl); // right bottom
 
 		// Bottom
-		drawVertex(b4, bb, x2, y2 + GLOW_SIZE, brEnd); // right bottom
-		drawVertex(b4, bb, x2, y2, br); // right top
-		drawVertex(b4, bb, x, y2, bl); // left top
-		drawVertex(b4, bb, x, y2 + GLOW_SIZE, blEnd); // left bottom
+		drawVertex(b4, c, x2, y2 + GLOW_SIZE, brEnd); // right bottom
+		drawVertex(b4, c, x2, y2, br); // right top
+		drawVertex(b4, c, x, y2, bl); // left top
+		drawVertex(b4, c, x, y2 + GLOW_SIZE, blEnd); // left bottom
 
 		// Bottom Right
-		drawVertex(b4, bb, x2 + GLOW_SIZE, y2, brEnd); // right top
-		drawVertex(b4, bb, x2, y2, br); // left top
-		drawVertex(b4, bb, x2, y2 + GLOW_SIZE, brEnd); // left bottom
-		drawVertex(b4, bb, x2 + GLOW_SIZE, y2 + GLOW_SIZE, brEnd); // right bottom
+		drawVertex(b4, c, x2 + GLOW_SIZE, y2, brEnd); // right top
+		drawVertex(b4, c, x2, y2, br); // left top
+		drawVertex(b4, c, x2, y2 + GLOW_SIZE, brEnd); // left bottom
+		drawVertex(b4, c, x2 + GLOW_SIZE, y2 + GLOW_SIZE, brEnd); // right bottom
 
 		// Bottom Left
-		drawVertex(b4, bb, x - GLOW_SIZE, y2, blEnd); // left top
-		drawVertex(b4, bb, x - GLOW_SIZE, y2 + GLOW_SIZE, blEnd); // left bottom
-		drawVertex(b4, bb, x, y2 + GLOW_SIZE, blEnd); // right bottom
-		drawVertex(b4, bb, x, y2, bl); // right top
+		drawVertex(b4, c, x - GLOW_SIZE, y2, blEnd); // left top
+		drawVertex(b4, c, x - GLOW_SIZE, y2 + GLOW_SIZE, blEnd); // left bottom
+		drawVertex(b4, c, x, y2 + GLOW_SIZE, blEnd); // right bottom
+		drawVertex(b4, c, x, y2, bl); // right top
 
 		// Right
-		drawVertex(b4, bb, x2, y, tr); // left top
-		drawVertex(b4, bb, x2, y2, br); // left bottom
-		drawVertex(b4, bb, x2 + GLOW_SIZE, y2, brEnd); // right bottom
-		drawVertex(b4, bb, x2 + GLOW_SIZE, y, trEnd); // right top
+		drawVertex(b4, c, x2, y, tr); // left top
+		drawVertex(b4, c, x2, y2, br); // left bottom
+		drawVertex(b4, c, x2 + GLOW_SIZE, y2, brEnd); // right bottom
+		drawVertex(b4, c, x2 + GLOW_SIZE, y, trEnd); // right top
 
 		// Left
-		drawVertex(b4, bb, x - GLOW_SIZE, y2, blEnd); // left bottom
-		drawVertex(b4, bb, x, y2, bl); // right bottom
-		drawVertex(b4, bb, x, y, tl); // right top
-		drawVertex(b4, bb, x - GLOW_SIZE, y, tlEnd); // left top
+		drawVertex(b4, c, x - GLOW_SIZE, y2, blEnd); // left bottom
+		drawVertex(b4, c, x, y2, bl); // right bottom
+		drawVertex(b4, c, x, y, tl); // right top
+		drawVertex(b4, c, x - GLOW_SIZE, y, tlEnd); // left top
 	}
 
 	public static int convertColor(Color color) {

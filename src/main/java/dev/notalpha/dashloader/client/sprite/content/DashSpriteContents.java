@@ -10,9 +10,11 @@ import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.SpriteContents;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Method;
 import java.util.Objects;
 
 public final class DashSpriteContents implements DashObject<SpriteContents, SpriteContents> {
+	private final static Method sodiumScanMethod = getSodiumScanner();
 	public final int id;
 	public final int image;
 	@Nullable
@@ -50,6 +52,7 @@ public final class DashSpriteContents implements DashObject<SpriteContents, Spri
 		access.setWidth(width);
 		access.setMipmapLevelsImages(new NativeImage[]{image});
 		access.setAnimation(this.animation == null ? null : animation.export(out, reader));
+		applySodiumScanning(out, image); // run important sodium method if present
 		return out;
 	}
 
@@ -75,5 +78,23 @@ public final class DashSpriteContents implements DashObject<SpriteContents, Spri
 		result = 31 * result + width;
 		result = 31 * result + height;
 		return result;
+	}
+
+	private static Method getSodiumScanner() {
+		try {
+			Method scanSpriteContents = SpriteContents.class.getDeclaredMethod("scanSpriteContents", NativeImage.class);
+			scanSpriteContents.setAccessible(true);
+			return scanSpriteContents;
+		} catch (ReflectiveOperationException ignored) {
+			return null;
+		}
+	}
+
+	private void applySodiumScanning(SpriteContents contents, NativeImage image) {
+		if (sodiumScanMethod == null) return;
+		try {
+			sodiumScanMethod.invoke(contents, image);
+		} catch (ReflectiveOperationException ignored) {
+		}
 	}
 }

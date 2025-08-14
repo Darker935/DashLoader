@@ -10,6 +10,7 @@ import dev.notalpha.dashloader.client.DashLoaderClient;
 import dev.notalpha.dashloader.config.ConfigHandler;
 import dev.notalpha.dashloader.config.Option;
 import dev.notalpha.taski.builtin.StepTask;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -46,10 +47,11 @@ public class AtlasModule implements DashModule<AtlasModule.Data> {
 
 		HashMap<String, ArrayList<FutureTask<NativeImage>>> out = new HashMap<>();
 
+		var maxMipLevel = MinecraftClient.getInstance().options.getMipmapLevels().getValue();
 		for (String atlasId : data.atlasIds) {
 			var tasks = new ArrayList<FutureTask<NativeImage>>();
 
-			for (int i = 0; i <= 4; i++) {
+			for (int i = 0; i <= maxMipLevel; i++) { // don't load more atlases than needed
 				Path imgPath = path.resolve(DigestUtils.md5Hex(atlasId + i).toUpperCase());
 				if (!Files.exists(imgPath)) break;
 
@@ -76,11 +78,6 @@ public class AtlasModule implements DashModule<AtlasModule.Data> {
 		return Data.class;
 	}
 
-	public static class Data {
-		public final String[] atlasIds;
-
-		public Data(String[] atlasIds) {
-			this.atlasIds = atlasIds;
-		}
+	public record Data(String[] atlasIds) {
 	}
 }

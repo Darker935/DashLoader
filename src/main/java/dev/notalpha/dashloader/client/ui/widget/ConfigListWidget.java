@@ -21,7 +21,6 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 	public static final int INPUT_FIELD_WIDTH = 75;
 	public static final int RESET_BUTTON_WIDTH = 50;
 	private final TranslationHelper translations = TranslationHelper.getInstance();
-	private int longestLabel;
 
 	public ConfigListWidget(MinecraftClient minecraftClient, int i, int j, int k, int l) {
 		super(minecraftClient, i, j, k, l);
@@ -69,16 +68,33 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 		this.children().forEach(Entry::update);
 	}
 
-	public abstract class Entry extends ElementListWidget.Entry<Entry> {
+	abstract class Entry extends ElementListWidget.Entry<Entry> {
 		public Text label;
 
 		Entry(String label) {
 			this.label = Text.of(translations.get(label));
+		}
 
-			var len = ConfigListWidget.this.client.textRenderer.getWidth(this.label);
-			if (len > ConfigListWidget.this.longestLabel) {
-				ConfigListWidget.this.longestLabel = len;
-			}
+		void update() {
+		}
+	}
+
+	class CategoryEntry extends Entry {
+		CategoryEntry(String label) {
+			super(label);
+		}
+
+		@Override
+		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+			final var textRenderer = ConfigListWidget.this.client.textRenderer;
+			context.drawText(
+					textRenderer,
+					this.label,
+					(ConfigListWidget.this.width - textRenderer.getWidth(label)) / 2,
+					y + entryHeight - ConfigListWidget.this.client.textRenderer.fontHeight - 1,
+					0xFFFFFF,
+					false
+			);
 		}
 
 		@Override
@@ -90,26 +106,10 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 		public List<? extends Element> children() {
 			return List.of();
 		}
-
-		abstract void update();
-	}
-
-	class CategoryEntry extends Entry {
-		CategoryEntry(String label) {
-			super(label);
-		}
-
-		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			context.drawText(ConfigListWidget.this.client.textRenderer, this.label, (ConfigListWidget.this.client.currentScreen.width - ConfigListWidget.this.client.textRenderer.getWidth(label)) / 2, y + (entryHeight - 5) / 2, 0xFFFFFF, false);
-		}
-
-		@Override
-		void update() {
-		}
 	}
 
 	abstract class ConfigEntry<T> extends Entry {
+		static final Text RESET_TEXT = Text.translatable("controls.reset");
 		protected final T defaultValue;
 		public ClickableWidget widget;
 		public ButtonWidget resetButton;
@@ -126,7 +126,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 				this.tooltip = Tooltip.of(Text.of(translations.get(label + ".tooltip")));
 			}
 
-			this.resetButton = new ButtonWidget.Builder(Text.of("Reset"), button -> {
+			this.resetButton = new ButtonWidget.Builder(RESET_TEXT, button -> {
 				this.value = this.defaultValue;
 				this.updateWidgetText();
 				ConfigListWidget.this.update();
@@ -135,11 +135,18 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 
 		@Override
 		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			context.drawText(ConfigListWidget.this.client.textRenderer, this.label, x + 90 - ConfigListWidget.this.longestLabel, y + (entryHeight - ConfigListWidget.this.client.textRenderer.fontHeight) / 2, 0xFFFFFF, false);
+			context.drawText(
+					ConfigListWidget.this.client.textRenderer,
+					this.label,
+					x,
+					y + (entryHeight - ConfigListWidget.this.client.textRenderer.fontHeight) / 2,
+					0xFFFFFF,
+					false
+			);
 
-			this.widget.setPosition(x + entryWidth - INPUT_FIELD_WIDTH - RESET_BUTTON_WIDTH - 5, y);
+			this.widget.setPosition(x + entryWidth - INPUT_FIELD_WIDTH - RESET_BUTTON_WIDTH - 5, y - 2);
 			this.widget.render(context, mouseX, mouseY, tickDelta);
-			this.resetButton.setPosition(x + entryWidth - RESET_BUTTON_WIDTH, y);
+			this.resetButton.setPosition(x + entryWidth - RESET_BUTTON_WIDTH, y - 2);
 			this.resetButton.render(context, mouseX, mouseY, tickDelta);
 		}
 
@@ -197,20 +204,20 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 			this.min = min;
 			this.max = max;
 
-			this.widget = new SliderThing(0, 0, INPUT_FIELD_WIDTH, ConfigListWidget.this.itemHeight, Text.of(String.valueOf(value)), min, max, (double) (this.value - min) / (max - min));
+			this.widget = new Slider(0, 0, INPUT_FIELD_WIDTH, ConfigListWidget.this.itemHeight, Text.of(String.valueOf(value)), min, max, (double) (this.value - min) / (max - min));
 			this.widget.setTooltip(this.tooltip);
 		}
 
 		@Override
 		void updateWidgetText() {
-			((SliderThing) this.widget).setValue((double) (this.value - this.min) / (this.max - this.min));
+			((Slider) this.widget).setValue((double) (this.value - this.min) / (this.max - this.min));
 		}
 
-		public class SliderThing extends SliderWidget {
+		public class Slider extends SliderWidget {
 			private final double min;
 			private final double max;
 
-			public SliderThing(int x, int y, int width, int height, Text message, double min, double max, double value) {
+			public Slider(int x, int y, int width, int height, Text message, double min, double max, double value) {
 				super(x, y, width, height, message, value);
 				this.min = min;
 				this.max = max;
@@ -246,7 +253,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 			super(label, value, defaultValue, saveCallback);
 			this.filter = filter;
 
-			this.widget = new TextFieldWidget(ConfigListWidget.this.client.textRenderer, 0, 0, INPUT_FIELD_WIDTH, ConfigListWidget.this.itemHeight, Text.empty()) {
+			var textWidget = new TextFieldWidget(ConfigListWidget.this.client.textRenderer, 0, 0, INPUT_FIELD_WIDTH, 20, Text.empty()) {
 				@Override
 				public boolean charTyped(char chr, int modifiers) {
 					if (TextFieldEntry.this.filter.test(chr)) {
@@ -256,7 +263,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 				}
 			};
 
-			var textWidget = (TextFieldWidget) widget;
+			this.widget = textWidget;
 			textWidget.setMaxLength(Integer.MAX_VALUE);
 			textWidget.setText(String.valueOf(this.value));
 			textWidget.setChangedListener(text -> {
@@ -275,16 +282,12 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 
 	class IntFieldEntry extends TextFieldEntry {
 		IntFieldEntry(String label, int value, int defaultValue, IntConsumer saveCallback) {
-			super(label, String.valueOf(value), String.valueOf(defaultValue), null, str -> saveCallback.accept(Integer.parseInt(str)));
+			super(label, String.valueOf(value), String.valueOf(defaultValue), chr -> chr >= '0' && chr <= '9', str -> saveCallback.accept(Integer.parseInt(str)));
 
-			var textWidget = (TextFieldWidget) this.widget;
-			this.filter = chr -> chr >= '0' && chr <= '9';
-			textWidget.setChangedListener(text -> {
+			((TextFieldWidget) this.widget).setChangedListener(text -> {
 				this.value = text.isEmpty() ? "0" : text;
 				ConfigListWidget.this.update();
 			});
-
-			this.widget.setTooltip(this.tooltip);
 		}
 
 		@Override

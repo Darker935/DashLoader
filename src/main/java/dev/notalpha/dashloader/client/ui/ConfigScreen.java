@@ -41,32 +41,33 @@ public class ConfigScreen extends Screen {
 
 	private void initConfigWidget() {
 		if (this.listInitialized) {
-			this.configWidget.setDimensionsAndPosition(this.width + 45, this.height - 52, 0, 20);
+			this.configWidget.setDimensionsAndPosition(this.width, this.height - 57, 0, 24);
 			return;
 		}
 
 		this.listInitialized = true;
-		this.configWidget = new ConfigListWidget(this.client, this.width + 45, this.height - 52, 20, 20);
+		this.configWidget = new ConfigListWidget(this.client, this.width, this.height - 57, 24, 20);
+		var list = configWidget;
 
 		var config = ConfigHandler.INSTANCE.config;
 
-		this.configWidget.addCategory("config.category.behaviour");
-		this.configWidget.addIntSlider("config.compression", config.compression, 3, 0, 23, v -> config.compression = (byte) v);
-		this.configWidget.addIntField("config.max_caches", config.maxCaches, 5, v -> config.maxCaches = v);
-		this.configWidget.addBoolToggle("config.single_threaded_reading", config.singleThreadedReading, false, v -> config.singleThreadedReading = v);
+		list.addCategory("config.category.behaviour");
+		list.addIntSlider("config.compression", config.compression, 3, 0, 23, v -> config.compression = (byte) v);
+		list.addIntField("config.max_caches", config.maxCaches, 5, v -> config.maxCaches = v);
+		list.addBoolToggle("config.single_threaded_reading", config.singleThreadedReading, false, v -> config.singleThreadedReading = v);
 
-		this.configWidget.addCategory("config.category.visuals");
-		this.configWidget.addBoolToggle("config.caching_toast", config.showCachingToast, true, v -> config.showCachingToast = v);
-		this.configWidget.addBoolToggle("config.default_splashes", config.addDefaultSplashLines, true, v -> config.addDefaultSplashLines = v);
+		list.addCategory("config.category.visuals");
+		list.addBoolToggle("config.caching_toast", config.showCachingToast, true, v -> config.showCachingToast = v);
+		list.addBoolToggle("config.default_splashes", config.addDefaultSplashLines, true, v -> config.addDefaultSplashLines = v);
 
 		var splashes = config.customSplashLines.stream().map(s -> s.replace(";", ";;")).collect(Collectors.joining(";"));
 
-		this.configWidget.addTextField("config.custom_splashes", splashes, "",
+		list.addTextField("config.custom_splashes", splashes, "",
 				v -> config.customSplashLines = v.isEmpty() ? List.of() : Arrays.stream(v.replace(";;", "\u0001").split(";")).map(s -> s.replace("\u0001", ";")).toList());
 
-		this.configWidget.addCategory("config.category.features");
+		list.addCategory("config.category.features");
 		for (Option module : Option.values()) {
-			this.configWidget.addBoolToggle("config." + module.toString(), config.options.getOrDefault(module.toString(), true), true, v -> config.options.put(module.toString(), v));
+			list.addBoolToggle("config." + module.toString(), config.options.getOrDefault(module.toString(), true), true, v -> config.options.put(module.toString(), v));
 		}
 	}
 

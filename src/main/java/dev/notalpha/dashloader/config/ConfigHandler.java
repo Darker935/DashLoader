@@ -60,7 +60,7 @@ public class ConfigHandler {
 			}
 		}
 		if (isVulkanModPresent()) {
-			for (Option option: new Option[]{Option.CACHE_SHADER, Option.UNSAFE_MIPMAP_GENERATION}) {
+			for (Option option: new Option[]{Option.CACHE_SHADER, Option.UNSAFE_MIPMAP_GENERATION, Option.CACHE_ATLASES}) {
 				OPTION_ACTIVE.put(option, false);
 				DashLoader.LOG.warn("Found VulkanMod, Disabling Optional Feature {}", option.name());
 			}

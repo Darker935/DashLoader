@@ -30,7 +30,10 @@ public class SpriteContentModule implements DashModule<SpriteContentModule.Data>
 		assert spriteData != null;
 
 		var map = new IntIntList();
-		task.doForEach(spriteData, (identifier, spriteContents) -> map.put(writer.add(identifier), writer.add(spriteContents)));
+		task.doForEach(spriteData, (identifier, spriteContents) -> {
+			if (spriteContents != null)
+				map.put(writer.add(identifier), writer.add(spriteContents));
+		});
 
 		return new Data(map);
 	}

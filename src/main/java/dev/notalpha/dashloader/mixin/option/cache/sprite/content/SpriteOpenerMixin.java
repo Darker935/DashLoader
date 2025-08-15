@@ -43,6 +43,10 @@ public interface SpriteOpenerMixin {
 	private static void dashloaderSave(Collection<?> collection, Identifier id, Resource resource, CallbackInfoReturnable<SpriteContents> cir) {
 		var dashSpriteData = SpriteContentModule.SOURCE.get(CacheStatus.SAVE);
 		if (dashSpriteData != null) {
+			if (dashSpriteData.containsKey(id)) { // filter out sprites with the same id
+				dashSpriteData.put(id, null);
+				return;
+			}
 			dashSpriteData.put(id, cir.getReturnValue());
 		}
 	}

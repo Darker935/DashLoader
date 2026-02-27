@@ -5,9 +5,9 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.client.model.ModelModule;
-import net.minecraft.client.renderer.block.model.BakedModelManager; // TODO: verify Mojang name
-import net.minecraft.client.renderer.block.model.ModelBaker; // TODO: verify Mojang name
-import net.minecraft.client.resources.model.UnbakedModel; // TODO: verify Mojang name
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -19,9 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
 
-@Mixin(value = BakedModelManager.class, priority = 69420)
+@Mixin(value = ModelBakery.class, priority = 69420)
 public abstract class BakedModelManagerOverride {
-	@WrapOperation(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/model/ModelBaker; // TODO: verifybake(Lnet/minecraft/client/renderer/block/model/ModelBaker$ErrorCollectingSpriteGetter; // TODO: verify)Lnet/minecraft/client/renderer/block/model/ModelBaker$BakedModels; // TODO: verify"))
+	@WrapOperation(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelBaker;bake(Lnet/minecraft/client/resources/model/ModelBaker$ErrorCollectingSpriteGetter;)Lnet/minecraft/client/resources/model/ModelBaker$BakedModels;"))
 	private static ModelBaker.BakedModels yoinkBakedModels(ModelBaker instance, ModelBaker.ErrorCollectingSpriteGetter spriteGetter, Operation<ModelBaker.BakedModels> original) {
 		var bakedModels = original.call(instance, spriteGetter);
 //		ModelModule.ITEM_MODELS_SAVE.visit(CacheStatus.SAVE, map -> map.putAll(bakedModels.itemStackModels()));

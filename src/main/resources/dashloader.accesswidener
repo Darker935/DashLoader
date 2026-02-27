@@ -6,12 +6,12 @@ accessible class net/minecraft/client/renderer/texture/SpriteContents$FrameInfo
 accessible class net/minecraft/client/particle/ParticleManager$SimpleSpriteProvider
 # TODO: verify Mojang name for BitmapFont$BitmapFontGlyph
 accessible class net/minecraft/client/gui/font/providers/BitmapProvider$BitmapFontGlyph
-# TODO: verify Mojang name for BakedModelManager$BakingResult
-accessible class net/minecraft/client/renderer/block/model/BakedModelManager$BakingResult
-# TODO: verify Mojang name for ModelBaker$BakedModelCacheKey
-accessible class net/minecraft/client/renderer/block/model/ModelBaker$BakedModelCacheKey
-# TODO: verify Mojang name for ModelBaker$BakerImpl
-accessible class net/minecraft/client/renderer/block/model/ModelBaker$BakerImpl
+# BakedModelManager (YARN) = ModelBakery (Mojang) in net.minecraft.client.resources.model
+accessible class net/minecraft/client/resources/model/ModelBakery$BakingResult
+# ModelBaker (YARN) = ModelBaker (Mojang) in net.minecraft.client.resources.model
+accessible class net/minecraft/client/resources/model/ModelBaker$BakedModelCacheKey
+# TODO: verify Mojang inner class name for BakerImpl
+accessible class net/minecraft/client/resources/model/ModelBaker$BakerImpl
 # TODO: verify Mojang name for MultipartUnbakedModel$Selector
 accessible class net/minecraft/client/renderer/block/model/MultipartUnbakedModel$Selector
 # TODO: verify Mojang name for TrueTypeFont$LazyGlyph
@@ -47,8 +47,8 @@ accessible field net/minecraft/client/renderer/block/model/ItemTransforms head L
 accessible field net/minecraft/client/renderer/block/model/ItemTransforms gui Lnet/minecraft/client/renderer/block/model/ItemTransform;
 accessible field net/minecraft/client/renderer/block/model/ItemTransforms ground Lnet/minecraft/client/renderer/block/model/ItemTransform;
 accessible field net/minecraft/client/renderer/block/model/ItemTransforms fixed Lnet/minecraft/client/renderer/block/model/ItemTransform;
-# TODO: verify Mojang name for ModelBaker.bakedModelCache
-accessible field net/minecraft/client/renderer/block/model/ModelBaker bakedModelCache Ljava/util/Map;
+# ModelBaker.bakedModelCache (Mojang) in net.minecraft.client.resources.model
+accessible field net/minecraft/client/resources/model/ModelBaker bakedModelCache Ljava/util/Map;
 # TODO: verify Mojang name for WrapperBakedModel.wrapped
 accessible field net/minecraft/client/renderer/block/model/WrapperBakedModel wrapped Lnet/minecraft/client/resources/model/BakedModel;
 # TODO: verify Mojang name for TrueTypeFont$LazyGlyph.<init>

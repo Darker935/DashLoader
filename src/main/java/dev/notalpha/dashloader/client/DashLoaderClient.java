@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.block.model.multipart.Condition; // TODO: v
 import net.minecraft.client.renderer.block.model.multipart.OrCondition;
 import net.minecraft.client.renderer.block.model.multipart.KeyValueCondition;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 
@@ -63,6 +64,7 @@ public class DashLoaderClient implements DashEntrypoint {
 
 		factory.addMissingHandler(ResourceLocation.class, (identifier, registryWriter) -> new DashIdentifier(identifier));
 		factory.addMissingHandler(ModelResourceLocation.class, (moduleIdentifier, registryWriter) -> new DashModelIdentifier(moduleIdentifier));
+		factory.addMissingHandler(Material.class, DashSpriteIdentifier::new);
 
 		factory.addMissingHandler(
 				TextureAtlasSprite.class,

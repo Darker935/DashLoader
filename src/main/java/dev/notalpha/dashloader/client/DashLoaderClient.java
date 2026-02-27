@@ -27,7 +27,7 @@ import dev.notalpha.dashloader.client.sprite.content.SpriteContentModule;
 import dev.notalpha.dashloader.client.sprite.stitch.SpriteStitcherModule;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.renderer.block.model.multipart.AndCondition;
-import net.minecraft.client.renderer.block.model.multipart.Condition; // TODO: verify Mojang name (MultipartModelSelector)
+import net.minecraft.client.renderer.block.model.multipart.Condition;
 import net.minecraft.client.renderer.block.model.multipart.OrCondition;
 import net.minecraft.client.renderer.block.model.multipart.KeyValueCondition;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -71,17 +71,17 @@ public class DashLoaderClient implements DashEntrypoint {
 				DashSprite::new
 		);
 		factory.addMissingHandler(
-				MultipartModelSelector.class,
+				Condition.class,
 				(selector, writer) -> {
-					if (selector == MultipartModelSelector.TRUE) {
+					if (selector == Condition.TRUE) {
 						return new DashStaticPredicate(true);
-					} else if (selector == MultipartModelSelector.FALSE) {
+					} else if (selector == Condition.FALSE) {
 						return new DashStaticPredicate(false);
-					} else if (selector instanceof AndMultipartModelSelector s) {
+					} else if (selector instanceof AndCondition s) {
 						return new DashAndPredicate(s, writer);
-					} else if (selector instanceof OrMultipartModelSelector s) {
+					} else if (selector instanceof OrCondition s) {
 						return new DashOrPredicate(s, writer);
-					} else if (selector instanceof SimpleMultipartModelSelector s) {
+					} else if (selector instanceof KeyValueCondition s) {
 						return new DashSimplePredicate(s);
 					} else if (selector instanceof BooleanSelector s) {
 						return new DashStaticPredicate(s.selector);

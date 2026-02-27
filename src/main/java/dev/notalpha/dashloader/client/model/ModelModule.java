@@ -24,8 +24,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.renderer.block.model.*; // TODO: verify Mojang package
-import net.minecraft.client.renderer.block.model.multipart.Selector;
+import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.block.model.multipart.Condition;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -57,7 +57,7 @@ public class ModelModule implements DashModule<ModelModule.Data> {
 //	public static final CachingData<ArrayList<ResourceLocation>> MISSING_ITEM_MODELS = new CachingData<>(CacheStatus.LOAD);
 
 
-	public static final CachingData<HashMap<MultipartUnbakedModel, Pair<List<MultipartModelComponent>, StateDefinition<Block, BlockState>>>> MULTIPART_PREDICATES = new CachingData<>(CacheStatus.SAVE);
+	public static final CachingData<HashMap<MultipartUnbakedModel, Pair<List<MultipartUnbakedModel.Selector>, StateDefinition<Block, BlockState>>>> MULTIPART_PREDICATES = new CachingData<>(CacheStatus.SAVE);
 	public static final CachingData<HashMap<BakedModel, MultipartUnbakedModel>> UNBAKED_TO_BAKED_MULTIPART_MODELS = new CachingData<>(CacheStatus.SAVE);
 
 	public static StateDefinition<Block, BlockState> getStateManager(ResourceLocation identifier) {

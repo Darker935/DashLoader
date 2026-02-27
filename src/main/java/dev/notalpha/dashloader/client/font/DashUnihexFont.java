@@ -5,8 +5,8 @@ import dev.notalpha.dashloader.api.collection.IntObjectList;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.mixin.accessor.UnihexFontAccessor;
-import net.minecraft.client.gui.font.GlyphContainer; // TODO: verify Mojang name
-import net.minecraft.client.gui.font.providers.UnihexProvider; // TODO: verify Mojang name
+import net.minecraft.client.gui.font.GlyphContainer;
+import net.minecraft.client.gui.font.UnihexFont;
 
 public final class DashUnihexFont implements DashObject<UnihexFont, UnihexFont> {
 	public final IntObjectList<UnihexFont.UnicodeTextureGlyph> glyphs;

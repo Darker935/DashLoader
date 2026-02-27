@@ -4,7 +4,6 @@ accessible class net/minecraft/client/renderer/texture/SpriteContents$AnimatedTe
 accessible class net/minecraft/client/renderer/texture/SpriteContents$FrameInfo
 # TODO: verify Mojang name for ParticleManager$SimpleSpriteProvider
 accessible class net/minecraft/client/particle/ParticleManager$SimpleSpriteProvider
-# TODO: verify Mojang name for BitmapFont$BitmapFontGlyph
 accessible class net/minecraft/client/gui/font/providers/BitmapProvider$BitmapFontGlyph
 # BakedModelManager (YARN) = ModelBakery (Mojang) in net.minecraft.client.resources.model
 accessible class net/minecraft/client/resources/model/ModelBakery$BakingResult

@@ -5,41 +5,41 @@ import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.mixin.accessor.SimpleMultipartModelSelectorAccessor;
 import net.minecraft.client.renderer.block.model.multipart.KeyValueCondition;
 
-public final class DashSimplePredicate implements DashObject<SimpleMultipartModelSelector, SimpleMultipartModelSelector> {
-	public final String key;
-	public final String valueString;
+public final class DashSimplePredicate implements DashObject<KeyValueCondition, KeyValueCondition> {
+public final String key;
+public final String valueString;
 
-	public DashSimplePredicate(String key, String valueString) {
-		this.key = key;
-		this.valueString = valueString;
-	}
+public DashSimplePredicate(String key, String valueString) {
+this.key = key;
+this.valueString = valueString;
+}
 
-	public DashSimplePredicate(SimpleMultipartModelSelector simpleMultipartModelSelector) {
-		var access = ((SimpleMultipartModelSelectorAccessor) simpleMultipartModelSelector);
-		this.key = access.getKey();
-		this.valueString = access.getValueString();
-	}
+public DashSimplePredicate(KeyValueCondition simpleMultipartModelSelector) {
+var access = ((SimpleMultipartModelSelectorAccessor) simpleMultipartModelSelector);
+this.key = access.getKey();
+this.valueString = access.getValueString();
+}
 
-	@Override
-	public SimpleMultipartModelSelector export(RegistryReader handler) {
-		return new SimpleMultipartModelSelector(this.key, this.valueString);
-	}
+@Override
+public KeyValueCondition export(RegistryReader handler) {
+return new KeyValueCondition(this.key, this.valueString);
+}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+@Override
+public boolean equals(Object o) {
+if (this == o) return true;
+if (o == null || getClass() != o.getClass()) return false;
 
-		DashSimplePredicate that = (DashSimplePredicate) o;
+DashSimplePredicate that = (DashSimplePredicate) o;
 
-		if (!key.equals(that.key)) return false;
-		return valueString.equals(that.valueString);
-	}
+if (!key.equals(that.key)) return false;
+return valueString.equals(that.valueString);
+}
 
-	@Override
-	public int hashCode() {
-		int result = key.hashCode();
-		result = 31 * result + valueString.hashCode();
-		return result;
-	}
+@Override
+public int hashCode() {
+int result = key.hashCode();
+result = 31 * result + valueString.hashCode();
+return result;
+}
 }

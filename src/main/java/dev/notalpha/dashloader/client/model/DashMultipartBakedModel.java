@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.function.Function; // TODO: was SpriteGetter - verify replacement with Function or equivalent
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.renderer.block.model.MultiPartBakedModel;
-import net.minecraft.client.renderer.block.model.multipart.Condition; // TODO: verify Mojang name (MultipartModelSelector)
+import net.minecraft.client.renderer.block.model.multipart.Condition;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class DashMultipartBakedModel implements DashObject<MultiPartBakedModel, 
 		this.components.forEach(component -> {
 			Dazy<? extends BakedModel> compModel = reader.get(component.model);
 			ResourceLocation compIdentifier = reader.get(component.identifier);
-			MultipartModelSelector compSelector = reader.get(component.selector);
+			Condition compSelector = reader.get(component.selector);
 			Predicate<BlockState> predicate = compSelector.getPredicate(ModelModule.getStateManager(compIdentifier));
 			componentsOut.add(new DazyImpl.Component(compModel, predicate));
 		});

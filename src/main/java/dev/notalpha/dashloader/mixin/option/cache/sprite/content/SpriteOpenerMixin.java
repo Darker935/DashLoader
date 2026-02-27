@@ -4,10 +4,10 @@ import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.client.sprite.content.SpriteContentModule;
 import dev.notalpha.dashloader.mixin.accessor.SpriteContentsAccessor;
 import net.minecraft.client.renderer.texture.SpriteContents;
-import net.minecraft.client.renderer.texture.SpriteOpener; // TODO: verify Mojang name
+import net.minecraft.client.renderer.texture.SpriteOpener;
 import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.server.packs.metadata.MetadataSectionSerializer; // TODO: verify Mojang name (ResourceMetadata)
-import net.minecraft.server.packs.metadata.MetadataSectionSerializer; // TODO: verify Mojang name
+import net.minecraft.server.packs.resources.ResourceMetadata;
+import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,35 +19,35 @@ import java.util.Collection;
 
 @Mixin(SpriteOpener.class)
 public interface SpriteOpenerMixin {
-	@Inject(
-			method = "method_52851",
-			cancellable = true,
-			locals = LocalCapture.CAPTURE_FAILEXCEPTION,
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/resources/Resource;getInputStream()Ljava/io/InputStream;", shift = At.Shift.BEFORE)
-	)
-	private static void dashloaderLoad(Collection<ResourceMetadataSerializer<?>> metadatas, ResourceLocation id, Resource resource, CallbackInfoReturnable<SpriteContents> cir, ResourceMetadata resourceMetadata) {
-		var dashSpriteData = SpriteContentModule.SOURCE.get(CacheStatus.LOAD);
-		if (dashSpriteData != null) {
-			SpriteContents spriteContents = dashSpriteData.get(id);
-			if (spriteContents != null) {
-				((SpriteContentsAccessor) spriteContents).setMetadata(resourceMetadata);
-				cir.setReturnValue(spriteContents);
-			}
-		}
-	}
+@Inject(
+method = "method_52851",
+cancellable = true,
+locals = LocalCapture.CAPTURE_FAILEXCEPTION,
+at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/resources/Resource;getInputStream()Ljava/io/InputStream;", shift = At.Shift.BEFORE)
+)
+private static void dashloaderLoad(Collection<MetadataSectionSerializer<?>> metadatas, ResourceLocation id, Resource resource, CallbackInfoReturnable<SpriteContents> cir, ResourceMetadata resourceMetadata) {
+var dashSpriteData = SpriteContentModule.SOURCE.get(CacheStatus.LOAD);
+if (dashSpriteData != null) {
+SpriteContents spriteContents = dashSpriteData.get(id);
+if (spriteContents != null) {
+((SpriteContentsAccessor) spriteContents).setMetadata(resourceMetadata);
+cir.setReturnValue(spriteContents);
+}
+}
+}
 
-	@Inject(
-			method = "method_52851",
-			at = @At(value = "RETURN")
-	)
-	private static void dashloaderSave(Collection<?> collection, ResourceLocation id, Resource resource, CallbackInfoReturnable<SpriteContents> cir) {
-		var dashSpriteData = SpriteContentModule.SOURCE.get(CacheStatus.SAVE);
-		if (dashSpriteData != null) {
-			if (dashSpriteData.containsKey(id)) { // filter out sprites with the same id
-				dashSpriteData.put(id, null);
-				return;
-			}
-			dashSpriteData.put(id, cir.getReturnValue());
-		}
-	}
+@Inject(
+method = "method_52851",
+at = @At(value = "RETURN")
+)
+private static void dashloaderSave(Collection<?> collection, ResourceLocation id, Resource resource, CallbackInfoReturnable<SpriteContents> cir) {
+var dashSpriteData = SpriteContentModule.SOURCE.get(CacheStatus.SAVE);
+if (dashSpriteData != null) {
+if (dashSpriteData.containsKey(id)) {
+dashSpriteData.put(id, null);
+return;
+}
+dashSpriteData.put(id, cir.getReturnValue());
+}
+}
 }

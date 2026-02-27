@@ -15,7 +15,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.SplashScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.components.toasts.Toast;
-import net.minecraft.server.packs.resources.PreparableReloadListener; // TODO: verify Mojang name (ResourceReload)
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -33,7 +33,7 @@ public class SplashScreenMixin {
 	private long reloadCompleteTime;
 	@Shadow
 	@Final
-	private PreparableReloadListener reload; // TODO: verify Mojang name
+	private PreparableReloadListener reload;
 	@Mutable
 	@Shadow
 	@Final
@@ -95,7 +95,7 @@ public class SplashScreenMixin {
 
 	@Inject(
 			method = "render",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/resources/PreparableReloadListener;isComplete()Z // TODO: verify Mojang name", shift = At.Shift.BEFORE)
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/resources/PreparableReloadListener;isComplete()Z", shift = At.Shift.BEFORE)
 	)
 	private void removeMinimumTime(GuiGraphics context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
 		if (this.reloadCompleteTime == -1L && this.reload.isComplete()) {

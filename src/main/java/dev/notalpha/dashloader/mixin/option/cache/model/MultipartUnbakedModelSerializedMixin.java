@@ -4,8 +4,7 @@ import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.client.model.ModelModule;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.renderer.block.model.MultipartUnbakedModel; // TODO: verify Mojang name
-import net.minecraft.client.renderer.block.model.multipart.Selector;
+import net.minecraft.client.renderer.block.model.MultipartUnbakedModel;
 import net.minecraft.world.level.block.state.StateDefinition;
 import org.apache.commons.lang3.tuple.Pair;
 import org.spongepowered.asm.mixin.Final;
@@ -21,7 +20,7 @@ import java.util.List;
 public abstract class MultipartUnbakedModelSerializedMixin {
 	@Shadow
 	@Final
-	private List<MultipartModelComponent> selectors;
+	private List<MultipartUnbakedModel.Selector> selectors;
 
 	@Inject(method = "toModel", at = @At(value = "RETURN"))
 	private void thing(StateDefinition<Block, BlockState> stateManager, CallbackInfoReturnable<MultipartUnbakedModel> cir) {

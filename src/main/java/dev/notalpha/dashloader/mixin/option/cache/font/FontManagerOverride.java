@@ -4,7 +4,8 @@ import dev.notalpha.dashloader.DashLoader;
 import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.client.font.FontModule;
 import dev.notalpha.dashloader.mixin.accessor.FontManagerProviderIndexAccessor;
-import net.minecraft.client.gui.font.FontManager; // TODO: verify Mojang name
+import net.minecraft.client.gui.font.FontManager;
+import net.minecraft.client.gui.font.providers.GlyphProvider;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.spongepowered.asm.mixin.Mixin;

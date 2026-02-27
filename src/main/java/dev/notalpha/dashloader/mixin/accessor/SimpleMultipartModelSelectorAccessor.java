@@ -4,11 +4,11 @@ import net.minecraft.client.renderer.block.model.multipart.KeyValueCondition;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(SimpleMultipartModelSelector.class)
+@Mixin(KeyValueCondition.class)
 public interface SimpleMultipartModelSelectorAccessor {
-	@Accessor
-	String getKey();
+@Accessor
+String getKey();
 
-	@Accessor
-	String getValueString();
+@Accessor
+String getValueString();
 }

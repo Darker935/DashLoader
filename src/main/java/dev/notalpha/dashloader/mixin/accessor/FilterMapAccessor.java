@@ -1,6 +1,6 @@
 package dev.notalpha.dashloader.mixin.accessor;
 
-import net.minecraft.client.gui.font.FontSet; // TODO: verify Mojang name (FontFilterType)
+import net.minecraft.client.gui.font.FontFilterType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -8,6 +8,6 @@ import java.util.Map;
 
 @Mixin(FontFilterType.FilterMap.class)
 public interface FilterMapAccessor {
-	@Accessor
-	Map<FontFilterType, Boolean> getActiveFilters();
+@Accessor
+Map<FontFilterType, Boolean> getActiveFilters();
 }

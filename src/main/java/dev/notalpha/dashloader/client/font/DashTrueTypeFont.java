@@ -8,10 +8,9 @@ import dev.notalpha.dashloader.misc.UnsafeHelper;
 import dev.notalpha.dashloader.mixin.accessor.TrueTypeFontAccessor;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.font.FreeTypeUtil; // TODO: verify Mojang name
-import net.minecraft.client.gui.font.GlyphContainer; // TODO: verify Mojang name
-import net.minecraft.client.gui.font.providers.TrueTypeGlyphProviderBuilder; // TODO: verify Mojang name
-import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.client.gui.font.FreeTypeUtil;
+import net.minecraft.client.gui.font.GlyphContainer;
+import net.minecraft.client.gui.font.TrueTypeFont;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;

@@ -3,14 +3,14 @@ package dev.notalpha.dashloader.client.shader;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
-import net.minecraft.client.gl.CompiledShader; // TODO: verify Mojang name
-import net.minecraft.client.gl.ShaderLoader.ShaderSourceKey; // TODO: verify Mojang name
+import com.mojang.blaze3d.shaders.ShaderType;
+import net.minecraft.client.renderer.ShaderManager;
 
-public class DashShaderSourceKey implements DashObject<ShaderSourceKey, ShaderSourceKey> {
+public class DashShaderSourceKey implements DashObject<ShaderManager.ShaderSourceKey, ShaderManager.ShaderSourceKey> {
 	public final int id;
 	public final int type;
 
-	public DashShaderSourceKey(ShaderSourceKey key, RegistryWriter writer) {
+	public DashShaderSourceKey(ShaderManager.ShaderSourceKey key, RegistryWriter writer) {
 		this.id = writer.add(key.id());
 		this.type = key.type().ordinal();
 	}
@@ -21,7 +21,7 @@ public class DashShaderSourceKey implements DashObject<ShaderSourceKey, ShaderSo
 	}
 
 	@Override
-	public ShaderSourceKey export(RegistryReader reader) {
-		return new ShaderSourceKey(reader.get(this.id), CompiledShader.Type.values()[this.type]);
+	public ShaderManager.ShaderSourceKey export(RegistryReader reader) {
+		return new ShaderManager.ShaderSourceKey(reader.get(this.id), ShaderType.values()[this.type]);
 	}
 }

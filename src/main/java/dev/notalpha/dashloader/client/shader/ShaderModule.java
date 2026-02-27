@@ -11,16 +11,16 @@ import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.config.ConfigHandler;
 import dev.notalpha.dashloader.config.Option;
 import dev.notalpha.taski.builtin.StepTask;
-import net.minecraft.client.gl.ShaderLoader; // TODO: verify Mojang name
-import net.minecraft.client.gl.ShaderProgramDefinition; // TODO: verify Mojang name
+import net.minecraft.client.renderer.ShaderManager;
+import net.minecraft.client.renderer.ShaderProgramConfig;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ShaderModule implements DashModule<ShaderModule.Data> {
-	public static final CachingData<HashMap<ShaderLoader.ShaderSourceKey, String>> SHADER_SOURCES = new CachingData<>();
-	public static final CachingData<HashMap<ResourceLocation, ShaderProgramDefinition>> SHADER_DEFINITIONS = new CachingData<>();
+	public static final CachingData<HashMap<ShaderManager.ShaderSourceKey, String>> SHADER_SOURCES = new CachingData<>();
+	public static final CachingData<HashMap<ResourceLocation, ShaderProgramConfig>> SHADER_DEFINITIONS = new CachingData<>();
 //	public static final CachingData<HashMap<ResourceLocation, PostEffectPipeline>> POST_EFFECTS = new CachingData<>(); // TODO
 
 
@@ -35,7 +35,6 @@ public class ShaderModule implements DashModule<ShaderModule.Data> {
 	public Data save(RegistryWriter factory, StepTask task) {
 		var data1 = SHADER_SOURCES.get(CacheStatus.SAVE);
 		var data2 = SHADER_DEFINITIONS.get(CacheStatus.SAVE);
-//		var data3 = POST_EFFECTS.get(CacheStatus.SAVE);
 
 		if (data1 == null || data2 == null) {
 			return null;
@@ -43,7 +42,6 @@ public class ShaderModule implements DashModule<ShaderModule.Data> {
 
 		var out = new IntObjectList<String>(new ArrayList<>(data1.size()));
 		var out2 = new IntIntList(new ArrayList<>(data2.size()));
-//		var out3 = new IntIntList(new ArrayList<>(data3.size()));
 
 		data1.forEach((identifier, entry) -> {
 			out.put(factory.add(identifier), entry);
@@ -62,8 +60,8 @@ public class ShaderModule implements DashModule<ShaderModule.Data> {
 
 	@Override
 	public void load(Data data, RegistryReader reader, StepTask task) {
-		var out1 = new HashMap<ShaderLoader.ShaderSourceKey, String>(data.data1.list().size());
-		var out2 = new HashMap<ResourceLocation, ShaderProgramDefinition>(data.data2.list().size());
+		var out1 = new HashMap<ShaderManager.ShaderSourceKey, String>(data.data1.list().size());
+		var out2 = new HashMap<ResourceLocation, ShaderProgramConfig>(data.data2.list().size());
 //		var out3 = new HashMap<ResourceLocation, PostEffectPipeline>(data.data3.list().size());
 		data.data1.forEach((key, value) -> out1.put(reader.get(key), value));
 		data.data2.forEach((key, value) -> out2.put(reader.get(key), reader.get(value)));

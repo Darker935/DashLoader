@@ -3,18 +3,18 @@ package dev.notalpha.dashloader.client.shader;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
-import net.minecraft.client.gl.ShaderProgramDefinition; // TODO: verify Mojang name
+import net.minecraft.client.renderer.ShaderProgramConfig;
 
 import java.util.ArrayList;
 
-public class DashShaderProgramDefinition implements DashObject<ShaderProgramDefinition, ShaderProgramDefinition> {
+public class DashShaderProgramDefinition implements DashObject<ShaderProgramConfig, ShaderProgramConfig> {
 	public final int vertex;
 	public final int fragment;
 	public final String[] samplers;
 	public final int[] uniforms;
 	public final int defines;
 
-	public DashShaderProgramDefinition(ShaderProgramDefinition thing, RegistryWriter writer) {
+	public DashShaderProgramDefinition(ShaderProgramConfig thing, RegistryWriter writer) {
 		this.vertex = writer.add(thing.vertex());
 		this.fragment = writer.add(thing.fragment());
 		this.samplers = new String[thing.samplers().size()];
@@ -37,18 +37,18 @@ public class DashShaderProgramDefinition implements DashObject<ShaderProgramDefi
 	}
 
 	@Override
-	public ShaderProgramDefinition export(RegistryReader reader) {
-		var samplers = new ArrayList<ShaderProgramDefinition.Sampler>(this.samplers.length);
-		var uniforms = new ArrayList<ShaderProgramDefinition.Uniform>(this.uniforms.length);
+	public ShaderProgramConfig export(RegistryReader reader) {
+		var samplers = new ArrayList<ShaderProgramConfig.Sampler>(this.samplers.length);
+		var uniforms = new ArrayList<ShaderProgramConfig.Uniform>(this.uniforms.length);
 
 		for (String sampler : this.samplers) {
-			samplers.add(new ShaderProgramDefinition.Sampler(sampler));
+			samplers.add(new ShaderProgramConfig.Sampler(sampler));
 		}
 		for (int uniform : this.uniforms) {
 			uniforms.add(reader.get(uniform));
 		}
 
-		return new ShaderProgramDefinition(reader.get(this.vertex), reader.get(this.fragment),
+		return new ShaderProgramConfig(reader.get(this.vertex), reader.get(this.fragment),
 				samplers, uniforms, reader.get(this.defines));
 	}
 }

@@ -2,9 +2,9 @@ package dev.notalpha.dashloader.mixin.accessor;
 
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.minecraft.client.gl.GlUniform;
-import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.ShaderProgramDefinition;
+import com.mojang.blaze3d.shaders.Uniform;
+import net.minecraft.client.renderer.CompiledShaderProgram;
+import net.minecraft.client.renderer.ShaderProgramConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -12,14 +12,14 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import java.util.List;
 import java.util.Map;
 
-@Mixin(ShaderProgram.class)
+@Mixin(CompiledShaderProgram.class)
 public interface ShaderProgramAccessor {
 	@Accessor
-	List<ShaderProgramDefinition.Sampler> getSamplers();
+	List<ShaderProgramConfig.Sampler> getSamplers();
 
 	@Accessor
 	@Mutable
-	void setSamplers(List<ShaderProgramDefinition.Sampler> samplers);
+	void setSamplers(List<ShaderProgramConfig.Sampler> samplers);
 
 	@Accessor
 	Object2IntMap<String> getSamplerTextures();
@@ -36,22 +36,22 @@ public interface ShaderProgramAccessor {
 	void setSamplerLocations(IntList samplerLocations);
 
 	@Accessor
-	List<GlUniform> getUniforms();
+	List<Uniform> getUniforms();
 
 	@Accessor
 	@Mutable
-	void setUniforms(List<GlUniform> uniforms);
+	void setUniforms(List<Uniform> uniforms);
 
 	@Accessor
-	Map<String, GlUniform> getUniformsByName();
-
-	@Accessor
-	@Mutable
-	void setUniformsByName(Map<String, GlUniform> uniformsByName);
+	Map<String, Uniform> getUniformsByName();
 
 	@Accessor
 	@Mutable
-	Map<String, ShaderProgramDefinition.Uniform> getUniformDefinitionsByName();
+	void setUniformsByName(Map<String, Uniform> uniformsByName);
+
+	@Accessor
+	@Mutable
+	Map<String, ShaderProgramConfig.Uniform> getUniformDefinitionsByName();
 
 	@Accessor
 	@Mutable

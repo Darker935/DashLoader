@@ -2,19 +2,19 @@ package dev.notalpha.dashloader.client.shader;
 
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
-import net.minecraft.client.gl.ShaderProgramDefinition; // TODO: verify Mojang name
+import net.minecraft.client.renderer.ShaderProgramConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class DashShaderProgramDefinitionUniform implements DashObject<ShaderProgramDefinition.Uniform, ShaderProgramDefinition.Uniform> {
+public class DashShaderProgramDefinitionUniform implements DashObject<ShaderProgramConfig.Uniform, ShaderProgramConfig.Uniform> {
 	public final String name;
 	public final String type;
 	public final int count;
 	public final float[] values;
 
-	public DashShaderProgramDefinitionUniform(ShaderProgramDefinition.Uniform uniform) {
+	public DashShaderProgramDefinitionUniform(ShaderProgramConfig.Uniform uniform) {
 		this.name = uniform.name();
 		this.type = uniform.type();
 		this.count = uniform.count();
@@ -32,11 +32,11 @@ public class DashShaderProgramDefinitionUniform implements DashObject<ShaderProg
 	}
 
 	@Override
-	public ShaderProgramDefinition.Uniform export(RegistryReader reader) {
+	public ShaderProgramConfig.Uniform export(RegistryReader reader) {
 		List<Float> values = new ArrayList<>(this.values.length);
 		for (float f : this.values) {
 			values.add(f);
 		}
-		return new ShaderProgramDefinition.Uniform(this.name, this.type, this.count, values);
+		return new ShaderProgramConfig.Uniform(this.name, this.type, this.count, values);
 	}
 }

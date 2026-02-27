@@ -11,11 +11,12 @@ import dev.notalpha.dashloader.client.model.components.DashModelTransformation;
 import dev.notalpha.dashloader.client.sprite.content.DashSprite;
 import dev.notalpha.dashloader.mixin.accessor.BasicBakedModelAccessor;
 import dev.notalpha.hyphen.scan.annotations.DataNullable;
-import java.util.function.Function; // TODO: was SpriteGetter - verify replacement with Function or equivalent
+import java.util.function.Function;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.SimpleBakedModel;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 
@@ -141,7 +142,7 @@ public final class DashBasicBakedModel implements DashObject<SimpleBakedModel, D
 		}
 
 		@Override
-		protected SimpleBakedModel resolve(Function<ResourceLocation, TextureAtlasSprite> /* TODO: verify replacement */ spriteLoader) {
+		protected SimpleBakedModel resolve(Function<Material, TextureAtlasSprite> spriteLoader) {
 			List<BakedQuad> quads = this.quads.get(spriteLoader);
 			var faceQuadsOut = new HashMap<Direction, List<BakedQuad>>();
 			this.faceQuads.forEach((direction, dazy) -> faceQuadsOut.put(direction, dazy.get(spriteLoader)));

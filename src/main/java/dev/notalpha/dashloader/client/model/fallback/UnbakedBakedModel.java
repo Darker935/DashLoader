@@ -1,8 +1,9 @@
 package dev.notalpha.dashloader.client.model.fallback;
 
 import dev.notalpha.dashloader.client.Dazy;
-import net.minecraft.client.renderer.block.model.*; // TODO: verify Mojang package
+import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.resources.model.BakedModel;
 
 /**
  * An unbaked model which holds a baked model, used for fallback to reuse cached models.

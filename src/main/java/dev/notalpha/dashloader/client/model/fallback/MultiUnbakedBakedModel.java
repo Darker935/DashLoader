@@ -2,8 +2,9 @@ package dev.notalpha.dashloader.client.model.fallback;
 
 import dev.notalpha.dashloader.client.Dazy;
 import dev.notalpha.dashloader.client.model.components.DashModelBakeSettings;
-import net.minecraft.client.renderer.block.model.*; // TODO: verify Mojang package
+import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.resources.model.BakedModel;
 
 import java.util.Map;
 

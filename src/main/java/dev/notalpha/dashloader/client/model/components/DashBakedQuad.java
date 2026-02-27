@@ -5,9 +5,10 @@ import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.client.Dazy;
 import dev.notalpha.dashloader.client.sprite.content.DashSprite;
-import java.util.function.Function; // TODO: was SpriteGetter - verify replacement with Function or equivalent
+import java.util.function.Function;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 
 import java.util.Arrays;
@@ -80,7 +81,7 @@ public final class DashBakedQuad implements DashObject<BakedQuad, DashBakedQuad.
 		}
 
 		@Override
-		protected BakedQuad resolve(Function<ResourceLocation, TextureAtlasSprite> /* TODO: verify replacement */ spriteLoader) {
+		protected BakedQuad resolve(Function<Material, TextureAtlasSprite> spriteLoader) {
 			TextureAtlasSprite sprite = this.sprite.get(spriteLoader);
 			return new BakedQuad(vertexData, colorIndex, face, sprite, shade, lightEmission);
 		}

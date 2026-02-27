@@ -8,10 +8,12 @@ import dev.notalpha.dashloader.client.Dazy;
 import dev.notalpha.dashloader.mixin.accessor.MultipartBakedModelAccessor;
 import dev.notalpha.dashloader.mixin.accessor.MultipartModelComponentAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import java.util.function.Function; // TODO: was SpriteGetter - verify replacement with Function or equivalent
+import java.util.function.Function;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.renderer.block.model.MultiPartBakedModel;
 import net.minecraft.client.renderer.block.model.multipart.Condition;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -117,7 +119,7 @@ public class DashMultipartBakedModel implements DashObject<MultiPartBakedModel, 
 		}
 
 		@Override
-		protected MultiPartBakedModel resolve(Function<ResourceLocation, TextureAtlasSprite> /* TODO: verify replacement */ spriteLoader) {
+		protected MultiPartBakedModel resolve(Function<Material, TextureAtlasSprite> spriteLoader) {
 			List<MultiPartBakedModel.Selector> componentsOut = new ArrayList<>(this.components.size());
 
 			for (Component component : components) {

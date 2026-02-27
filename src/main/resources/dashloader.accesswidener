@@ -27,17 +27,16 @@ accessible class net/minecraft/client/gui/font/UnihexFont$FontImage32x16
 accessible class net/minecraft/client/gui/font/FontSet$GlyphPair
 # TODO: verify Mojang name for FontManager$ProviderIndex
 accessible class net/minecraft/client/gui/font/FontManager$ProviderIndex
-# TODO: verify Mojang name for ShaderLoader$Cache
-accessible class net/minecraft/client/gl/ShaderLoader$Cache
-# TODO: verify Mojang name for ShaderLoader$ShaderSourceKey
-accessible class net/minecraft/client/gl/ShaderLoader$ShaderSourceKey
+# ShaderManager (Mojang) = ShaderLoader (YARN) in net.minecraft.client.renderer
+accessible class net/minecraft/client/renderer/ShaderManager$Cache
+# ShaderManager.ShaderSourceKey (Mojang) = ShaderLoader.ShaderSourceKey (YARN)
+accessible class net/minecraft/client/renderer/ShaderManager$ShaderSourceKey
 # TODO: verify VertexConsumerProvider$Immediate equivalent in Mojang (was DrawContext.vertexConsumers)
 accessible field net/minecraft/client/gui/GuiGraphics vertexConsumers Lcom/mojang/blaze3d/vertex/VertexConsumer;
 # TODO: verify Mojang name for ZipFileWrapper (was ZipResourcePack$ZipFileWrapper)
 accessible class net/minecraft/server/packs/FilePackResources$SharedZipFileAccess
 accessible class net/minecraft/client/Minecraft$LoadingContext
-# TODO: verify Mojang name for ShaderLoader$Cache.shaderPrograms
-accessible field net/minecraft/client/gl/ShaderLoader$Cache shaderPrograms Ljava/util/Map;
+accessible field net/minecraft/client/renderer/ShaderManager$Cache shaderPrograms Ljava/util/Map;
 accessible field net/minecraft/client/renderer/block/model/ItemTransforms thirdPersonLeftHand Lnet/minecraft/client/renderer/block/model/ItemTransform;
 accessible field net/minecraft/client/renderer/block/model/ItemTransforms thirdPersonRightHand Lnet/minecraft/client/renderer/block/model/ItemTransform;
 accessible field net/minecraft/client/renderer/block/model/ItemTransforms firstPersonLeftHand Lnet/minecraft/client/renderer/block/model/ItemTransform;
@@ -60,19 +59,5 @@ accessible method net/minecraft/client/gui/font/UnihexFont$FontImage16x16 <init>
 accessible method net/minecraft/client/gui/font/UnihexFont$FontImage32x16 <init> ([II)V
 # TODO: verify Mojang name for UnihexFont$UnicodeTextureGlyph.<init> and UnihexFont$BitmapGlyph
 accessible method net/minecraft/client/gui/font/UnihexFont$UnicodeTextureGlyph <init> (Lnet/minecraft/client/gui/font/UnihexFont$BitmapGlyph;II)V
-# TODO: verify Mojang name for ShaderLoader$ShaderSourceKey.<init> and CompiledShader$Type
-accessible method net/minecraft/client/gl/ShaderLoader$ShaderSourceKey <init> (Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/gl/CompiledShader$Type;)V
-# TODO: verify Mojang name for ShaderProgram and GlUniform (ShaderInstance/Uniform in Mojang?)
-mutable field net/minecraft/client/gl/ShaderProgram modelViewMat Lnet/minecraft/client/gl/GlUniform;
-mutable field net/minecraft/client/gl/ShaderProgram projectionMat Lnet/minecraft/client/gl/GlUniform;
-mutable field net/minecraft/client/gl/ShaderProgram textureMat Lnet/minecraft/client/gl/GlUniform;
-mutable field net/minecraft/client/gl/ShaderProgram screenSize Lnet/minecraft/client/gl/GlUniform;
-mutable field net/minecraft/client/gl/ShaderProgram colorModulator Lnet/minecraft/client/gl/GlUniform;
-mutable field net/minecraft/client/gl/ShaderProgram light0Direction Lnet/minecraft/client/gl/GlUniform;
-mutable field net/minecraft/client/gl/ShaderProgram light1Direction Lnet/minecraft/client/gl/GlUniform;
-mutable field net/minecraft/client/gl/ShaderProgram fogStart Lnet/minecraft/client/gl/GlUniform;
-mutable field net/minecraft/client/gl/ShaderProgram fogEnd Lnet/minecraft/client/gl/GlUniform;
-mutable field net/minecraft/client/gl/ShaderProgram fogColor Lnet/minecraft/client/gl/GlUniform;
-mutable field net/minecraft/client/gl/ShaderProgram fogShape Lnet/minecraft/client/gl/GlUniform;
-mutable field net/minecraft/client/gl/ShaderProgram lineWidth Lnet/minecraft/client/gl/GlUniform;
-mutable field net/minecraft/client/gl/ShaderProgram gameTime Lnet/minecraft/client/gl/GlUniform;
+accessible method net/minecraft/client/renderer/ShaderManager$ShaderSourceKey <init> (Lnet/minecraft/resources/ResourceLocation;Lcom/mojang/blaze3d/shaders/ShaderType;)V
+

@@ -1,6 +1,6 @@
 package dev.notalpha.dashloader.mixin.option.misc;
 
-import com.mojang.math.ItemTransform;
+import com.mojang.math.Transformation;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

@@ -3,8 +3,8 @@ package dev.notalpha.dashloader.client.model.components;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
-import net.minecraft.client.resources.model.ModelState; // TODO: verify Mojang name
-import com.mojang.math.ItemTransform;
+import com.mojang.math.Transformation;
+import net.minecraft.client.resources.model.ModelState;
 import org.joml.Matrix4f;
 
 import java.util.Arrays;

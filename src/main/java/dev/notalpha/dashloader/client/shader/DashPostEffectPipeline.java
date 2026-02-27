@@ -4,7 +4,7 @@ import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.collection.IntIntList;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
-import net.minecraft.client.gl.PostEffectPipeline; // TODO: verify Mojang name
+import net.minecraft.client.renderer.PostEffectPipeline;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;

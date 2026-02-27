@@ -3,8 +3,8 @@ package dev.notalpha.dashloader.client.shader;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
-import net.minecraft.client.gl.Defines; // TODO: verify Mojang name
-import net.minecraft.client.gl.ShaderProgramKey; // TODO: verify Mojang name
+import net.minecraft.client.renderer.Defines;
+import net.minecraft.client.renderer.ShaderProgramKey;
 
 import java.util.HashSet;
 import java.util.List;

@@ -5,8 +5,8 @@ import dev.notalpha.dashloader.api.collection.IntObjectList;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.mixin.accessor.BitmapFontAccessor;
-import net.minecraft.client.font.BitmapFont;
-import net.minecraft.client.font.GlyphContainer;
+import net.minecraft.client.gui.font.providers.BitmapProvider; // TODO: verify Mojang name
+import net.minecraft.client.gui.font.GlyphContainer; // TODO: verify Mojang name
 
 import java.util.ArrayList;
 

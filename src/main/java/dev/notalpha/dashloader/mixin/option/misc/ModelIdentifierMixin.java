@@ -1,18 +1,18 @@
 package dev.notalpha.dashloader.mixin.option.misc;
 
-import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.Objects;
 
-@Mixin(value = ModelIdentifier.class, priority = 999)
+@Mixin(value = ModelResourceLocation.class, priority = 999)
 public abstract class ModelIdentifierMixin {
 	@Shadow
 	@Final
-	private Identifier id;
+	private ResourceLocation id;
 	@Shadow
 	@Final
 	private String variant;
@@ -22,7 +22,7 @@ public abstract class ModelIdentifierMixin {
 		if (this == o) {
 			return true;
 		}
-		if (!(o instanceof ModelIdentifier that)) {
+		if (!(o instanceof ModelResourceLocation that)) {
 			return false;
 		}
 		if (!this.id.equals(that.id())) {

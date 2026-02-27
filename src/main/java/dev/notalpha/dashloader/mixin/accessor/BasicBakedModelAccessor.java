@@ -1,12 +1,12 @@
 package dev.notalpha.dashloader.mixin.accessor;
 
-import net.minecraft.client.render.model.BasicBakedModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.renderer.block.model.SimpleBakedModel;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(BasicBakedModel.class)
+@Mixin(SimpleBakedModel.class)
 public interface BasicBakedModelAccessor {
 	@Accessor
 	boolean getUsesAo();
@@ -18,8 +18,8 @@ public interface BasicBakedModelAccessor {
 	boolean getIsSideLit();
 
 	@Accessor
-	Sprite getSprite();
+	TextureAtlasSprite getSprite();
 
 	@Accessor
-	ModelTransformation getTransformation();
+	ItemTransforms getTransformation();
 }

@@ -4,8 +4,8 @@ import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import it.unimi.dsi.fastutil.ints.Int2FloatArrayMap;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import net.minecraft.client.font.Glyph;
-import net.minecraft.client.font.SpaceFont;
+import net.minecraft.client.gui.font.glyphs.BakedGlyph; // TODO: verify Mojang name (Glyph)
+import net.minecraft.client.gui.font.providers.SpaceProvider; // TODO: verify Mojang name
 
 public final class DashSpaceFont implements DashObject<SpaceFont, SpaceFont> {
 	public final int[] ints;

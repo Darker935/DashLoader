@@ -3,7 +3,7 @@ package dev.notalpha.dashloader.client.model.predicates;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.mixin.accessor.SimpleMultipartModelSelectorAccessor;
-import net.minecraft.client.render.model.json.SimpleMultipartModelSelector;
+import net.minecraft.client.renderer.block.model.multipart.KeyValueCondition;
 
 public final class DashSimplePredicate implements DashObject<SimpleMultipartModelSelector, SimpleMultipartModelSelector> {
 	public final String key;

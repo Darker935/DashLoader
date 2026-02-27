@@ -4,11 +4,11 @@ import dev.notalpha.dashloader.client.ui.widget.ConfigListWidget;
 import dev.notalpha.dashloader.config.ConfigHandler;
 import dev.notalpha.dashloader.config.Option;
 import dev.notalpha.dashloader.misc.TranslationHelper;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.CommonTexts; // TODO: verify Mojang name
+import net.minecraft.network.chat.Component;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +21,7 @@ public class ConfigScreen extends Screen {
 	private ConfigListWidget configWidget;
 
 	public ConfigScreen(Screen parent) {
-		super(Text.of("Dashloader config"));
+		super(Component.of("Dashloader config"));
 		this.parent = parent;
 	}
 
@@ -29,11 +29,11 @@ public class ConfigScreen extends Screen {
 	public void init() {
 		initConfigWidget();
 
-		this.addDrawable(new TextWidget(0, 10, this.width, this.textRenderer.fontHeight / 2, Text.of(translations.get("config.title")), this.textRenderer));
+		this.addDrawable(new StringWidget(0, 10, this.width, this.textRenderer.fontHeight / 2, Component.of(translations.get("config.title")), this.textRenderer));
 		this.addDrawableChild(configWidget).update();
 
-		this.addDrawableChild(ButtonWidget.builder(ScreenTexts.CANCEL, button -> this.client.setScreen(this.parent)).dimensions(this.width / 2 - 154, this.height - 28, 150, 20).build());
-		this.addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, button -> {
+		this.addDrawableChild(Button.builder(CommonTexts.CANCEL, button -> this.client.setScreen(this.parent)).dimensions(this.width / 2 - 154, this.height - 28, 150, 20).build());
+		this.addDrawableChild(Button.builder(CommonTexts.DONE, button -> {
 			this.saveConfig();
 			this.client.setScreen(this.parent);
 		}).dimensions(this.width / 2 + 4, this.height - 28, 150, 20).build());

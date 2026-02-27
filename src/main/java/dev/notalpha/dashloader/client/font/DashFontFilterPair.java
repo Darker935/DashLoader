@@ -5,8 +5,8 @@ import dev.notalpha.dashloader.api.collection.IntIntList;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.mixin.accessor.FilterMapAccessor;
-import net.minecraft.client.font.Font;
-import net.minecraft.client.font.FontFilterType;
+import net.minecraft.client.gui.font.GlyphProvider; // TODO: verify Mojang name
+import net.minecraft.client.gui.font.FontSet; // TODO: verify Mojang name (FontFilterType)
 
 import java.util.HashMap;
 import java.util.Map;

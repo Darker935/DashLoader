@@ -4,8 +4,8 @@ import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.collection.IntIntList;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
-import net.minecraft.client.gl.PostEffectPipeline;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gl.PostEffectPipeline; // TODO: verify Mojang name
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ public class DashPostEffectPipeline implements DashObject<PostEffectPipeline, Po
 
 	@Override
 	public PostEffectPipeline export(RegistryReader reader) {
-		var targets = new HashMap<Identifier, PostEffectPipeline.Targets>(this.targets.list().size());
+		var targets = new HashMap<ResourceLocation, PostEffectPipeline.Targets>(this.targets.list().size());
 		var passes = new ArrayList<PostEffectPipeline.Pass>(this.passes.length);
 		this.targets.forEach((key, value) -> targets.put(reader.get(key), reader.get(value)));
 		for (int pass : this.passes) {

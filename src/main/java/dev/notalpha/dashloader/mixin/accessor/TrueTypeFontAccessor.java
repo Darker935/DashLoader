@@ -1,7 +1,7 @@
 package dev.notalpha.dashloader.mixin.accessor;
 
-import net.minecraft.client.font.GlyphContainer;
-import net.minecraft.client.font.TrueTypeFont;
+import net.minecraft.client.gui.font.GlyphContainer; // TODO: verify Mojang name
+import net.minecraft.client.gui.font.providers.TrueTypeGlyphProviderBuilder; // TODO: verify Mojang name
 import org.lwjgl.util.freetype.FT_Face;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;

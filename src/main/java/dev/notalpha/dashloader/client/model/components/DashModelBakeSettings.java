@@ -3,8 +3,8 @@ package dev.notalpha.dashloader.client.model.components;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.util.math.AffineTransformation;
+import net.minecraft.client.resources.model.ModelState; // TODO: verify Mojang name
+import com.mojang.math.ItemTransform;
 import org.joml.Matrix4f;
 
 import java.util.Arrays;
@@ -24,17 +24,17 @@ public class DashModelBakeSettings implements DashObject<DashModelBakeSettings.B
 	}
 
 	public BakeSettings export(RegistryReader reader) {
-		return new BakeSettings(new AffineTransformation(new Matrix4f().set(rotation)), uvLock);
+		return new BakeSettings(new Transformation(new Matrix4f().set(rotation)), uvLock);
 	}
 
-	public record BakeSettings(AffineTransformation rotation, boolean uvLock) implements ModelBakeSettings {
+	public record BakeSettings(Transformation rotation, boolean uvLock) implements ModelState /* TODO: verify Mojang name */ {
 
-		public BakeSettings(ModelBakeSettings settings) {
+		public BakeSettings(ModelState /* TODO: verify Mojang name */ settings) {
 			this(settings.getRotation(), settings.isUvLocked());
 		}
 
 		@Override
-		public AffineTransformation getRotation() {
+		public Transformation getRotation() {
 			return rotation;
 		}
 

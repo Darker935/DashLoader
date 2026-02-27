@@ -2,9 +2,9 @@ package dev.notalpha.dashloader.mixin.accessor;
 
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.minecraft.client.gl.GlUniform;
-import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.ShaderProgramDefinition;
+import net.minecraft.client.gl.GlUniform; // TODO: verify Mojang name (was GlUniform)
+import net.minecraft.client.gl.ShaderProgram; // TODO: verify Mojang name (ShaderProgram)
+import net.minecraft.client.gl.ShaderProgramDefinition; // TODO: verify Mojang name
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;

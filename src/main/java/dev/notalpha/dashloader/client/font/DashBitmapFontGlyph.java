@@ -3,7 +3,7 @@ package dev.notalpha.dashloader.client.font;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.mixin.accessor.BitmapFontGlyphAccessor;
-import net.minecraft.client.font.BitmapFont;
+import net.minecraft.client.gui.font.providers.BitmapProvider; // TODO: verify Mojang name
 
 public final class DashBitmapFontGlyph {
 	public final float scaleFactor;

@@ -1,7 +1,7 @@
 package dev.notalpha.dashloader.misc;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.Language;
+import net.minecraft.client.Minecraft;
+import net.minecraft.locale.Language;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -16,7 +16,7 @@ public class TranslationHelper {
 	}
 
 	public static TranslationHelper getInstance() {
-		var langCode = MinecraftClient.getInstance().getLanguageManager().getLanguage();
+		var langCode = Minecraft.getInstance().getLanguageManager().getLanguage();
 		if (!Objects.equals(INSTANCE.langCode, langCode)) {
 			INSTANCE.langCode = langCode;
 			INSTANCE.loadLang(langCode);

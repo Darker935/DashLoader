@@ -3,7 +3,7 @@ package dev.notalpha.dashloader.mixin.main;
 import dev.notalpha.dashloader.DashLoader;
 import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.client.DashLoaderClient;
-import net.minecraft.client.Keyboard;
+import net.minecraft.client.KeyboardHandler;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 /**
  * Makes f3 + t reset the cache. Also makes shift + f3 + t not reset it.
  */
-@Mixin(Keyboard.class)
+@Mixin(KeyboardHandler.class)
 public class KeyboardMixin {
 	@Unique
 	private boolean shiftHeld = false;
@@ -24,7 +24,7 @@ public class KeyboardMixin {
 			method = "processF3",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/client/MinecraftClient;reloadResources()Ljava/util/concurrent/CompletableFuture;",
+					target = "Lnet/minecraft/client/Minecraft;reloadResources()Ljava/util/concurrent/CompletableFuture;",
 					shift = At.Shift.BEFORE
 			)
 	)

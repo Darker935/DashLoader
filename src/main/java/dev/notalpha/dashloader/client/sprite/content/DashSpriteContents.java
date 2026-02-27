@@ -6,8 +6,8 @@ import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.misc.UnsafeHelper;
 import dev.notalpha.dashloader.mixin.accessor.SpriteContentsAccessor;
 import dev.notalpha.hyphen.scan.annotations.DataNullable;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.SpriteContents;
+import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.renderer.texture.SpriteContents;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
@@ -37,7 +37,7 @@ public final class DashSpriteContents implements DashObject<SpriteContents, Spri
 		this.image = writer.add(access.getImage());
 		this.width = contents.getWidth();
 		this.height = contents.getHeight();
-		SpriteContents.Animation animation = access.getAnimation();
+		SpriteContents.AnimatedTexture animation = access.getAnimation();
 		this.animation = animation == null ? null : new DashSpriteAnimation(animation);
 	}
 

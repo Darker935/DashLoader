@@ -4,14 +4,14 @@ import dev.notalpha.dashloader.misc.TranslationHelper;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import it.unimi.dsi.fastutil.chars.CharPredicate;
 import it.unimi.dsi.fastutil.ints.IntConsumer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.*;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.*; // TODO: verify Mojang package for widget.*
+import net.minecraft.client.gui.components.CommonTexts; // TODO: verify Mojang name
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +22,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 	public static final int RESET_BUTTON_WIDTH = 50;
 	private final TranslationHelper translations = TranslationHelper.getInstance();
 
-	public ConfigListWidget(MinecraftClient minecraftClient, int i, int j, int k, int l) {
+	public ConfigListWidget(Minecraft minecraftClient, int i, int j, int k, int l) {
 		super(minecraftClient, i, j, k, l);
 	}
 
@@ -69,10 +69,10 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 	}
 
 	abstract class Entry extends ElementListWidget.Entry<Entry> {
-		public Text label;
+		public Component label;
 
 		Entry(String label) {
-			this.label = Text.of(translations.get(label));
+			this.label = Component.of(translations.get(label));
 		}
 
 		void update() {
@@ -85,7 +85,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			final var textRenderer = ConfigListWidget.this.client.textRenderer;
 			context.drawText(
 					textRenderer,
@@ -109,10 +109,10 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 	}
 
 	abstract class ConfigEntry<T> extends Entry {
-		static final Text RESET_TEXT = Text.translatable("controls.reset");
+		static final Component RESET_TEXT = Component.translatable("controls.reset");
 		protected final T defaultValue;
 		public ClickableWidget widget;
-		public ButtonWidget resetButton;
+		public Button resetButton;
 		protected T value;
 		protected Tooltip tooltip;
 		protected Consumer<T> saveFunc;
@@ -123,10 +123,10 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 			this.defaultValue = defaultValue;
 			this.saveFunc = saveCallback;
 			if (translations.has(label + ".tooltip")) {
-				this.tooltip = Tooltip.of(Text.of(translations.get(label + ".tooltip")));
+				this.tooltip = Tooltip.of(Component.of(translations.get(label + ".tooltip")));
 			}
 
-			this.resetButton = new ButtonWidget.Builder(RESET_TEXT, button -> {
+			this.resetButton = new Button.Builder(RESET_TEXT, button -> {
 				this.value = this.defaultValue;
 				this.updateWidgetText();
 				ConfigListWidget.this.update();
@@ -134,7 +134,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			context.drawText(
 					ConfigListWidget.this.client.textRenderer,
 					this.label,
@@ -180,7 +180,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 		BoolConfigEntry(String label, boolean value, boolean defaultValue, BooleanConsumer saveCallback) {
 			super(label, value, defaultValue, saveCallback);
 
-			this.widget = new ButtonWidget.Builder(ScreenTexts.onOrOff(this.value), button -> {
+			this.widget = new Button.Builder(CommonTexts.onOrOff(this.value), button -> {
 				this.value = !(boolean) this.value;
 				updateWidgetText();
 				ConfigListWidget.this.update();
@@ -191,7 +191,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 
 		@Override
 		void updateWidgetText() {
-			this.widget.setMessage(ScreenTexts.onOrOff(this.value));
+			this.widget.setMessage(CommonTexts.onOrOff(this.value));
 		}
 	}
 
@@ -204,7 +204,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 			this.min = min;
 			this.max = max;
 
-			this.widget = new Slider(0, 0, INPUT_FIELD_WIDTH, ConfigListWidget.this.itemHeight, Text.of(String.valueOf(value)), min, max, (double) (this.value - min) / (max - min));
+			this.widget = new Slider(0, 0, INPUT_FIELD_WIDTH, ConfigListWidget.this.itemHeight, Component.of(String.valueOf(value)), min, max, (double) (this.value - min) / (max - min));
 			this.widget.setTooltip(this.tooltip);
 		}
 
@@ -217,7 +217,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 			private final double min;
 			private final double max;
 
-			public Slider(int x, int y, int width, int height, Text message, double min, double max, double value) {
+			public Slider(int x, int y, int width, int height, Component message, double min, double max, double value) {
 				super(x, y, width, height, message, value);
 				this.min = min;
 				this.max = max;
@@ -225,7 +225,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 
 			@Override
 			protected void updateMessage() {
-				this.setMessage(Text.of(String.valueOf((int) this.getValue())));
+				this.setMessage(Component.of(String.valueOf((int) this.getValue())));
 			}
 
 			@Override
@@ -253,7 +253,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 			super(label, value, defaultValue, saveCallback);
 			this.filter = filter;
 
-			var textWidget = new TextFieldWidget(ConfigListWidget.this.client.textRenderer, 0, 0, INPUT_FIELD_WIDTH, 20, Text.empty()) {
+			var textWidget = new TextFieldWidget(ConfigListWidget.this.client.textRenderer, 0, 0, INPUT_FIELD_WIDTH, 20, Component.empty()) {
 				@Override
 				public boolean charTyped(char chr, int modifiers) {
 					if (TextFieldEntry.this.filter.test(chr)) {

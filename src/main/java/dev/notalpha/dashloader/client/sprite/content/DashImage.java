@@ -4,7 +4,7 @@ import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.io.def.NativeImageData;
 import dev.notalpha.dashloader.mixin.accessor.NativeImageAccessor;
-import net.minecraft.client.texture.NativeImage;
+import com.mojang.blaze3d.platform.NativeImage;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;

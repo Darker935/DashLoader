@@ -3,9 +3,9 @@ package dev.notalpha.dashloader.mixin.option.cache.model;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.client.model.ModelModule;
-import net.minecraft.client.render.model.BlockStatesLoader;
-import net.minecraft.resource.Resource;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.block.model.BlockStatesLoader; // TODO: verify Mojang name
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -22,7 +22,7 @@ public abstract class BlockStatesLoaderMixin {
 	}
 
 	@ModifyReturnValue(method = "method_65717", at = @At("TAIL"))
-	private static Map<Identifier, List<Resource>> loadMissing(Map<Identifier, List<Resource>> original) {
+	private static Map<ResourceLocation, List<Resource>> loadMissing(Map<ResourceLocation, List<Resource>> original) {
 		ModelModule.MISSING_BLOCK_MODELS.visit(CacheStatus.LOAD, original.keySet()::retainAll);
 		return original;
 	}

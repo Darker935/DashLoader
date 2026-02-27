@@ -3,13 +3,13 @@ package dev.notalpha.dashloader.client.ui.toast;
 import dev.notalpha.dashloader.client.ui.Color;
 import dev.notalpha.dashloader.client.ui.DrawerUtil;
 import dev.notalpha.dashloader.misc.HahaManager;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.toast.Toast;
-import net.minecraft.client.toast.ToastManager;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.gui.Font; // TODO: verify Mojang name (Font)
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.gui.components.toasts.Toast;
+import net.minecraft.client.gui.components.toasts.ToastComponent;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
@@ -59,7 +59,7 @@ public class DashToast implements Toast {
 	}
 
 	@Override
-	public void update(ToastManager manager, long time) {
+	public void update(ToastComponent manager, long time) {
 		// Get progress
 		if (state.getStatus() == DashToastStatus.CRASHED) {
 			progress = (float) this.state.getProgress();
@@ -79,7 +79,7 @@ public class DashToast implements Toast {
 	}
 
 	@Override
-	public void draw(DrawContext context, TextRenderer textRenderer, long startTime) {
+	public void draw(GuiGraphics context, Font textRenderer, long startTime) {
 		final int width = this.getWidth();
 		final int height = this.getHeight();
 		final int barY = height - PROGRESS_BAR_HEIGHT;
@@ -143,9 +143,9 @@ public class DashToast implements Toast {
 		context.disableScissor();
 	}
 
-	private void drawRaw(DrawContext context, BiConsumer<Matrix4f, VertexConsumer> consumer) {
+	private void drawRaw(GuiGraphics context, BiConsumer<Matrix4f, VertexConsumer> consumer) {
 		var matrix = context.getMatrices().peek().getPositionMatrix();
-		var vertexConsumer = context.vertexConsumers.getBuffer(RenderLayer.getGui());
+		var vertexConsumer = context.vertexConsumers.getBuffer(RenderType.getGui());
 
 		consumer.accept(matrix, vertexConsumer);
 	}
@@ -245,7 +245,7 @@ public class DashToast implements Toast {
 				case Crashed -> DrawerUtil.FAILED_COLOR;
 			};
 
-			return DrawerUtil.withOpacity(color, MathHelper.clamp(((this.x) / (this.width)), 0.0f, 1.0f));
+			return DrawerUtil.withOpacity(color, Mth.clamp(((this.x) / (this.width)), 0.0f, 1.0f));
 		}
 
 		public float getWeight() {

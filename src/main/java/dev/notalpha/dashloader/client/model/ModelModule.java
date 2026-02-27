@@ -22,14 +22,14 @@ import dev.notalpha.dashloader.mixin.accessor.ModelLoaderAccessor;
 import dev.notalpha.taski.builtin.StepTask;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.*;
-import net.minecraft.client.render.model.json.MultipartModelComponent;
-import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.registry.Registries;
-import net.minecraft.state.StateManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.block.model.*; // TODO: verify Mojang package
+import net.minecraft.client.renderer.block.model.multipart.Selector;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,44 +41,44 @@ import java.util.Map;
 public class ModelModule implements DashModule<ModelModule.Data> {
 	public static final CachingData<HashMap<ModelBaker.BakedModelCacheKey, BakedModel>> BAKED_MODEL_PARTS = new CachingData<>(CacheStatus.SAVE);
 
-	public static final CachingData<HashMap<ModelIdentifier, BakedModel>> BLOCK_MODELS_SAVE = new CachingData<>(CacheStatus.SAVE);
-	public static final CachingData<Map<ModelIdentifier, BlockStatesLoader.BlockModel>> RAW_BLOCK_MODELS = new CachingData<>(CacheStatus.SAVE);
+	public static final CachingData<HashMap<ModelResourceLocation, BakedModel>> BLOCK_MODELS_SAVE = new CachingData<>(CacheStatus.SAVE);
+	public static final CachingData<Map<ModelResourceLocation, BlockStatesLoader.BlockModel>> RAW_BLOCK_MODELS = new CachingData<>(CacheStatus.SAVE);
 
-//	public static final CachingData<HashMap<Identifier, ItemModel>> ITEM_MODELS_SAVE = new CachingData<>(CacheStatus.SAVE);
-//	public static final CachingData<HashMap<Identifier, ItemAsset.Properties>> ITEM_PROPERTIES = new CachingData<>(CacheStatus.SAVE);
+//	public static final CachingData<HashMap<ResourceLocation, ItemModel>> ITEM_MODELS_SAVE = new CachingData<>(CacheStatus.SAVE);
+//	public static final CachingData<HashMap<ResourceLocation, ItemAsset.Properties>> ITEM_PROPERTIES = new CachingData<>(CacheStatus.SAVE);
 
-	public static final CachingData<HashMap<Identifier, UnbakedModel>> MODEL_PARTS = new CachingData<>(CacheStatus.LOAD);
-	public static final CachingData<ArrayList<Identifier>> MISSING_MODEL_PARTS = new CachingData<>(CacheStatus.LOAD);
+	public static final CachingData<HashMap<ResourceLocation, UnbakedModel>> MODEL_PARTS = new CachingData<>(CacheStatus.LOAD);
+	public static final CachingData<ArrayList<ResourceLocation>> MISSING_MODEL_PARTS = new CachingData<>(CacheStatus.LOAD);
 
-	public static final CachingData<Map<ModelIdentifier, BlockStatesLoader.BlockModel>> BLOCK_MODELS = new CachingData<>(CacheStatus.LOAD);
-	public static final CachingData<ArrayList<Identifier>> MISSING_BLOCK_MODELS = new CachingData<>(CacheStatus.LOAD);
+	public static final CachingData<Map<ModelResourceLocation, BlockStatesLoader.BlockModel>> BLOCK_MODELS = new CachingData<>(CacheStatus.LOAD);
+	public static final CachingData<ArrayList<ResourceLocation>> MISSING_BLOCK_MODELS = new CachingData<>(CacheStatus.LOAD);
 
-//	public static final CachingData<HashMap<Identifier, ItemAsset>> ITEM_MODELS = new CachingData<>(CacheStatus.LOAD);
-//	public static final CachingData<ArrayList<Identifier>> MISSING_ITEM_MODELS = new CachingData<>(CacheStatus.LOAD);
+//	public static final CachingData<HashMap<ResourceLocation, ItemAsset>> ITEM_MODELS = new CachingData<>(CacheStatus.LOAD);
+//	public static final CachingData<ArrayList<ResourceLocation>> MISSING_ITEM_MODELS = new CachingData<>(CacheStatus.LOAD);
 
 
-	public static final CachingData<HashMap<MultipartUnbakedModel, Pair<List<MultipartModelComponent>, StateManager<Block, BlockState>>>> MULTIPART_PREDICATES = new CachingData<>(CacheStatus.SAVE);
+	public static final CachingData<HashMap<MultipartUnbakedModel, Pair<List<MultipartModelComponent>, StateDefinition<Block, BlockState>>>> MULTIPART_PREDICATES = new CachingData<>(CacheStatus.SAVE);
 	public static final CachingData<HashMap<BakedModel, MultipartUnbakedModel>> UNBAKED_TO_BAKED_MULTIPART_MODELS = new CachingData<>(CacheStatus.SAVE);
 
-	public static StateManager<Block, BlockState> getStateManager(Identifier identifier) {
-		StateManager<Block, BlockState> staticDef = ModelLoaderAccessor.getStaticDefinitions().get(identifier);
+	public static StateDefinition<Block, BlockState> getStateManager(ResourceLocation identifier) {
+		StateDefinition<Block, BlockState> staticDef = ModelLoaderAccessor.getStaticDefinitions().get(identifier);
 		if (staticDef != null) {
 			return staticDef;
 		} else {
-			return Registries.BLOCK.get(identifier).getStateManager();
+			return BuiltInRegistries.BLOCK.get(identifier).getStateDefinition();
 		}
 	}
 
 	@NotNull
-	public static Identifier getStateManagerIdentifier(StateManager<Block, BlockState> stateManager) {
+	public static ResourceLocation getStateManagerIdentifier(StateDefinition<Block, BlockState> stateManager) {
 		// Static definitions like itemframes.
-		for (Map.Entry<Identifier, StateManager<Block, BlockState>> entry : ModelLoaderAccessor.getStaticDefinitions().entrySet()) {
+		for (Map.Entry<ResourceLocation, StateDefinition<Block, BlockState>> entry : ModelLoaderAccessor.getStaticDefinitions().entrySet()) {
 			if (entry.getValue() == stateManager) {
 				return entry.getKey();
 			}
 		}
 
-		return Registries.BLOCK.getId(stateManager.getOwner());
+		return BuiltInRegistries.BLOCK.getId(stateManager.getOwner());
 	}
 
 	@Override
@@ -212,13 +212,13 @@ public class ModelModule implements DashModule<ModelModule.Data> {
 
 	@Override
 	public void load(Data data, RegistryReader reader, StepTask task) {
-		var modelParts = new HashMap<Identifier, UnbakedModel>(data.modelParts.list().size() + data.modelPartsVariants.list().size());
-		var missingModelParts = new ArrayList<Identifier>(data.missingModelParts.length);
+		var modelParts = new HashMap<ResourceLocation, UnbakedModel>(data.modelParts.list().size() + data.modelPartsVariants.list().size());
+		var missingModelParts = new ArrayList<ResourceLocation>(data.missingModelParts.length);
 
-		var blockModels = new HashMap<ModelIdentifier, BlockStatesLoader.BlockModel>(data.blockModels.list().size());
-		var missingBlockModels = new ArrayList<Identifier>(data.missingBlockModels.length);
-//		var itemModels = new HashMap<Identifier, ItemAsset>(data.itemModels.list().size());
-//		var missingItemModels = new ArrayList<Identifier>(data.missingItemModels.length);
+		var blockModels = new HashMap<ModelResourceLocation, BlockStatesLoader.BlockModel>(data.blockModels.list().size());
+		var missingBlockModels = new ArrayList<ResourceLocation>(data.missingBlockModels.length);
+//		var itemModels = new HashMap<ResourceLocation, ItemAsset>(data.itemModels.list().size());
+//		var missingItemModels = new ArrayList<ResourceLocation>(data.missingItemModels.length);
 
 		data.modelPartsVariants.forEach((id, entry) -> {
 			var thing = new HashMap<DashModelBakeSettings.BakeSettings, Dazy<? extends BakedModel>>();

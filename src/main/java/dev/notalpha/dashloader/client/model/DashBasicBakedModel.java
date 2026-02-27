@@ -11,20 +11,20 @@ import dev.notalpha.dashloader.client.model.components.DashModelTransformation;
 import dev.notalpha.dashloader.client.sprite.content.DashSprite;
 import dev.notalpha.dashloader.mixin.accessor.BasicBakedModelAccessor;
 import dev.notalpha.hyphen.scan.annotations.DataNullable;
-import net.minecraft.client.model.SpriteGetter;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.BasicBakedModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
+import java.util.function.Function; // TODO: was SpriteGetter - verify replacement with Function or equivalent
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.SimpleBakedModel;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public final class DashBasicBakedModel implements DashObject<BasicBakedModel, DashBasicBakedModel.DazyImpl> {
+public final class DashBasicBakedModel implements DashObject<SimpleBakedModel, DashBasicBakedModel.DazyImpl> {
 	public final int quads;
 	public final ObjectObjectList<Direction, Integer> faceQuads;
 	public final boolean usesAo;
@@ -48,10 +48,10 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 		this.spritePointer = spritePointer;
 	}
 
-	public DashBasicBakedModel(BasicBakedModel basicBakedModel, RegistryWriter writer) {
+	public DashBasicBakedModel(SimpleBakedModel basicBakedModel, RegistryWriter writer) {
 		BasicBakedModelAccessor access = ((BasicBakedModelAccessor) basicBakedModel);
 
-		Random random = Random.create();
+		RandomSource random = RandomSource.create();
 		this.quads = writer.add(new BakedQuadCollection(basicBakedModel.getQuads(null, null, random)));
 		this.faceQuads = new ObjectObjectList<>();
 		for (Direction value : Direction.values()) {
@@ -115,13 +115,13 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 		return result;
 	}
 
-	public static class DazyImpl extends Dazy<BasicBakedModel> {
+	public static class DazyImpl extends Dazy<SimpleBakedModel> {
 		public final DashBakedQuadCollection.DazyImpl quads;
 		public final Map<Direction, DashBakedQuadCollection.DazyImpl> faceQuads;
 		public final boolean usesAo;
 		public final boolean isSideLit;
 		public final boolean hasDepth;
-		public final ModelTransformation transformation;
+		public final ItemTransforms transformation;
 		public final DashSprite.DazyImpl sprite;
 
 		public DazyImpl(DashBakedQuadCollection.DazyImpl quads,
@@ -129,7 +129,7 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 		                boolean usesAo,
 		                boolean isSideLit,
 		                boolean hasDepth,
-		                ModelTransformation transformation,
+		                ItemTransforms transformation,
 		                DashSprite.DazyImpl sprite) {
 			this.quads = quads;
 			this.faceQuads = faceQuads;
@@ -141,13 +141,13 @@ public final class DashBasicBakedModel implements DashObject<BasicBakedModel, Da
 		}
 
 		@Override
-		protected BasicBakedModel resolve(SpriteGetter spriteLoader) {
+		protected SimpleBakedModel resolve(Function<ResourceLocation, TextureAtlasSprite> /* TODO: verify replacement */ spriteLoader) {
 			List<BakedQuad> quads = this.quads.get(spriteLoader);
 			var faceQuadsOut = new HashMap<Direction, List<BakedQuad>>();
 			this.faceQuads.forEach((direction, dazy) -> faceQuadsOut.put(direction, dazy.get(spriteLoader)));
 
-			Sprite sprite = this.sprite.get(spriteLoader);
-			return new BasicBakedModel(quads, faceQuadsOut, usesAo, isSideLit, hasDepth, sprite, transformation);
+			TextureAtlasSprite sprite = this.sprite.get(spriteLoader);
+			return new SimpleBakedModel(quads, faceQuadsOut, usesAo, isSideLit, hasDepth, sprite, transformation);
 		}
 	}
 }

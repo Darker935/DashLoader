@@ -26,13 +26,13 @@ import dev.notalpha.dashloader.client.sprite.content.DashSpriteContents;
 import dev.notalpha.dashloader.client.sprite.content.SpriteContentModule;
 import dev.notalpha.dashloader.client.sprite.stitch.SpriteStitcherModule;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.render.model.json.AndMultipartModelSelector;
-import net.minecraft.client.render.model.json.MultipartModelSelector;
-import net.minecraft.client.render.model.json.OrMultipartModelSelector;
-import net.minecraft.client.render.model.json.SimpleMultipartModelSelector;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.block.model.multipart.AndCondition;
+import net.minecraft.client.renderer.block.model.multipart.Condition; // TODO: verify Mojang name (MultipartModelSelector)
+import net.minecraft.client.renderer.block.model.multipart.OrCondition;
+import net.minecraft.client.renderer.block.model.multipart.KeyValueCondition;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -61,11 +61,11 @@ public class DashLoaderClient implements DashEntrypoint {
 		factory.addModule(new SpriteStitcherModule());
 		factory.addModule(new SpriteContentModule());
 
-		factory.addMissingHandler(Identifier.class, (identifier, registryWriter) -> new DashIdentifier(identifier));
-		factory.addMissingHandler(ModelIdentifier.class, (moduleIdentifier, registryWriter) -> new DashModelIdentifier(moduleIdentifier));
+		factory.addMissingHandler(ResourceLocation.class, (identifier, registryWriter) -> new DashIdentifier(identifier));
+		factory.addMissingHandler(ModelResourceLocation.class, (moduleIdentifier, registryWriter) -> new DashModelIdentifier(moduleIdentifier));
 
 		factory.addMissingHandler(
-				Sprite.class,
+				TextureAtlasSprite.class,
 				DashSprite::new
 		);
 		factory.addMissingHandler(

@@ -1,10 +1,10 @@
 package dev.notalpha.dashloader.client.model.fallback;
 
 import dev.notalpha.dashloader.client.Dazy;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.GroupableModel;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.Baker; // TODO: verify Mojang name
+import net.minecraft.client.renderer.block.model.GroupableModel; // TODO: verify Mojang name
 
 /**
  * Same as {@linkplain UnbakedBakedModel}, but for {@linkplain GroupableModel}

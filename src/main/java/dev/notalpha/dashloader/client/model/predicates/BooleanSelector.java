@@ -1,9 +1,9 @@
 package dev.notalpha.dashloader.client.model.predicates;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.json.MultipartModelSelector;
-import net.minecraft.state.StateManager;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.block.model.multipart.Condition; // TODO: verify Mojang name (MultipartModelSelector)
+import net.minecraft.world.level.block.state.StateDefinition;
 
 import java.util.function.Predicate;
 
@@ -19,7 +19,7 @@ public class BooleanSelector implements MultipartModelSelector {
 	}
 
 	@Override
-	public Predicate<BlockState> getPredicate(StateManager<Block, BlockState> stateFactory) {
+	public Predicate<BlockState> getPredicate(StateDefinition<Block, BlockState> stateFactory) {
 		return blockState -> selector;
 	}
 }

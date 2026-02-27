@@ -2,7 +2,7 @@ package dev.notalpha.dashloader.mixin.main;
 
 import dev.notalpha.dashloader.DashLoader;
 import dev.notalpha.dashloader.misc.ProfilerUtil;
-import net.minecraft.Bootstrap;
+import net.minecraft.server.Bootstrap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;

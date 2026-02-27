@@ -3,7 +3,7 @@ package dev.notalpha.dashloader.client.shader;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
-import net.minecraft.client.gl.ShaderProgramDefinition;
+import net.minecraft.client.gl.ShaderProgramDefinition; // TODO: verify Mojang name
 
 import java.util.ArrayList;
 

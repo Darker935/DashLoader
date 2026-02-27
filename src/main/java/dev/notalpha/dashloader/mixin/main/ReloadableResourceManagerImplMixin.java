@@ -5,8 +5,8 @@ import dev.notalpha.dashloader.client.DashLoaderClient;
 import dev.notalpha.dashloader.misc.ProfilerUtil;
 import dev.notalpha.dashloader.mixin.accessor.ZipResourcePackAccessor;
 import dev.notalpha.dashloader.mixin.accessor.ZipWrapperResourcePackAccessor;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.resource.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.server.packs.resources.*;
 import net.minecraft.util.Unit;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,15 +25,15 @@ import java.util.concurrent.Executor;
 public class ReloadableResourceManagerImplMixin {
 	@Inject(method = "reload",
 			at = @At(value = "RETURN", shift = At.Shift.BEFORE))
-	private void reloadDash(Executor prepareExecutor, Executor applyExecutor, CompletableFuture<Unit> initialStage, List<ResourcePack> packs, CallbackInfoReturnable<ResourceReload> cir) {
+	private void reloadDash(Executor prepareExecutor, Executor applyExecutor, CompletableFuture<Unit> initialStage, List<ResourcePack> packs, CallbackInfoReturnable<PreparableReloadListener /* TODO: verify Mojang name */> cir) {
 		ProfilerUtil.RELOAD_START = System.currentTimeMillis();
-		ResourcePackManager manager = MinecraftClient.getInstance().getResourcePackManager();
+		ResourcePackManager manager = Minecraft.getInstance().getResourcePackManager();
 		List<String> values = new ArrayList<>();
 
 		// Use server resource pack display name to differentiate them across each-other
 		for (ResourcePack pack : packs) {
 			if (Objects.equals(pack.getId(), "server")) {
-				if (pack instanceof ZipResourcePack zipResourcePack) {
+				if (pack instanceof FilePackResources zipResourcePack) {
 					ZipResourcePackAccessor zipPack = (ZipResourcePackAccessor) zipResourcePack;
 					Path path = ((ZipWrapperResourcePackAccessor) zipPack.getZipFile()).getFile().toPath();
 					values.add(path.toString());

@@ -1,42 +1,69 @@
 accessWidener v1 named
-accessible class net/minecraft/client/texture/SpriteContents$Interpolation
-accessible class net/minecraft/client/texture/SpriteContents$Animation
-accessible class net/minecraft/client/texture/SpriteContents$AnimationFrame
+accessible class net/minecraft/client/renderer/texture/SpriteContents$Interpolation
+accessible class net/minecraft/client/renderer/texture/SpriteContents$AnimatedTexture
+accessible class net/minecraft/client/renderer/texture/SpriteContents$FrameInfo
+# TODO: verify Mojang name for ParticleManager$SimpleSpriteProvider
 accessible class net/minecraft/client/particle/ParticleManager$SimpleSpriteProvider
-accessible class net/minecraft/client/font/BitmapFont$BitmapFontGlyph
-accessible class net/minecraft/client/render/model/BakedModelManager$BakingResult
-accessible class net/minecraft/client/render/model/ModelBaker$BakedModelCacheKey
-accessible class net/minecraft/client/render/model/ModelBaker$BakerImpl
-accessible class net/minecraft/client/render/model/MultipartUnbakedModel$Selector
-accessible class net/minecraft/client/font/TrueTypeFont$LazyGlyph
-accessible class net/minecraft/client/font/UnihexFont$UnicodeTextureGlyph
-accessible class net/minecraft/client/font/UnihexFont$FontImage16x16
-accessible class net/minecraft/client/font/UnihexFont$FontImage8x16
-accessible class net/minecraft/client/font/UnihexFont$FontImage32x16
-accessible class net/minecraft/client/font/FontStorage$GlyphPair
-accessible class net/minecraft/client/font/FontManager$ProviderIndex
+# TODO: verify Mojang name for BitmapFont$BitmapFontGlyph
+accessible class net/minecraft/client/gui/font/providers/BitmapProvider$BitmapFontGlyph
+# TODO: verify Mojang name for BakedModelManager$BakingResult
+accessible class net/minecraft/client/renderer/block/model/BakedModelManager$BakingResult
+# TODO: verify Mojang name for ModelBaker$BakedModelCacheKey
+accessible class net/minecraft/client/renderer/block/model/ModelBaker$BakedModelCacheKey
+# TODO: verify Mojang name for ModelBaker$BakerImpl
+accessible class net/minecraft/client/renderer/block/model/ModelBaker$BakerImpl
+# TODO: verify Mojang name for MultipartUnbakedModel$Selector
+accessible class net/minecraft/client/renderer/block/model/MultipartUnbakedModel$Selector
+# TODO: verify Mojang name for TrueTypeFont$LazyGlyph
+accessible class net/minecraft/client/gui/font/TrueTypeFont$LazyGlyph
+# TODO: verify Mojang name for UnihexFont$UnicodeTextureGlyph
+accessible class net/minecraft/client/gui/font/UnihexFont$UnicodeTextureGlyph
+# TODO: verify Mojang name for UnihexFont$FontImage16x16
+accessible class net/minecraft/client/gui/font/UnihexFont$FontImage16x16
+# TODO: verify Mojang name for UnihexFont$FontImage8x16
+accessible class net/minecraft/client/gui/font/UnihexFont$FontImage8x16
+# TODO: verify Mojang name for UnihexFont$FontImage32x16
+accessible class net/minecraft/client/gui/font/UnihexFont$FontImage32x16
+# TODO: verify Mojang name for FontSet$GlyphPair (was FontStorage$GlyphPair)
+accessible class net/minecraft/client/gui/font/FontSet$GlyphPair
+# TODO: verify Mojang name for FontManager$ProviderIndex
+accessible class net/minecraft/client/gui/font/FontManager$ProviderIndex
+# TODO: verify Mojang name for ShaderLoader$Cache
 accessible class net/minecraft/client/gl/ShaderLoader$Cache
+# TODO: verify Mojang name for ShaderLoader$ShaderSourceKey
 accessible class net/minecraft/client/gl/ShaderLoader$ShaderSourceKey
-accessible field net/minecraft/client/gui/DrawContext vertexConsumers Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;
-accessible class net/minecraft/resource/ZipResourcePack$ZipFileWrapper
-accessible class net/minecraft/client/MinecraftClient$LoadingContext
+# TODO: verify VertexConsumerProvider$Immediate equivalent in Mojang (was DrawContext.vertexConsumers)
+accessible field net/minecraft/client/gui/GuiGraphics vertexConsumers Lcom/mojang/blaze3d/vertex/VertexConsumer;
+# TODO: verify Mojang name for ZipFileWrapper (was ZipResourcePack$ZipFileWrapper)
+accessible class net/minecraft/server/packs/FilePackResources$SharedZipFileAccess
+accessible class net/minecraft/client/Minecraft$LoadingContext
+# TODO: verify Mojang name for ShaderLoader$Cache.shaderPrograms
 accessible field net/minecraft/client/gl/ShaderLoader$Cache shaderPrograms Ljava/util/Map;
-accessible field net/minecraft/client/render/model/json/ModelTransformation thirdPersonLeftHand Lnet/minecraft/client/render/model/json/Transformation;
-accessible field net/minecraft/client/render/model/json/ModelTransformation thirdPersonRightHand Lnet/minecraft/client/render/model/json/Transformation;
-accessible field net/minecraft/client/render/model/json/ModelTransformation firstPersonLeftHand Lnet/minecraft/client/render/model/json/Transformation;
-accessible field net/minecraft/client/render/model/json/ModelTransformation firstPersonRightHand Lnet/minecraft/client/render/model/json/Transformation;
-accessible field net/minecraft/client/render/model/json/ModelTransformation head Lnet/minecraft/client/render/model/json/Transformation;
-accessible field net/minecraft/client/render/model/json/ModelTransformation gui Lnet/minecraft/client/render/model/json/Transformation;
-accessible field net/minecraft/client/render/model/json/ModelTransformation ground Lnet/minecraft/client/render/model/json/Transformation;
-accessible field net/minecraft/client/render/model/json/ModelTransformation fixed Lnet/minecraft/client/render/model/json/Transformation;
-accessible field net/minecraft/client/render/model/ModelBaker bakedModelCache Ljava/util/Map;
-accessible field net/minecraft/client/render/model/WrapperBakedModel wrapped Lnet/minecraft/client/render/model/BakedModel;
-accessible method net/minecraft/client/font/TrueTypeFont$LazyGlyph <init> (I)V
-accessible method net/minecraft/client/font/UnihexFont$FontImage8x16 <init> ([B)V
-accessible method net/minecraft/client/font/UnihexFont$FontImage16x16 <init> ([S)V
-accessible method net/minecraft/client/font/UnihexFont$FontImage32x16 <init> ([II)V
-accessible method net/minecraft/client/font/UnihexFont$UnicodeTextureGlyph <init> (Lnet/minecraft/client/font/UnihexFont$BitmapGlyph;II)V
-accessible method net/minecraft/client/gl/ShaderLoader$ShaderSourceKey <init> (Lnet/minecraft/util/Identifier;Lnet/minecraft/client/gl/CompiledShader$Type;)V
+accessible field net/minecraft/client/renderer/block/model/ItemTransforms thirdPersonLeftHand Lnet/minecraft/client/renderer/block/model/ItemTransform;
+accessible field net/minecraft/client/renderer/block/model/ItemTransforms thirdPersonRightHand Lnet/minecraft/client/renderer/block/model/ItemTransform;
+accessible field net/minecraft/client/renderer/block/model/ItemTransforms firstPersonLeftHand Lnet/minecraft/client/renderer/block/model/ItemTransform;
+accessible field net/minecraft/client/renderer/block/model/ItemTransforms firstPersonRightHand Lnet/minecraft/client/renderer/block/model/ItemTransform;
+accessible field net/minecraft/client/renderer/block/model/ItemTransforms head Lnet/minecraft/client/renderer/block/model/ItemTransform;
+accessible field net/minecraft/client/renderer/block/model/ItemTransforms gui Lnet/minecraft/client/renderer/block/model/ItemTransform;
+accessible field net/minecraft/client/renderer/block/model/ItemTransforms ground Lnet/minecraft/client/renderer/block/model/ItemTransform;
+accessible field net/minecraft/client/renderer/block/model/ItemTransforms fixed Lnet/minecraft/client/renderer/block/model/ItemTransform;
+# TODO: verify Mojang name for ModelBaker.bakedModelCache
+accessible field net/minecraft/client/renderer/block/model/ModelBaker bakedModelCache Ljava/util/Map;
+# TODO: verify Mojang name for WrapperBakedModel.wrapped
+accessible field net/minecraft/client/renderer/block/model/WrapperBakedModel wrapped Lnet/minecraft/client/resources/model/BakedModel;
+# TODO: verify Mojang name for TrueTypeFont$LazyGlyph.<init>
+accessible method net/minecraft/client/gui/font/TrueTypeFont$LazyGlyph <init> (I)V
+# TODO: verify Mojang name for UnihexFont$FontImage8x16.<init>
+accessible method net/minecraft/client/gui/font/UnihexFont$FontImage8x16 <init> ([B)V
+# TODO: verify Mojang name for UnihexFont$FontImage16x16.<init>
+accessible method net/minecraft/client/gui/font/UnihexFont$FontImage16x16 <init> ([S)V
+# TODO: verify Mojang name for UnihexFont$FontImage32x16.<init>
+accessible method net/minecraft/client/gui/font/UnihexFont$FontImage32x16 <init> ([II)V
+# TODO: verify Mojang name for UnihexFont$UnicodeTextureGlyph.<init> and UnihexFont$BitmapGlyph
+accessible method net/minecraft/client/gui/font/UnihexFont$UnicodeTextureGlyph <init> (Lnet/minecraft/client/gui/font/UnihexFont$BitmapGlyph;II)V
+# TODO: verify Mojang name for ShaderLoader$ShaderSourceKey.<init> and CompiledShader$Type
+accessible method net/minecraft/client/gl/ShaderLoader$ShaderSourceKey <init> (Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/gl/CompiledShader$Type;)V
+# TODO: verify Mojang name for ShaderProgram and GlUniform (ShaderInstance/Uniform in Mojang?)
 mutable field net/minecraft/client/gl/ShaderProgram modelViewMat Lnet/minecraft/client/gl/GlUniform;
 mutable field net/minecraft/client/gl/ShaderProgram projectionMat Lnet/minecraft/client/gl/GlUniform;
 mutable field net/minecraft/client/gl/ShaderProgram textureMat Lnet/minecraft/client/gl/GlUniform;

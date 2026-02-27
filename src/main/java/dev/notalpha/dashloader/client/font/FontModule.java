@@ -10,8 +10,8 @@ import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.config.ConfigHandler;
 import dev.notalpha.dashloader.config.Option;
 import dev.notalpha.taski.builtin.StepTask;
-import net.minecraft.client.font.Font;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.font.GlyphProvider; // TODO: verify Mojang name
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.util.freetype.FT_Face;
 
 import java.util.ArrayList;
@@ -104,10 +104,10 @@ public class FontModule implements DashModule<FontModule.Data> {
 	}
 
 	public static final class ProviderIndex {
-		public final Map<Identifier, List<Font.FontFilterPair>> providers;
+		public final Map<ResourceLocation, List<Font.FontFilterPair>> providers;
 		public final List<Font> allProviders;
 
-		public ProviderIndex(Map<Identifier, List<Font.FontFilterPair>> providers, List<Font> allProviders) {
+		public ProviderIndex(Map<ResourceLocation, List<Font.FontFilterPair>> providers, List<Font> allProviders) {
 			this.providers = providers;
 			this.allProviders = allProviders;
 		}

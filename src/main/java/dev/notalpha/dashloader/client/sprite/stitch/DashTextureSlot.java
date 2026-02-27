@@ -1,8 +1,8 @@
 package dev.notalpha.dashloader.client.sprite.stitch;
 
-import net.minecraft.client.texture.TextureStitcher;
+import net.minecraft.client.renderer.texture.Stitcher; // TODO: verify Mojang name (Stitcher)
 
-public class DashTextureSlot<T extends TextureStitcher.Stitchable> {
+public class DashTextureSlot<T extends Stitcher.Stitchable> {
 	public final int x;
 	public final int y;
 	public final int width;

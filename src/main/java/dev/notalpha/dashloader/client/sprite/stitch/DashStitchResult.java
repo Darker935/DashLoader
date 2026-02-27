@@ -5,9 +5,9 @@ import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.taski.builtin.StepTask;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteLoader;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.SpriteLoader; // TODO: verify Mojang name
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -41,7 +41,7 @@ public final class DashStitchResult {
 	}
 
 	public SpriteLoader.StitchResult export(RegistryReader reader) {
-		Map<Identifier, Sprite> regions = new Object2ObjectOpenHashMap<>();
+		Map<ResourceLocation, TextureAtlasSprite> regions = new Object2ObjectOpenHashMap<>();
 		this.regions.forEach((key, value) -> regions.put(reader.get(key), reader.get(value)));
 
 		return new SpriteLoader.StitchResult(

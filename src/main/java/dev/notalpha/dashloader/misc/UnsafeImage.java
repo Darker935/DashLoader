@@ -1,7 +1,7 @@
 package dev.notalpha.dashloader.misc;
 
 import dev.notalpha.dashloader.mixin.accessor.NativeImageAccessor;
-import net.minecraft.client.texture.NativeImage;
+import com.mojang.blaze3d.platform.NativeImage;
 import org.lwjgl.system.MemoryUtil;
 
 public final class UnsafeImage {

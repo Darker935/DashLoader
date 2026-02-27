@@ -3,8 +3,8 @@ package dev.notalpha.dashloader.client.shader;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
-import net.minecraft.client.gl.CompiledShader;
-import net.minecraft.client.gl.ShaderLoader.ShaderSourceKey;
+import net.minecraft.client.gl.CompiledShader; // TODO: verify Mojang name
+import net.minecraft.client.gl.ShaderLoader.ShaderSourceKey; // TODO: verify Mojang name
 
 public class DashShaderSourceKey implements DashObject<ShaderSourceKey, ShaderSourceKey> {
 	public final int id;

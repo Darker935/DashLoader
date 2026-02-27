@@ -3,14 +3,14 @@ package dev.notalpha.dashloader.client.identifier;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.mixin.accessor.IdentifierAccessor;
-import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 
-public final class DashModelIdentifier implements DashObject<ModelIdentifier, ModelIdentifier> {
+public final class DashModelIdentifier implements DashObject<ModelResourceLocation, ModelResourceLocation> {
 	public final String namespace;
 	public final String path;
 	public final String variant;
 
-	public DashModelIdentifier(ModelIdentifier identifier) {
+	public DashModelIdentifier(ModelResourceLocation identifier) {
 		this.namespace = identifier.id().getNamespace();
 		this.path = identifier.id().getPath();
 		this.variant = identifier.getVariant();
@@ -23,8 +23,8 @@ public final class DashModelIdentifier implements DashObject<ModelIdentifier, Mo
 	}
 
 	@Override
-	public ModelIdentifier export(RegistryReader exportHandler) {
-		return new ModelIdentifier(IdentifierAccessor.init(this.namespace, this.path), variant);
+	public ModelResourceLocation export(RegistryReader exportHandler) {
+		return new ModelResourceLocation(IdentifierAccessor.init(this.namespace, this.path), variant);
 	}
 
 	@Override

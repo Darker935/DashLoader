@@ -3,7 +3,7 @@ package dev.notalpha.dashloader.client.identifier;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
-import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.client.renderer.texture.SpriteIdentifier; // TODO: verify Mojang name
 
 public class DashSpriteIdentifier implements DashObject<SpriteIdentifier, SpriteIdentifier> {
 	public final int atlas;

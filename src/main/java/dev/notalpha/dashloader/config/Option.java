@@ -11,7 +11,7 @@ public enum Option {
 
 	FAST_MODEL_IDENTIFIER_EQUALS("misc.ModelIdentifierMixin"),  // Use a much faster .equals() on ModelIdentifiers
 	FAST_WALL_BLOCK("WallBlockMixin"),                          // Caches the two most common blockstates for wall blocks
-	UNSAFE_MIPMAP_GENERATION("misc.MipmapHelper");              // Speeds up get/set pixel operations when generating mipmaps by skipping redundant safety checks
+	UNSAFE_MIPMAP_GENERATION("misc.MipmapGenerator");              // Speeds up get/set pixel operations when generating mipmaps by skipping redundant safety checks
 
 	public final String mixinContains;
 

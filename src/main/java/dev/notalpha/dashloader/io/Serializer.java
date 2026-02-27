@@ -9,7 +9,7 @@ import dev.notalpha.hyphen.SerializerFactory;
 import dev.notalpha.hyphen.io.ByteBufferIO;
 import dev.notalpha.hyphen.scan.annotations.DataSubclasses;
 import dev.notalpha.taski.builtin.StepTask;
-import net.minecraft.client.font.UnihexFont;
+import net.minecraft.client.gui.font.providers.UnihexProvider; // TODO: verify Mojang name
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

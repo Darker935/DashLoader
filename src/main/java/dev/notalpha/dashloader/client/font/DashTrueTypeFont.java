@@ -7,12 +7,12 @@ import dev.notalpha.dashloader.io.IOHelper;
 import dev.notalpha.dashloader.misc.UnsafeHelper;
 import dev.notalpha.dashloader.mixin.accessor.TrueTypeFontAccessor;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.FreeTypeUtil;
-import net.minecraft.client.font.GlyphContainer;
-import net.minecraft.client.font.TrueTypeFont;
-import net.minecraft.resource.Resource;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.font.FreeTypeUtil; // TODO: verify Mojang name
+import net.minecraft.client.gui.font.GlyphContainer; // TODO: verify Mojang name
+import net.minecraft.client.gui.font.providers.TrueTypeGlyphProviderBuilder; // TODO: verify Mojang name
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -47,10 +47,10 @@ public final class DashTrueTypeFont implements DashObject<TrueTypeFont, TrueType
 		TrueTypeFontAccessor fontAccess = (TrueTypeFontAccessor) font;
 		FT_Face ft_face = fontAccess.getFace();
 		FontPrams prams = FontModule.FONT_TO_DATA.get(CacheStatus.SAVE).get(ft_face);
-		final Identifier ttFont = prams.id();
+		final ResourceLocation ttFont = prams.id();
 		byte[] data = null;
 		try {
-			Optional<Resource> resource = MinecraftClient.getInstance().getResourceManager().getResource(ttFont.withPrefixedPath("font/"));
+			Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(ttFont.withPrefixedPath("font/"));
 			if (resource.isPresent()) {
 				var stream = resource.get().getInputStream();
 				data = IOHelper.streamToArray(stream);
@@ -140,6 +140,6 @@ public final class DashTrueTypeFont implements DashObject<TrueTypeFont, TrueType
 		}
 	}
 
-	public record FontPrams(Identifier id, float size, String skip) {
+	public record FontPrams(ResourceLocation id, float size, String skip) {
 	}
 }

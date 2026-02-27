@@ -6,8 +6,8 @@ import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.blaze3d.platform.GlStateManager;
 import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.client.atlas.AtlasModule;
-import net.minecraft.client.texture.*;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.texture.*;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,11 +20,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.concurrent.ExecutionException;
 
-@Mixin(SpriteAtlasTexture.class)
+@Mixin(TextureAtlas.class)
 public abstract class SpriteAtlasTextureMixin extends AbstractTexture {
 	@Final
 	@Shadow
-	private Identifier id;
+	private ResourceLocation id;
 	@Shadow
 	private int mipLevel;
 	@Shadow
@@ -61,8 +61,8 @@ public abstract class SpriteAtlasTextureMixin extends AbstractTexture {
 		});
 	}
 
-	@WrapWithCondition(method = "upload", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/Sprite;upload()V"))
-	private boolean shouldBuildAtlas(Sprite instance, @Share("cached") LocalRef<Boolean> cached) {
+	@WrapWithCondition(method = "upload", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;upload()V"))
+	private boolean shouldBuildAtlas(TextureAtlasSprite instance, @Share("cached") LocalRef<Boolean> cached) {
 		return !cached.get();
 	}
 

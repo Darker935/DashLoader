@@ -10,8 +10,8 @@ import dev.notalpha.dashloader.client.DashLoaderClient;
 import dev.notalpha.dashloader.config.ConfigHandler;
 import dev.notalpha.dashloader.config.Option;
 import dev.notalpha.taski.builtin.StepTask;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.platform.NativeImage;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.FileInputStream;
@@ -47,7 +47,7 @@ public class AtlasModule implements DashModule<AtlasModule.Data> {
 
 		HashMap<String, ArrayList<FutureTask<NativeImage>>> out = new HashMap<>();
 
-		var maxMipLevel = MinecraftClient.getInstance().options.getMipmapLevels().getValue();
+		var maxMipLevel = Minecraft.getInstance().options.getMipmapLevels().getValue();
 		for (String atlasId : data.atlasIds) {
 			var tasks = new ArrayList<FutureTask<NativeImage>>();
 

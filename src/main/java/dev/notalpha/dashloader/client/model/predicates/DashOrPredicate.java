@@ -4,8 +4,8 @@ import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.mixin.accessor.OrMultipartModelSelectorAccessor;
-import net.minecraft.client.render.model.json.MultipartModelSelector;
-import net.minecraft.client.render.model.json.OrMultipartModelSelector;
+import net.minecraft.client.renderer.block.model.multipart.Condition; // TODO: verify Mojang name (MultipartModelSelector)
+import net.minecraft.client.renderer.block.model.multipart.OrCondition;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -2,9 +2,9 @@ package dev.notalpha.dashloader.mixin.option.cache.model;
 
 import dev.notalpha.dashloader.api.cache.CacheStatus;
 import dev.notalpha.dashloader.client.model.ModelModule;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.MultipartUnbakedModel;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.Baker; // TODO: verify Mojang name
+import net.minecraft.client.renderer.block.model.MultipartUnbakedModel; // TODO: verify Mojang name
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

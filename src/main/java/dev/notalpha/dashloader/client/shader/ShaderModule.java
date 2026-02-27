@@ -11,17 +11,17 @@ import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.config.ConfigHandler;
 import dev.notalpha.dashloader.config.Option;
 import dev.notalpha.taski.builtin.StepTask;
-import net.minecraft.client.gl.ShaderLoader;
-import net.minecraft.client.gl.ShaderProgramDefinition;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gl.ShaderLoader; // TODO: verify Mojang name
+import net.minecraft.client.gl.ShaderProgramDefinition; // TODO: verify Mojang name
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ShaderModule implements DashModule<ShaderModule.Data> {
 	public static final CachingData<HashMap<ShaderLoader.ShaderSourceKey, String>> SHADER_SOURCES = new CachingData<>();
-	public static final CachingData<HashMap<Identifier, ShaderProgramDefinition>> SHADER_DEFINITIONS = new CachingData<>();
-//	public static final CachingData<HashMap<Identifier, PostEffectPipeline>> POST_EFFECTS = new CachingData<>(); // TODO
+	public static final CachingData<HashMap<ResourceLocation, ShaderProgramDefinition>> SHADER_DEFINITIONS = new CachingData<>();
+//	public static final CachingData<HashMap<ResourceLocation, PostEffectPipeline>> POST_EFFECTS = new CachingData<>(); // TODO
 
 
 	@Override
@@ -63,8 +63,8 @@ public class ShaderModule implements DashModule<ShaderModule.Data> {
 	@Override
 	public void load(Data data, RegistryReader reader, StepTask task) {
 		var out1 = new HashMap<ShaderLoader.ShaderSourceKey, String>(data.data1.list().size());
-		var out2 = new HashMap<Identifier, ShaderProgramDefinition>(data.data2.list().size());
-//		var out3 = new HashMap<Identifier, PostEffectPipeline>(data.data3.list().size());
+		var out2 = new HashMap<ResourceLocation, ShaderProgramDefinition>(data.data2.list().size());
+//		var out3 = new HashMap<ResourceLocation, PostEffectPipeline>(data.data3.list().size());
 		data.data1.forEach((key, value) -> out1.put(reader.get(key), value));
 		data.data2.forEach((key, value) -> out2.put(reader.get(key), reader.get(value)));
 //		data.data3.forEach((key, value) -> out3.put(reader.get(key), reader.get(value)));

@@ -10,12 +10,12 @@ import dev.notalpha.dashloader.client.ui.toast.DashToastStatus;
 import dev.notalpha.dashloader.config.ConfigHandler;
 import dev.notalpha.dashloader.misc.ProfilerUtil;
 import dev.notalpha.taski.builtin.StaticTask;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.SplashOverlay;
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.toast.Toast;
-import net.minecraft.resource.ResourceReload;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.SplashScreen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.components.toasts.Toast;
+import net.minecraft.server.packs.resources.PreparableReloadListener; // TODO: verify Mojang name (ResourceReload)
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -24,16 +24,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = SplashOverlay.class, priority = 69420)
+@Mixin(value = SplashScreen.class, priority = 69420)
 public class SplashScreenMixin {
 	@Shadow
 	@Final
-	private MinecraftClient client;
+	private Minecraft client;
 	@Shadow
 	private long reloadCompleteTime;
 	@Shadow
 	@Final
-	private ResourceReload reload;
+	private PreparableReloadListener reload; // TODO: verify Mojang name
 	@Mutable
 	@Shadow
 	@Final
@@ -43,7 +43,7 @@ public class SplashScreenMixin {
 			method = "render",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getMeasuringTimeMs()J", shift = At.Shift.BEFORE, ordinal = 1)
 	)
-	private void done(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+	private void done(GuiGraphics context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
 		this.client.setOverlay(null);
 		if (this.client.currentScreen != null) {
 			if (this.client.currentScreen instanceof TitleScreen) {
@@ -95,9 +95,9 @@ public class SplashScreenMixin {
 
 	@Inject(
 			method = "render",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourceReload;isComplete()Z", shift = At.Shift.BEFORE)
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/resources/PreparableReloadListener;isComplete()Z // TODO: verify Mojang name", shift = At.Shift.BEFORE)
 	)
-	private void removeMinimumTime(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+	private void removeMinimumTime(GuiGraphics context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
 		if (this.reloadCompleteTime == -1L && this.reload.isComplete()) {
 			this.reloading = false;
 		}

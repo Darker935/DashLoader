@@ -4,14 +4,14 @@ import dev.notalpha.dashloader.DashLoader;
 import dev.notalpha.dashloader.api.collection.IntObjectList;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
-import net.minecraft.client.texture.TextureStitcher;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.texture.Stitcher; // TODO: verify Mojang name (Stitcher)
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DashTextureStitcher<T extends TextureStitcher.Stitchable> extends TextureStitcher<T> {
+public class DashTextureStitcher<T extends Stitcher.Stitchable> extends Stitcher<T> {
 	@Nullable
 	private ExportedData<T> data;
 	private int remainingSlots;
@@ -49,7 +49,7 @@ public class DashTextureStitcher<T extends TextureStitcher.Stitchable> extends T
 		var id = info.getId();
 		var slot = data.slots.get(id);
 		if (slot == null) {
-			DashLoader.LOG.warn("Sprite {} was not cached last time.", id);
+			DashLoader.LOG.warn("TextureAtlasSprite {} was not cached last time.", id);
 
 			doFallback();
 			// This was never added to the slot, so it would not get added to super.
@@ -58,14 +58,14 @@ public class DashTextureStitcher<T extends TextureStitcher.Stitchable> extends T
 		}
 
 		if (slot.contents != null) {
-			DashLoader.LOG.warn("Sprite {} was added twice??", id);
+			DashLoader.LOG.warn("TextureAtlasSprite {} was added twice??", id);
 		}
 
 		remainingSlots -= 1;
 		slot.contents = info;
 
 		if (slot.width != info.getWidth() || slot.height != info.getHeight()) {
-			DashLoader.LOG.warn("Sprite {} had changed dimensions since last launch, falling back.", id);
+			DashLoader.LOG.warn("TextureAtlasSprite {} had changed dimensions since last launch, falling back.", id);
 			doFallback();
 		}
 	}
@@ -91,7 +91,7 @@ public class DashTextureStitcher<T extends TextureStitcher.Stitchable> extends T
 			DashLoader.LOG.warn("Remaining slots did not match the cached amount, Falling back.");
 			data.slots.forEach((identifier, tDashTextureSlot) -> {
 				if (tDashTextureSlot.contents == null) {
-					DashLoader.LOG.error("Sprite {} was not requested", identifier);
+					DashLoader.LOG.error("TextureAtlasSprite {} was not requested", identifier);
 				}
 			});
 			doFallback();
@@ -111,7 +111,7 @@ public class DashTextureStitcher<T extends TextureStitcher.Stitchable> extends T
 		}
 	}
 
-	public static class Data<T extends TextureStitcher.Stitchable> {
+	public static class Data<T extends Stitcher.Stitchable> {
 		public final IntObjectList<DashTextureSlot<T>> slots;
 		public final int width;
 		public final int height;
@@ -122,7 +122,7 @@ public class DashTextureStitcher<T extends TextureStitcher.Stitchable> extends T
 			this.height = height;
 		}
 
-		public Data(RegistryWriter factory, TextureStitcher<T> stitcher) {
+		public Data(RegistryWriter factory, Stitcher<T> stitcher) {
 			this.slots = new IntObjectList<>();
 			stitcher.getStitchedSprites((info, x, y) -> this.slots.put(factory.add(info.getId()), new DashTextureSlot<>(x, y, info.getWidth(), info.getHeight())));
 			this.width = stitcher.getWidth();
@@ -130,7 +130,7 @@ public class DashTextureStitcher<T extends TextureStitcher.Stitchable> extends T
 		}
 
 		public ExportedData<T> export(RegistryReader reader) {
-			var output = new HashMap<Identifier, DashTextureSlot<T>>();
+			var output = new HashMap<ResourceLocation, DashTextureSlot<T>>();
 			this.slots.forEach((key, value) -> output.put(reader.get(key), value));
 
 			return new ExportedData<>(
@@ -141,12 +141,12 @@ public class DashTextureStitcher<T extends TextureStitcher.Stitchable> extends T
 		}
 	}
 
-	public static class ExportedData<T extends TextureStitcher.Stitchable> {
-		public final Map<Identifier, DashTextureSlot<T>> slots;
+	public static class ExportedData<T extends Stitcher.Stitchable> {
+		public final Map<ResourceLocation, DashTextureSlot<T>> slots;
 		public final int width;
 		public final int height;
 
-		public ExportedData(Map<Identifier, DashTextureSlot<T>> slots, int width, int height) {
+		public ExportedData(Map<ResourceLocation, DashTextureSlot<T>> slots, int width, int height) {
 			this.slots = slots;
 			this.width = width;
 			this.height = height;

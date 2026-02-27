@@ -11,15 +11,15 @@ import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.config.ConfigHandler;
 import dev.notalpha.dashloader.config.Option;
 import dev.notalpha.taski.builtin.StepTask;
-import net.minecraft.client.texture.TextureStitcher;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.texture.Stitcher; // TODO: verify Mojang name (Stitcher)
+import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
 public class SpriteStitcherModule implements DashModule<SpriteStitcherModule.Data> {
-	public final static CachingData<List<Pair<Identifier, TextureStitcher<?>>>> STITCHERS_SAVE = new CachingData<>(CacheStatus.SAVE);
-	public final static CachingData<Map<Identifier, DashTextureStitcher.ExportedData<?>>> STITCHERS_LOAD = new CachingData<>(CacheStatus.LOAD);
+	public final static CachingData<List<Pair<ResourceLocation, Stitcher<?>>>> STITCHERS_SAVE = new CachingData<>(CacheStatus.SAVE);
+	public final static CachingData<Map<ResourceLocation, DashTextureStitcher.ExportedData<?>>> STITCHERS_LOAD = new CachingData<>(CacheStatus.LOAD);
 
 	@Override
 	public void reset(Cache cache) {
@@ -31,8 +31,8 @@ public class SpriteStitcherModule implements DashModule<SpriteStitcherModule.Dat
 	public Data save(RegistryWriter writer, StepTask task) {
 		task.reset(2);
 
-		var stitchers = new HashMap<Identifier, DashTextureStitcher.Data<?>>();
-		var duplicate = new HashSet<Identifier>();
+		var stitchers = new HashMap<ResourceLocation, DashTextureStitcher.Data<?>>();
+		var duplicate = new HashSet<ResourceLocation>();
 		task.run(new StepTask("Caching Stitchers"), (stepTask) -> stepTask.doForEach(STITCHERS_SAVE.get(CacheStatus.SAVE), (pair) -> {
 			var identifier = pair.getLeft();
 			var textureStitcher = pair.getRight();
@@ -65,7 +65,7 @@ public class SpriteStitcherModule implements DashModule<SpriteStitcherModule.Dat
 
 	@Override
 	public void load(Data data, RegistryReader reader, StepTask task) {
-		var map = new HashMap<Identifier, DashTextureStitcher.ExportedData<?>>();
+		var map = new HashMap<ResourceLocation, DashTextureStitcher.ExportedData<?>>();
 		data.stitchers.forEach((key, value) -> map.put(reader.get(key), value.export(reader)));
 		STITCHERS_LOAD.set(CacheStatus.LOAD, map);
 	}

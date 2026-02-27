@@ -10,14 +10,14 @@ import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.config.ConfigHandler;
 import dev.notalpha.dashloader.config.Option;
 import dev.notalpha.taski.builtin.StepTask;
-import net.minecraft.client.texture.SpriteContents;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.texture.SpriteContents;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class SpriteContentModule implements DashModule<SpriteContentModule.Data> {
-	public final static CachingData<Map<Identifier, SpriteContents>> SOURCE = new CachingData<>();
+	public final static CachingData<Map<ResourceLocation, SpriteContents>> SOURCE = new CachingData<>();
 
 	@Override
 	public void reset(Cache cache) {
@@ -40,11 +40,11 @@ public class SpriteContentModule implements DashModule<SpriteContentModule.Data>
 
 	@Override
 	public void load(Data data, RegistryReader reader, StepTask task) {
-		Map<Identifier, SpriteContents> spriteData = SOURCE.get(CacheStatus.LOAD);
+		Map<ResourceLocation, SpriteContents> spriteData = SOURCE.get(CacheStatus.LOAD);
 		assert spriteData != null;
 
 		data.sprites.forEach((key, value) -> {
-			Identifier identifier = reader.get(key);
+			ResourceLocation identifier = reader.get(key);
 			SpriteContents contents = reader.get(value);
 			spriteData.put(identifier, contents);
 		});

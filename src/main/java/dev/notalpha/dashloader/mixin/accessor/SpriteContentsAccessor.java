@@ -1,9 +1,9 @@
 package dev.notalpha.dashloader.mixin.accessor;
 
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.SpriteContents;
-import net.minecraft.resource.metadata.ResourceMetadata;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.renderer.texture.SpriteContents;
+import net.minecraft.server.packs.metadata.MetadataSectionSerializer; // TODO: verify Mojang name (ResourceMetadata)
+import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -18,11 +18,11 @@ public interface SpriteContentsAccessor {
 	void setImage(NativeImage image);
 
 	@Accessor
-	SpriteContents.Animation getAnimation();
+	SpriteContents.AnimatedTexture getAnimation();
 
 	@Accessor
 	@Mutable
-	void setAnimation(SpriteContents.Animation animation);
+	void setAnimation(SpriteContents.AnimatedTexture animation);
 
 	@Accessor
 	@Mutable
@@ -30,7 +30,7 @@ public interface SpriteContentsAccessor {
 
 	@Accessor
 	@Mutable
-	void setId(Identifier id);
+	void setId(ResourceLocation id);
 
 	@Accessor
 	@Mutable

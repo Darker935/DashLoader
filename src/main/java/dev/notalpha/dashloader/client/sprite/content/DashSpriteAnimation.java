@@ -2,7 +2,7 @@ package dev.notalpha.dashloader.client.sprite.content;
 
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.mixin.accessor.SpriteAnimationAccessor;
-import net.minecraft.client.texture.SpriteContents;
+import net.minecraft.client.renderer.texture.SpriteContents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public final class DashSpriteAnimation {
 		this.interpolation = interpolation;
 	}
 
-	public DashSpriteAnimation(SpriteContents.Animation animation) {
+	public DashSpriteAnimation(SpriteContents.AnimatedTexture animation) {
 		SpriteAnimationAccessor access = ((SpriteAnimationAccessor) animation);
 		this.frames = new ArrayList<>();
 		for (var frame : access.getFrames()) {
@@ -31,8 +31,8 @@ public final class DashSpriteAnimation {
 		this.interpolation = access.getInterpolation();
 	}
 
-	public SpriteContents.Animation export(SpriteContents owner, RegistryReader registry) {
-		var framesOut = new ArrayList<SpriteContents.AnimationFrame>();
+	public SpriteContents.AnimatedTexture export(SpriteContents owner, RegistryReader registry) {
+		var framesOut = new ArrayList<SpriteContents.FrameInfo>();
 		for (var frame : this.frames) {
 			framesOut.add(frame.export(registry));
 		}

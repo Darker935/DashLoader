@@ -1,9 +1,9 @@
 package dev.notalpha.dashloader.client.ui;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.Font; // TODO: verify Mojang name (Font)
+import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.network.chat.Component;
 import org.joml.Matrix4f;
 
 public class DrawerUtil {
@@ -22,14 +22,14 @@ public class DrawerUtil {
 			new Color(0xa9, 0xdc, 0x76)
 	};
 
-	public static void drawRect(DrawContext context, int x, int y, int width, int height, Color color) {
+	public static void drawRect(GuiGraphics context, int x, int y, int width, int height, Color color) {
 		final int x2 = width + x;
 		final int y2 = height + y;
 		context.fill(x, y, x2, y2, color.argb());
 	}
 
-	public static void drawText(DrawContext context, TextRenderer textRenderer, int x, int y, String text, Color color) {
-		context.drawTextWithShadow(textRenderer, Text.of(text), x, y - (textRenderer.fontHeight), color.argb());
+	public static void drawText(GuiGraphics context, Font textRenderer, int x, int y, String text, Color color) {
+		context.drawTextWithShadow(textRenderer, Component.of(text), x, y - (textRenderer.fontHeight), color.argb());
 	}
 
 	private static void drawVertex(Matrix4f m4f, VertexConsumer c, float x, float y, Color color) {

@@ -1,7 +1,7 @@
 plugins {
     // Publishing
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "2.+"
+    id "com.modrinth.minotaur" version "2.8.10"
 
     id 'fabric-loom' version "${loom_version}"
     id 'maven-publish'

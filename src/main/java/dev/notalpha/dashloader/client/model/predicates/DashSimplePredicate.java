@@ -1,28 +1,33 @@
 package dev.notalpha.dashloader.client.model.predicates;
 
 import dev.notalpha.dashloader.api.DashObject;
+import dev.notalpha.dashloader.api.collection.ObjectObjectList;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
-import dev.notalpha.dashloader.mixin.accessor.SimpleMultipartModelSelectorAccessor;
 import net.minecraft.client.renderer.block.model.multipart.KeyValueCondition;
 
-public final class DashSimplePredicate implements DashObject<KeyValueCondition, KeyValueCondition> {
-public final String key;
-public final String valueString;
+import java.util.HashMap;
+import java.util.Map;
 
-public DashSimplePredicate(String key, String valueString) {
-this.key = key;
-this.valueString = valueString;
+public final class DashSimplePredicate implements DashObject<KeyValueCondition, KeyValueCondition> {
+public final ObjectObjectList<String, String> tests;
+
+public DashSimplePredicate(ObjectObjectList<String, String> tests) {
+this.tests = tests;
 }
 
 public DashSimplePredicate(KeyValueCondition simpleMultipartModelSelector) {
-var access = ((SimpleMultipartModelSelectorAccessor) simpleMultipartModelSelector);
-this.key = access.getKey();
-this.valueString = access.getValueString();
+this.tests = new ObjectObjectList<>();
+simpleMultipartModelSelector.tests().forEach((key, value) -> this.tests.put(key, value.toString()));
 }
 
 @Override
 public KeyValueCondition export(RegistryReader handler) {
-return new KeyValueCondition(this.key, this.valueString);
+Map<String, KeyValueCondition.Terms> out = new HashMap<>(this.tests.list().size());
+this.tests.forEach((key, value) -> out.put(
+		key,
+		KeyValueCondition.Terms.parse(value).result().orElseThrow(() -> new IllegalStateException("Invalid key-value condition term: " + value))
+));
+return new KeyValueCondition(out);
 }
 
 @Override
@@ -32,14 +37,11 @@ if (o == null || getClass() != o.getClass()) return false;
 
 DashSimplePredicate that = (DashSimplePredicate) o;
 
-if (!key.equals(that.key)) return false;
-return valueString.equals(that.valueString);
+return tests.equals(that.tests);
 }
 
 @Override
 public int hashCode() {
-int result = key.hashCode();
-result = 31 * result + valueString.hashCode();
-return result;
+return tests.hashCode();
 }
 }

@@ -16,7 +16,7 @@ public class TranslationHelper {
 	}
 
 	public static TranslationHelper getInstance() {
-		var langCode = Minecraft.getInstance().getLanguageManager().getLanguage();
+		var langCode = Minecraft.getInstance().getLanguageManager().getSelected();
 		if (!Objects.equals(INSTANCE.langCode, langCode)) {
 			INSTANCE.langCode = langCode;
 			INSTANCE.loadLang(langCode);
@@ -28,11 +28,11 @@ public class TranslationHelper {
 		this.langCode = langCode;
 		var stream = this.getClass().getClassLoader().getResourceAsStream("dashloader/lang/" + langCode + ".json");
 		if (stream != null) {
-			Language.load(stream, this.translations::put);
+			Language.loadFromJson(stream, this.translations::put);
 		} else {
 			stream = this.getClass().getClassLoader().getResourceAsStream("dashloader/lang/en_us.json");
 			if (stream != null) {
-				Language.load(stream, this.translations::put);
+				Language.loadFromJson(stream, this.translations::put);
 			}
 		}
 	}

@@ -9,7 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 
 public final class DashBlockState implements DashObject<BlockState, BlockState> {
-	public static final ResourceLocation ITEM_FRAME = ResourceLocation.of("dashloader", "itemframewhy");
+	public static final ResourceLocation ITEM_FRAME = ResourceLocation.fromNamespaceAndPath("dashloader", "itemframewhy");
 	public final int owner;
 	public final int pos;
 
@@ -24,7 +24,7 @@ public final class DashBlockState implements DashObject<BlockState, BlockState> 
 
 		ResourceLocation owner = null;
 		{
-			var states = ModelLoaderAccessor.getTheItemFrameThing().getStates();
+			var states = ModelLoaderAccessor.getTheItemFrameThing().getPossibleStates();
 			for (int i = 0; i < states.size(); i++) {
 				BlockState state = states.get(i);
 				if (state.equals(blockState)) {
@@ -36,12 +36,12 @@ public final class DashBlockState implements DashObject<BlockState, BlockState> 
 		}
 
 		if (pos == -1) {
-			var states = block.getStateDefinition().getStates();
+			var states = block.getStateDefinition().getPossibleStates();
 			for (int i = 0; i < states.size(); i++) {
 				BlockState state = states.get(i);
 				if (state.equals(blockState)) {
 					pos = i;
-					owner = BuiltInRegistries.BLOCK.getId(block);
+					owner = BuiltInRegistries.BLOCK.getKey(block);
 					break;
 				}
 			}
@@ -60,9 +60,9 @@ public final class DashBlockState implements DashObject<BlockState, BlockState> 
 		final ResourceLocation id = reader.get(this.owner);
 		// if its item frame get its state from the model loader as mojank is mojank
 		if (id.equals(ITEM_FRAME)) {
-			return ModelLoaderAccessor.getTheItemFrameThing().getStates().get(this.pos);
+			return ModelLoaderAccessor.getTheItemFrameThing().getPossibleStates().get(this.pos);
 		} else {
-			return BuiltInRegistries.BLOCK.get(id).getStateDefinition().getStates().get(this.pos);
+			return BuiltInRegistries.BLOCK.getValue(id).getStateDefinition().getPossibleStates().get(this.pos);
 		}
 	}
 

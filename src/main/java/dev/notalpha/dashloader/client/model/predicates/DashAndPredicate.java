@@ -3,45 +3,35 @@ package dev.notalpha.dashloader.client.model.predicates;
 import dev.notalpha.dashloader.api.DashObject;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
-import dev.notalpha.dashloader.mixin.accessor.AndMultipartModelSelectorAccessor;
-import net.minecraft.client.renderer.block.model.multipart.AndCondition;
+import net.minecraft.client.renderer.block.model.multipart.CombinedCondition;
 import net.minecraft.client.renderer.block.model.multipart.Condition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public final class DashAndPredicate implements DashObject<AndCondition, AndCondition> {
+public final class DashAndPredicate implements DashObject<CombinedCondition, CombinedCondition> {
 public final int[] selectors;
 
 public DashAndPredicate(int[] selectors) {
 this.selectors = selectors;
 }
 
-public DashAndPredicate(AndCondition selector, RegistryWriter writer) {
-AndMultipartModelSelectorAccessor access = ((AndMultipartModelSelectorAccessor) selector);
-
-Iterable<? extends Condition> accessSelectors = access.getSelectors();
-int count = 0;
-for (Condition ignored : accessSelectors) {
-count += 1;
-}
-this.selectors = new int[count];
-
-int i = 0;
-for (Condition accessSelector : accessSelectors) {
-this.selectors[i++] = writer.add(accessSelector);
-}
+public DashAndPredicate(CombinedCondition selector, RegistryWriter writer) {
+	this.selectors = new int[selector.terms().size()];
+	for (int i = 0; i < selector.terms().size(); i++) {
+		this.selectors[i] = writer.add(selector.terms().get(i));
+	}
 }
 
 @Override
-public AndCondition export(RegistryReader handler) {
+public CombinedCondition export(RegistryReader handler) {
 final List<Condition> selectors = new ArrayList<>(this.selectors.length);
 for (int accessSelector : this.selectors) {
 selectors.add(handler.get(accessSelector));
 }
 
-return new AndCondition(selectors);
+return new CombinedCondition(CombinedCondition.Operation.AND, selectors);
 }
 
 @Override

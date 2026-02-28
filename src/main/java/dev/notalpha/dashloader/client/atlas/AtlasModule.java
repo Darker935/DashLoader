@@ -47,7 +47,7 @@ public class AtlasModule implements DashModule<AtlasModule.Data> {
 
 		HashMap<String, ArrayList<FutureTask<NativeImage>>> out = new HashMap<>();
 
-		var maxMipLevel = Minecraft.getInstance().options.getMipmapLevels().getValue();
+		var maxMipLevel = Minecraft.getInstance().options.mipmapLevels().get();
 		for (String atlasId : data.atlasIds) {
 			var tasks = new ArrayList<FutureTask<NativeImage>>();
 

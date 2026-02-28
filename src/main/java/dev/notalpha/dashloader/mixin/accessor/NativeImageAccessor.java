@@ -12,9 +12,9 @@ public interface NativeImageAccessor {
 		throw new AssertionError();
 	}
 
-	@Accessor
+	@Accessor("pixels")
 	long getPointer();
 
-	@Accessor
+	@Accessor("useStbFree")
 	boolean getIsStbImage();
 }

@@ -10,7 +10,7 @@ import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.config.ConfigHandler;
 import dev.notalpha.dashloader.config.Option;
 import dev.notalpha.taski.builtin.StepTask;
-import net.minecraft.client.gui.font.providers.GlyphProvider;
+import com.mojang.blaze3d.font.GlyphProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.util.freetype.FT_Face;
 
@@ -35,7 +35,7 @@ ProviderIndex providerIndex = DATA.get(CacheStatus.SAVE);
 assert providerIndex != null;
 
 int taskSize = 0;
-for (List<GlyphProvider.FilterPair> value : providerIndex.providers.values()) {
+for (List<GlyphProvider.Conditional> value : providerIndex.providers.values()) {
 taskSize += value.size();
 }
 taskSize += providerIndex.allProviders.size();
@@ -44,7 +44,7 @@ task.reset(taskSize);
 var providers = new IntObjectList<List<Integer>>();
 providerIndex.providers.forEach((identifier, fontFilterPairs) -> {
 var values = new ArrayList<Integer>();
-for (GlyphProvider.FilterPair fontFilterPair : fontFilterPairs) {
+for (GlyphProvider.Conditional fontFilterPair : fontFilterPairs) {
 values.add(factory.add(fontFilterPair));
 task.next();
 }
@@ -64,7 +64,7 @@ return new Data(new DashProviderIndex(providers, allProviders));
 public void load(Data data, RegistryReader reader, StepTask task) {
 ProviderIndex index = new ProviderIndex(new HashMap<>(), new ArrayList<>());
 data.fontMap.providers.forEach((key, value) -> {
-var fonts = new ArrayList<GlyphProvider.FilterPair>();
+var fonts = new ArrayList<GlyphProvider.Conditional>();
 for (Integer i : value) {
 fonts.add(reader.get(i));
 }
@@ -104,10 +104,10 @@ this.allProviders = allProviders;
 }
 
 public static final class ProviderIndex {
-public final Map<ResourceLocation, List<GlyphProvider.FilterPair>> providers;
+public final Map<ResourceLocation, List<GlyphProvider.Conditional>> providers;
 public final List<GlyphProvider> allProviders;
 
-public ProviderIndex(Map<ResourceLocation, List<GlyphProvider.FilterPair>> providers, List<GlyphProvider> allProviders) {
+public ProviderIndex(Map<ResourceLocation, List<GlyphProvider.Conditional>> providers, List<GlyphProvider> allProviders) {
 this.providers = providers;
 this.allProviders = allProviders;
 }

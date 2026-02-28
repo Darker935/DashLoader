@@ -1,13 +1,13 @@
 package dev.notalpha.dashloader.mixin.accessor;
 
-import net.minecraft.client.gui.font.FontFilterType;
+import net.minecraft.client.gui.font.FontOption;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.Map;
 
-@Mixin(FontFilterType.FilterMap.class)
+@Mixin(FontOption.Filter.class)
 public interface FilterMapAccessor {
 @Accessor
-Map<FontFilterType, Boolean> getActiveFilters();
+Map<FontOption, Boolean> getValues();
 }

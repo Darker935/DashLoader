@@ -3,7 +3,6 @@ package dev.notalpha.dashloader.client.font;
 import dev.notalpha.dashloader.api.registry.RegistryReader;
 import dev.notalpha.dashloader.api.registry.RegistryWriter;
 import dev.notalpha.dashloader.mixin.accessor.BitmapFontGlyphAccessor;
-import net.minecraft.client.gui.font.providers.BitmapProvider;
 
 public final class DashBitmapFontGlyph {
 public final float scaleFactor;
@@ -26,8 +25,8 @@ this.advance = advance;
 this.ascent = ascent;
 }
 
-public DashBitmapFontGlyph(BitmapProvider.BitmapFontGlyph bitmapFontGlyph, RegistryWriter writer) {
-BitmapFontGlyphAccessor font = ((BitmapFontGlyphAccessor) (Object) bitmapFontGlyph);
+public DashBitmapFontGlyph(Object bitmapFontGlyph, RegistryWriter writer) {
+BitmapFontGlyphAccessor font = ((BitmapFontGlyphAccessor) bitmapFontGlyph);
 this.scaleFactor = font.getScaleFactor();
 this.image = writer.add(font.getImage());
 this.x = font.getX();
@@ -38,7 +37,7 @@ this.advance = font.getAdvance();
 this.ascent = font.getAscent();
 }
 
-public BitmapProvider.BitmapFontGlyph export(RegistryReader handler) {
+public Object export(RegistryReader handler) {
 return BitmapFontGlyphAccessor.init(this.scaleFactor, handler.get(this.image), this.x, this.y, this.width, this.height, this.advance, this.ascent);
 }
 }

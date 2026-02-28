@@ -4,6 +4,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.renderer.block.model.multipart.Condition;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.StateHolder;
 
 import java.util.function.Predicate;
 
@@ -14,12 +15,12 @@ public BooleanSelector(boolean selector) {
 this.selector = selector;
 }
 
-public BooleanSelector(Condition selector) {
-this.selector = selector == Condition.TRUE;
-}
+	public BooleanSelector(Condition selector) {
+		this.selector = selector instanceof BooleanSelector b && b.selector;
+	}
 
-@Override
-public Predicate<BlockState> getPredicate(StateDefinition<Block, BlockState> stateFactory) {
-return blockState -> selector;
-}
+	@Override
+	public <O, S extends StateHolder<O, S>> Predicate<S> instantiate(StateDefinition<O, S> stateFactory) {
+		return stateHolder -> selector;
+	}
 }
